@@ -1,0 +1,20 @@
+#include "FuncallExp.h"
+#include <string>
+#include <vector>
+
+#include "Ident.h"
+#include "Exp.h"
+
+using namespace std;
+using namespace saltyfish;
+
+FuncallExp::FuncallExp(std::unique_ptr<Ident> ident)
+	:ident(std::move(ident))
+{
+	
+}
+
+FuncallExp::FuncallExp(unique_ptr<Ident> ident, std::unique_ptr<Exp> funcallParamList)
+	:ident(std::move(ident)),funcallParamList(std::move(funcallParamList)) {
+	
+}
