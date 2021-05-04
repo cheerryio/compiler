@@ -11,9 +11,11 @@ using namespace std;
 #include <memory>
 
 #include "Exp.h"
-#include "../ASTVisitor/ASTVisitor.h"
+
 
 namespace saltyfish {
+	class ASTVisitor;
+
 	class ValueDef {
 	public:
 		class ValueDefBitFields {

@@ -6,9 +6,10 @@
 
 #include "Ident.h"
 #include "Exp.h"
-#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
+	class ASTVisitor;
+
 	class FuncallExp:public Exp
 	{
 	public:

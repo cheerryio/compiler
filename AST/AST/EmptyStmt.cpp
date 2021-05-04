@@ -1,4 +1,6 @@
 #include "EmptyStmt.h"
+#include "../ASTVisitor/ASTVisitor.h"
+
 using namespace saltyfish;
 
 EmptyStmt::EmptyStmt()

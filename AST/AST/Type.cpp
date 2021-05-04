@@ -1,4 +1,5 @@
 #include "Type.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
 	Type::Type() {

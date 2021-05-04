@@ -4,9 +4,10 @@
 
 #include "ASTUnit.h"
 #include "Stmt.h"
-#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
+    class ASTVisitor;
+
     class BlockStmt :
         public Stmt
     {

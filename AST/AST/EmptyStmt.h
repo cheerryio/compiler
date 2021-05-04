@@ -1,8 +1,9 @@
 #pragma once
 #include "Stmt.h"
-#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
+    class ASTVisitor;
+
     class EmptyStmt :
         public Stmt
     {

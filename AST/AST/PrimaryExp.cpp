@@ -1,6 +1,6 @@
 #include "Exp.h"
 #include "PrimaryExp.h"
-
+#include "../ASTVisitor/ASTVisitor.h"
 
 using namespace saltyfish;
 PrimaryExp::PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Ident> ident)

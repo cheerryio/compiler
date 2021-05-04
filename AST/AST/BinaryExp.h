@@ -3,9 +3,10 @@
 #include <memory>
 
 #include "Exp.h"
-#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
+	class ASTVisitor;
+
 	class BinaryExp:public Exp {
 	public:
 		enum BinaryExpType {

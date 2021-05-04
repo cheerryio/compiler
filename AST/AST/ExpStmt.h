@@ -4,9 +4,10 @@
 
 #include "Exp.h"
 #include "Stmt.h"
-#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
+    class ASTVisitor;
+
     class ExpStmt :
         public Stmt
     {

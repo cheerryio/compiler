@@ -1,4 +1,5 @@
 #include "ContinueStmt.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 using namespace saltyfish;
 

@@ -1,9 +1,11 @@
 #pragma once
-#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
+	class ASTVisitor;
+
 	class ASTUnit
 	{
 	public:
+		virtual void accept(ASTVisitor& visitor) = 0;
 	};
 }

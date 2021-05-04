@@ -1,4 +1,5 @@
 #include "BinaryExp.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 using namespace saltyfish;
 using namespace std;

@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Stmt.h"
-#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
+    class ASTVisitor;
+
     class BreakStmt :
         public Stmt
     {

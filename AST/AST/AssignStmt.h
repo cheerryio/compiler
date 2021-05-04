@@ -5,8 +5,10 @@
 #include "Stmt.h"
 #include "Ident.h"
 #include "Exp.h"
-#include "../ASTVisitor/ASTVisitor.h"
+
 namespace saltyfish {
+    class ASTVisitor;
+
     class AssignStmt :
         public Stmt
     {

@@ -2,6 +2,8 @@
 #include "ASTUnit.h"
 
 namespace saltyfish {
+	class ASTVisitor;
+
 	class Exp :public ASTUnit {
 	public:
 		class ExpBitFields {
@@ -9,5 +11,8 @@ namespace saltyfish {
 
 	public:
 		Exp();
+		virtual void accept(ASTVisitor& visitor) {
+			
+		}
 	};
 }

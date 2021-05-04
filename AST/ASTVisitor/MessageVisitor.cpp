@@ -57,7 +57,8 @@ void MessageVisitor::visit(WhileStmt* whileStmt){
 }
 
 void MessageVisitor::visit(BinaryExp* binaryExp){
-	cout << "binaryExp" << endl;
+	cout << "type:" << binaryExp->binaryExpType << endl;
+	binaryExp->Lexp->accept(*this);
 }
 void MessageVisitor::visit(FuncallExp* funcallExp){
 	cout << "funcallExp" << endl;

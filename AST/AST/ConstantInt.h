@@ -1,8 +1,9 @@
 #pragma once
 #include "Constant.h"
-#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
+	class ASTVisitor;
+
 	class ConstantInt:public Constant {
 	public:
 		enum ConstantIntType { Octal, Decimal, Hexadecimal } constantIntType;

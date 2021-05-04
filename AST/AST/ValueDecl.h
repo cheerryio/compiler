@@ -5,9 +5,10 @@
 #include "Type.h"
 #include "Decl.h"
 #include "ValueDef.h"
-#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
+	class ASTVisitor;
+
 	class ValueDecl:public Decl
 	{
 	public:

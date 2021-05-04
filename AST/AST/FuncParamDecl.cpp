@@ -1,5 +1,6 @@
 #include "FuncParamDecl.h"
 #include "Type.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 using namespace std;
 using namespace saltyfish;

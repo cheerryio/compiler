@@ -3,6 +3,7 @@
 
 #include "ValueDef.h"
 #include "ConstantInt.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 using namespace saltyfish;
 

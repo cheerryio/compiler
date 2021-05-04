@@ -2,6 +2,7 @@
 
 #include "UnaryExp.h"
 #include "Exp.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 using namespace saltyfish;
 

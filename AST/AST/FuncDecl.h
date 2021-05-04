@@ -3,9 +3,10 @@
 
 #include "Ident.h"
 #include "Decl.h"
-#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
+	class ASTVisitor;
+
 	class FuncDecl:public Decl
 	{
 	public:

@@ -1,10 +1,8 @@
 #pragma once
 #include <map>
 #include <string>
-
-#include "../ASTVisitor/ASTVisitor.h"
-
 namespace saltyfish{
+	class ASTVisitor;
 
 	class Type {
 	public:

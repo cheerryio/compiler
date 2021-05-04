@@ -1,7 +1,8 @@
-#include "WhileStmt.h"
-
 #include <memory>
 #include <vector>
+
+#include "WhileStmt.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 using namespace std;
 using namespace saltyfish;
