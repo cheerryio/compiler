@@ -1,8 +1,8 @@
 #pragma once
-#include "Basic.h"
+#include "ASTUnit.h"
 
 namespace saltyfish {
-	class Exp :public Basic {
+	class Exp :public ASTUnit {
 	public:
 		class ExpBitFields {
 		} bitFields;

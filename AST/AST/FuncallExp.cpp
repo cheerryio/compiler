@@ -14,7 +14,7 @@ FuncallExp::FuncallExp(std::unique_ptr<Ident> ident)
 	
 }
 
-FuncallExp::FuncallExp(unique_ptr<Ident> ident, std::unique_ptr<Exp> funcallParamList)
+FuncallExp::FuncallExp(std::unique_ptr<Ident> ident, std::vector<std::unique_ptr<Exp>> funcallParamList)
 	:ident(std::move(ident)),funcallParamList(std::move(funcallParamList)) {
 	
 }

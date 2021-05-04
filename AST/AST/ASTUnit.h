@@ -1,6 +1,6 @@
 #pragma once
 namespace saltyfish {
-	class Basic
+	class ASTUnit
 	{
 	public:
 	};

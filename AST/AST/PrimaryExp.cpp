@@ -14,3 +14,8 @@ PrimaryExp::PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish:
 {
 
 }
+
+PrimaryExp::~PrimaryExp()
+{
+	
+}

@@ -1,9 +1,9 @@
 #pragma once
 #include "Type.h"
-#include "Basic.h"
+#include "ASTUnit.h"
 
 namespace saltyfish {
-	class Decl:public Basic
+	class Decl:public ASTUnit
 	{
 	public:
 	};

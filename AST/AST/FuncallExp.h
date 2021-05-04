@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <vector>
 
 #include "Ident.h"
 #include "Exp.h"
@@ -11,11 +12,10 @@ namespace saltyfish {
 	{
 	public:
 		std::unique_ptr<Ident> ident;
-		std::unique_ptr<Exp> funcallParamList;
+		std::vector<std::unique_ptr<Exp>> funcallParamList;
 	public:
 		FuncallExp(std::unique_ptr<Ident> ident);
-		FuncallExp(std::unique_ptr<Ident> ident,std::unique_ptr<Exp> funcallParamList);
-
+		FuncallExp(std::unique_ptr<Ident> ident,std::vector<std::unique_ptr<Exp>> funcallParamList);
 	};
 }
 

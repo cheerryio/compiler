@@ -1,11 +1,12 @@
 #pragma once
 #include "Stmt.h"
 namespace saltyfish {
-    class ContinueStmt :
+    class EmptyStmt :
         public Stmt
     {
     public:
-        ContinueStmt();
+        EmptyStmt();
+
     };
 }
 

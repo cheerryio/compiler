@@ -1,10 +1,26 @@
 #pragma once
+#include <memory>
+#include <vector>
+
 #include "Stmt.h"
+#include "Exp.h"
+
 namespace saltyfish {
     class IfStmt :
         public Stmt
     {
+    public:
+        class IfStmtBitFields {
+        public:
+            unsigned hasElse : 1;
+        } bitFields;
+        std::unique_ptr<Exp> cond;
+        std::unique_ptr<Stmt> ifBody, elseBody;
 
+    public:
+        IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody);
+        IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody,std::unique_ptr<Stmt> elseBody);
+        void setHasElse(bool b);
     };
 }
 

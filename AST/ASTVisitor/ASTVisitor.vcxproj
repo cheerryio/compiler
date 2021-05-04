@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{165f7ecb-0e63-4807-992e-530979afcb98}</ProjectGuid>
-    <RootNamespace>AST</RootNamespace>
+    <ProjectGuid>{09bf0f2f-cac3-4397-b770-3cc691b3ccb6}</ProjectGuid>
+    <RootNamespace>ASTVisitor</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -88,10 +88,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\22216\source\repos\compiler\AST\AST;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -139,57 +141,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AssignStmt.h" />
-    <ClInclude Include="ASTUnit.h" />
-    <ClInclude Include="BinaryExp.h" />
-    <ClInclude Include="BlockStmt.h" />
-    <ClInclude Include="BreakStmt.h" />
-    <ClInclude Include="Constant.h" />
-    <ClInclude Include="ConstantInt.h" />
-    <ClInclude Include="ContinueStmt.h" />
-    <ClInclude Include="Decl.h" />
-    <ClInclude Include="EmptyStmt.h" />
-    <ClInclude Include="Exp.h" />
-    <ClInclude Include="ExpStmt.h" />
-    <ClInclude Include="FuncallExp.h" />
-    <ClInclude Include="FuncDecl.h" />
-    <ClInclude Include="FuncParamDecl.h" />
-    <ClInclude Include="Ident.h" />
-    <ClInclude Include="IfStmt.h" />
-    <ClInclude Include="PrimaryExp.h" />
-    <ClInclude Include="ReturnStmt.h" />
-    <ClInclude Include="Stmt.h" />
-    <ClInclude Include="Type.h" />
-    <ClInclude Include="UnaryExp.h" />
-    <ClInclude Include="ValueDecl.h" />
-    <ClInclude Include="ValueDef.h" />
-    <ClInclude Include="WhileStmt.h" />
+    <ClCompile Include="..\AST\AssignStmt.cpp" />
+    <ClCompile Include="..\AST\ASTUnit.cpp" />
+    <ClCompile Include="..\AST\BinaryExp.cpp" />
+    <ClCompile Include="..\AST\BlockStmt.cpp" />
+    <ClCompile Include="..\AST\BreakStmt.cpp" />
+    <ClCompile Include="..\AST\ConstantInt.cpp" />
+    <ClCompile Include="..\AST\ContinueStmt.cpp" />
+    <ClCompile Include="..\AST\Decl.cpp" />
+    <ClCompile Include="..\AST\EmptyStmt.cpp" />
+    <ClCompile Include="..\AST\Exp.cpp" />
+    <ClCompile Include="..\AST\ExpStmt.cpp" />
+    <ClCompile Include="..\AST\FuncallExp.cpp" />
+    <ClCompile Include="..\AST\FuncDecl.cpp" />
+    <ClCompile Include="..\AST\FuncParamDecl.cpp" />
+    <ClCompile Include="..\AST\Ident.cpp" />
+    <ClCompile Include="..\AST\IfStmt.cpp" />
+    <ClCompile Include="..\AST\PrimaryExp.cpp" />
+    <ClCompile Include="..\AST\ReturnStmt.cpp" />
+    <ClCompile Include="..\AST\Stmt.cpp" />
+    <ClCompile Include="..\AST\Type.cpp" />
+    <ClCompile Include="..\AST\UnaryExp.cpp" />
+    <ClCompile Include="..\AST\ValueDecl.cpp" />
+    <ClCompile Include="..\AST\ValueDef.cpp" />
+    <ClCompile Include="..\AST\WhileStmt.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MessageVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AssignStmt.cpp" />
-    <ClCompile Include="ASTUnit.cpp" />
-    <ClCompile Include="BinaryExp.cpp" />
-    <ClCompile Include="BlockStmt.cpp" />
-    <ClCompile Include="BreakStmt.cpp" />
-    <ClCompile Include="ConstantInt.cpp" />
-    <ClCompile Include="ContinueStmt.cpp" />
-    <ClCompile Include="Decl.cpp" />
-    <ClCompile Include="EmptyStmt.cpp" />
-    <ClCompile Include="Exp.cpp" />
-    <ClCompile Include="ExpStmt.cpp" />
-    <ClCompile Include="FuncallExp.cpp" />
-    <ClCompile Include="FuncDecl.cpp" />
-    <ClCompile Include="FuncParamDecl.cpp" />
-    <ClCompile Include="Ident.cpp" />
-    <ClCompile Include="IfStmt.cpp" />
-    <ClCompile Include="PrimaryExp.cpp" />
-    <ClCompile Include="ReturnStmt.cpp" />
-    <ClCompile Include="Stmt.cpp" />
-    <ClCompile Include="Type.cpp" />
-    <ClCompile Include="UnaryExp.cpp" />
-    <ClCompile Include="ValueDecl.cpp" />
-    <ClCompile Include="ValueDef.cpp" />
-    <ClCompile Include="WhileStmt.cpp" />
+    <ClInclude Include="ASTVisitor.h" />
+    <ClInclude Include="MessageVisitor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

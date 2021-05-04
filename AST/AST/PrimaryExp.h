@@ -18,6 +18,7 @@ namespace saltyfish {
 	public:
 		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Ident> ident);
 		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Constant> constant);
+		~PrimaryExp();
 	};
 }
 
