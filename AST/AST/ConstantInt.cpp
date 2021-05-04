@@ -9,3 +9,7 @@ ConstantInt::ConstantInt(ConstantInt::ConstantIntType constantIntType,int value)
 {
 	
 }
+
+void ConstantInt::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}

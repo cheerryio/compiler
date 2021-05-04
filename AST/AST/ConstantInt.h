@@ -1,5 +1,6 @@
 #pragma once
 #include "Constant.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
 	class ConstantInt:public Constant {
@@ -9,5 +10,6 @@ namespace saltyfish {
 	public:
 		ConstantInt();
 		ConstantInt(ConstantInt::ConstantIntType constantIntType, int value);
+		virtual void accept(ASTVisitor& visitor);
 	};
 }

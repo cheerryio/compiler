@@ -1,7 +1,9 @@
 #pragma once
-#include "Exp.h"
 #include <string>
 #include <memory>
+
+#include "Exp.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
 	class BinaryExp:public Exp {
@@ -19,5 +21,6 @@ namespace saltyfish {
 		BinaryExp();
 		BinaryExp(BinaryExpType binaryExpType, std::unique_ptr<Exp> Lexp, std::unique_ptr <Exp> Rexp);
 		BinaryExp(BinaryExpType binaryExpType, std::unique_ptr<Exp> Lexp, std::unique_ptr<Exp> Rexp, std::string opStr);
+		virtual void accept(ASTVisitor& visitor);
 	};
 }

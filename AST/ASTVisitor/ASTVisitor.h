@@ -1,36 +1,38 @@
 #pragma once
 #include "ASTUnit.h"
-#include "FuncDecl.h"
-#include "ValueDecl.h"
-
-#include "AssignStmt.h"
-#include "BlockStmt.h"
-#include "BreakStmt.h"
-#include "ContinueStmt.h"
-#include "EmptyStmt.h"
-#include "ExpStmt.h"
-#include "IfStmt.h"
-#include "ReturnStmt.h"
-#include "WhileStmt.h"
-
 #include "BinaryExp.h"
-#include "FuncallExp.h"
-#include "PrimaryExp.h"
-#include "UnaryExp.h"
-
-#include "Type.h"
-#include "Ident.h"
-#include "ConstantInt.h"
+namespace saltyfish {
+	class Ident;
+	class Type;
+	class ConstantInt;
+	class EmptyStmt;
+	class ExpStmt;
+	class AssignStmt;
+	class BlockStmt;
+	class BreakStmt;
+	class ContinueStmt;
+	class IfStmt;
+	class ReturnStmt;
+	class WhileStmt;
+	class FuncDecl;
+	class ValueDecl;
+	class FuncParamDecl;
+	class ValueDef;
+	class BinaryExp;
+	class FuncallExp;
+	class PrimaryExp;
+	class UnaryExp;
+}
 
 namespace saltyfish {
 	class ASTVisitor
 	{
 	public:
-		ASTVisitor();
-		~ASTVisitor();
 		virtual void visit() = 0;
 		virtual void visit(FuncDecl* funcDecl) = 0;
+		virtual void visit(FuncParamDecl* funcParamDecl) = 0;
 		virtual void visit(ValueDecl* valueDecl) = 0;
+		virtual void visit(ValueDef* valueDef) = 0;
 
 		virtual void visit(AssignStmt* assignStmt) = 0;
 		virtual void visit(BlockStmt* blockStmt) = 0;

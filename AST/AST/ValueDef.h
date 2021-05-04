@@ -11,24 +11,26 @@ using namespace std;
 #include <memory>
 
 #include "Exp.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
-class ValueDef {
-public:
-	class ValueDefBitFields {
+	class ValueDef {
 	public:
-		unsigned hasAssign : 1;
-		unsigned isArray : 1;
-	} bitFields;
-	unique_ptr<Ident> ident;
-	vector<unique_ptr<Exp>> arrayDimList;
-	unique_ptr<Exp> exp;
+		class ValueDefBitFields {
+		public:
+			unsigned hasAssign : 1;
+			unsigned isArray : 1;
+		} bitFields;
+		unique_ptr<Ident> ident;
+		vector<unique_ptr<Exp>> arrayDimList;
+		unique_ptr<Exp> exp;
 
-public:
-	ValueDef();
-	ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList);
-	ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList, unique_ptr<Exp> exp);
-	void setHasAssign(bool b);
-	void setIsArray(bool b);
-};
+	public:
+		ValueDef();
+		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList);
+		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList, unique_ptr<Exp> exp);
+		void setHasAssign(bool b);
+		void setIsArray(bool b);
+		virtual void accept(ASTVisitor& visitor);
+	};
 }

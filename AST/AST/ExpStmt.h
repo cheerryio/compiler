@@ -4,6 +4,7 @@
 
 #include "Exp.h"
 #include "Stmt.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
     class ExpStmt :
@@ -14,6 +15,7 @@ namespace saltyfish {
 
     public:
         ExpStmt(std::unique_ptr<Exp> exp);
+        virtual void accept(ASTVisitor& visitor);
     };
 }
 

@@ -6,6 +6,7 @@
 
 #include "Ident.h"
 #include "Exp.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
 	class FuncallExp:public Exp
@@ -16,6 +17,7 @@ namespace saltyfish {
 	public:
 		FuncallExp(std::unique_ptr<Ident> ident);
 		FuncallExp(std::unique_ptr<Ident> ident,std::vector<std::unique_ptr<Exp>> funcallParamList);
+		virtual void accept(ASTVisitor& visitor);
 	};
 }
 

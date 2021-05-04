@@ -4,6 +4,8 @@
 
 #include "Stmt.h"
 #include "Exp.h"
+#include "../ASTVisitor/ASTVisitor.h"
+
 namespace saltyfish {
     class WhileStmt :
         public Stmt
@@ -14,6 +16,7 @@ namespace saltyfish {
 
     public:
         WhileStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> body);
+        virtual void accept(ASTVisitor& visitor);
     };
 }
 

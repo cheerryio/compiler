@@ -6,5 +6,8 @@ namespace saltyfish {
 	public:
 		class ExpBitFields {
 		} bitFields;
+
+	public:
+		Exp();
 	};
 }

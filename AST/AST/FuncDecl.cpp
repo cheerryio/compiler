@@ -8,3 +8,7 @@ FuncDecl::FuncDecl(unique_ptr<Ident> ident)
 {
 
 }
+
+void FuncDecl::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}

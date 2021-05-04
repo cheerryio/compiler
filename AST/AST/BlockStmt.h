@@ -4,6 +4,7 @@
 
 #include "ASTUnit.h"
 #include "Stmt.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
     class BlockStmt :
@@ -15,6 +16,7 @@ namespace saltyfish {
     public:
         BlockStmt();
         BlockStmt(std::vector<std::unique_ptr<ASTUnit>> stmts);
+        virtual void accept(ASTVisitor& visitor);
     };
 }
 

@@ -5,9 +5,13 @@ namespace saltyfish {
         public ASTVisitor
     {
     public:
+		MessageVisitor();
+		~MessageVisitor();
 		void visit();
 		void visit(FuncDecl* funcDecl);
+		void visit(FuncParamDecl* funcParamDecl);
 		void visit(ValueDecl* valueDecl);
+		void visit(ValueDef* valueDef);
 
 		void visit(AssignStmt* assignStmt);
 		void visit(BlockStmt* blockStmt);

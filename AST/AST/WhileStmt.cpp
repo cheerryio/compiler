@@ -11,3 +11,7 @@ WhileStmt::WhileStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> body)
 {
 	
 }
+
+void WhileStmt::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}

@@ -18,3 +18,7 @@ IfStmt::IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody, std::uni
 void IfStmt::setHasElse(bool b) {
 	bitFields.hasElse = b ? 1 : 0;
 }
+
+void IfStmt::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}

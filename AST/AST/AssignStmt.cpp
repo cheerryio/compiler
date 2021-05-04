@@ -8,3 +8,7 @@ AssignStmt::AssignStmt(std::unique_ptr<Ident> ident, std::unique_ptr<Exp> exp)
 {
 	
 }
+
+void AssignStmt::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}

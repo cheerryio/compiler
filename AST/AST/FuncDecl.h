@@ -3,6 +3,8 @@
 
 #include "Ident.h"
 #include "Decl.h"
+#include "../ASTVisitor/ASTVisitor.h"
+
 namespace saltyfish {
 	class FuncDecl:public Decl
 	{
@@ -11,6 +13,7 @@ namespace saltyfish {
 
 	public:
 		FuncDecl(std::unique_ptr<Ident> ident);
+		virtual void accept(ASTVisitor& visitor);
 	};
 }
 

@@ -2,6 +2,8 @@
 #include <map>
 #include <string>
 
+#include "../ASTVisitor/ASTVisitor.h"
+
 namespace saltyfish{
 
 	class Type {
@@ -18,6 +20,7 @@ namespace saltyfish{
 	public:
 		Type();
 		Type(std::string &typeStr);
+		virtual void accept(ASTVisitor& visitor);
 	};
 
 }

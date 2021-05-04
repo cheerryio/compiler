@@ -36,3 +36,7 @@ void ValueDef::setIsArray(bool b) {
 		bitFields.isArray = 0;
 	}
 }
+
+void ValueDef::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}

@@ -8,3 +8,7 @@ ExpStmt::ExpStmt(std::unique_ptr<Exp> exp)
 {
 	
 }
+
+void ExpStmt::accept(ASTVisitor &visitor) {
+	visitor.visit(this);
+}

@@ -4,6 +4,7 @@
 
 #include "Stmt.h"
 #include "Exp.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
     class IfStmt :
@@ -21,6 +22,7 @@ namespace saltyfish {
         IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody);
         IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody,std::unique_ptr<Stmt> elseBody);
         void setHasElse(bool b);
+        virtual void accept(ASTVisitor& visitor);
     };
 }
 

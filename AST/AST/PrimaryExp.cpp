@@ -19,3 +19,7 @@ PrimaryExp::~PrimaryExp()
 {
 	
 }
+
+void PrimaryExp::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}

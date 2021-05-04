@@ -4,6 +4,8 @@
 #include "Exp.h"
 #include "Ident.h"
 #include "Constant.h"
+#include "../ASTVisitor/ASTVisitor.h"
+
 namespace saltyfish {
 	class PrimaryExp:public Exp
 	{
@@ -19,6 +21,7 @@ namespace saltyfish {
 		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Ident> ident);
 		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Constant> constant);
 		~PrimaryExp();
+		virtual void accept(ASTVisitor& visitor);
 	};
 }
 

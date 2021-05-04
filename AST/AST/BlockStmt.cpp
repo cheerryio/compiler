@@ -10,3 +10,7 @@ BlockStmt::BlockStmt(std::vector<std::unique_ptr<ASTUnit>> stmts)
 {
 	
 }
+
+void BlockStmt::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}

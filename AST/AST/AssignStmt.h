@@ -5,6 +5,7 @@
 #include "Stmt.h"
 #include "Ident.h"
 #include "Exp.h"
+#include "../ASTVisitor/ASTVisitor.h"
 namespace saltyfish {
     class AssignStmt :
         public Stmt
@@ -15,6 +16,7 @@ namespace saltyfish {
 
     public:
         AssignStmt(std::unique_ptr<Ident> ident, std::unique_ptr<Exp> exp);
+        void accept(ASTVisitor& visitor);
     };
 }
 

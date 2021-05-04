@@ -5,12 +5,27 @@
 using namespace std;
 using namespace saltyfish;
 
+MessageVisitor::MessageVisitor() {}
+MessageVisitor::~MessageVisitor() {}
+
+void MessageVisitor::visit() {
+	cout << "void" << endl;
+}
 
 void MessageVisitor::visit(FuncDecl* funcDecl){
 	cout << "funcDecl" << endl;
 }
+
+void MessageVisitor::visit(FuncParamDecl* funcParamDecl) {
+	cout << "funcParamDecl" << endl;
+}
+
 void MessageVisitor::visit(ValueDecl* valueDecl){
 	cout << "valueDecl" << endl;
+}
+
+void MessageVisitor::visit(ValueDef* valueDef) {
+	cout << "valueDef" << endl;
 }
 
 void MessageVisitor::visit(AssignStmt* assignStmt){

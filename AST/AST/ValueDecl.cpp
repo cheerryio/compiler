@@ -14,3 +14,7 @@ ValueDecl::ValueDecl(unique_ptr<Type> type, std::vector<unique_ptr<ValueDef>> Va
 {
 	
 }
+
+void ValueDecl::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}

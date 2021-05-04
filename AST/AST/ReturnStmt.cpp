@@ -20,3 +20,7 @@ void ReturnStmt::setHasExp(bool b)
 {
 	bitFields.hasExp = b ? 1 : 0;
 }
+
+void ReturnStmt::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}

@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "Exp.h"
+#include "../ASTVisitor/ASTVisitor.h"
 
 namespace saltyfish {
 	class UnaryExp:public Exp
@@ -16,6 +17,7 @@ namespace saltyfish {
 
 	public:
 		UnaryExp(UnaryExpType unaryExpType,std::unique_ptr<Exp> exp);
+		virtual void accept(ASTVisitor& visitor);
 	};
 
 }

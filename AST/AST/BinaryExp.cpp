@@ -16,3 +16,7 @@ BinaryExp::BinaryExp(BinaryExpType binaryExpType, unique_ptr<Exp> Lexp, unique_p
 {
 
 }
+
+void BinaryExp::accept(ASTVisitor& visitor) {
+	visitor.visit(this);
+}
