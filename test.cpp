@@ -1,5 +1,5 @@
 int main(){
-    int a,b;
+    int a[][5][1],b;
     while(a==1){
         a+1;
         b=a+b;

@@ -50,6 +50,7 @@
 		#include <string>
 		#include <vector>
 		#include <stdint.h>
+		#include <utility>
 		#include "AST/AST/ASTUnit.h"
 		#include "AST/AST/CompUnit.h"
 		#include "AST/AST/ConstantInt.h"
@@ -90,7 +91,7 @@
 			(a)=std::move(e);	\
 		}
 
-#line 94 "parser.hpp"
+#line 95 "parser.hpp"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -225,7 +226,7 @@
 
 #line 14 "parser.y"
 namespace  saltyfish  {
-#line 229 "parser.hpp"
+#line 230 "parser.hpp"
 
 
 
@@ -1743,7 +1744,7 @@ switch (yytype)
     static const signed char yydefact_[];
 
     // YYPGOTO[NTERM-NUM].
-    static const short yypgoto_[];
+    static const signed char yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
     static const signed char yydefgoto_[];
@@ -2001,9 +2002,9 @@ switch (yytype)
     enum
     {
       yyeof_ = 0,
-      yylast_ = 451,     ///< Last index in yytable_.
+      yylast_ = 477,     ///< Last index in yytable_.
       yynnts_ = 22,  ///< Number of nonterminal symbols.
-      yyfinal_ = 11, ///< Termination state number.
+      yyfinal_ = 3, ///< Termination state number.
       yyntokens_ = 40  ///< Number of tokens.
     };
 
@@ -2425,7 +2426,7 @@ switch (yytype)
 
 #line 14 "parser.y"
 } //  saltyfish 
-#line 2429 "parser.hpp"
+#line 2430 "parser.hpp"
 
 
 

@@ -5,17 +5,17 @@
 #include "Exp.h"
 #include "ExpStmt.h"
 #include "BinaryExp.h"
+#include "ValueDef.h"
 
 using namespace std;
 using namespace saltyfish;
 
 int main() {
-	auto Lexp = make_unique<Exp>();
-	auto Rexp = make_unique<Exp>();
-	auto binaryExp1 = make_unique<BinaryExp>(BinaryExp::BinaryExpType::Add, move(Lexp), move(Rexp));
-	auto binaryExp = make_unique<BinaryExp>(BinaryExp::BinaryExpType::Add, move(binaryExp1), move(Rexp));
-	MessageVisitor visitor;
-	binaryExp->accept(visitor);
+	vector<ValueDef::arrayAssignList_t*> a;
+	ValueDef::arrayAssignList_t* b = new ValueDef::arrayAssignList_t();
+	ValueDef::arrayAssignList_t* c = new ValueDef::arrayAssignList_t();
+	b->list.push_back(c);
+	a.push_back(b);
 
 	return 0;
 }

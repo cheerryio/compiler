@@ -19,6 +19,7 @@
 		#include <string>
 		#include <vector>
 		#include <stdint.h>
+		#include <utility>
 		#include "AST/AST/ASTUnit.h"
 		#include "AST/AST/CompUnit.h"
 		#include "AST/AST/ConstantInt.h"
@@ -169,17 +170,17 @@ CompUnitList:
 		{
 			$$=std::vector<std::unique_ptr<ASTUnit>>();
 		}
-|	Decl CompUnitList
+|	CompUnitList Decl
 		{
-			std::unique_ptr<ASTUnit> decl=std::move($1);
-			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$2;
+			std::unique_ptr<ASTUnit> decl=std::move($2);
+			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$1;
 			compUnitList.push_back(std::move(decl));
 			$$=std::move(compUnitList);
 		}
-|	FuncDef CompUnitList 
+|	CompUnitList FuncDef
 		{
-			std::unique_ptr<ASTUnit> funcDef=std::move($1);
-			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$2;
+			std::unique_ptr<ASTUnit> funcDef=std::move($2);
+			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$1;
 			compUnitList.push_back(std::move(funcDef));
 			$$=std::move(compUnitList);
 		}
@@ -198,8 +199,7 @@ ArrayDimList:
 |	T_LM T_RM ArrayDimSubList
 		{
 			std::vector<unique_ptr<Exp>> &arrayDimList=$3;
-			unique_ptr<Exp> f(nullptr);
-			arrayDimList.insert(arrayDimList.begin(),std::move(f));
+			arrayDimList.insert(arrayDimList.begin(),nullptr);
 			$$=std::move(arrayDimList);
 		}
 
@@ -211,10 +211,10 @@ ArrayDimSubList:
 			arrayDimSubList.push_back(std::move(exp));
 			$$=std::move(arrayDimSubList);
 		}
-|	T_LM Exp T_RM ArrayDimSubList
+|	ArrayDimSubList T_LM Exp T_RM
 		{
-			std::vector<unique_ptr<Exp>> &arrayDimSubList=$4;
-			unique_ptr<Exp> exp=std::move($2);
+			std::vector<unique_ptr<Exp>> &arrayDimSubList=$1;
+			unique_ptr<Exp> exp=std::move($3);
 			arrayDimSubList.push_back(std::move(exp));
 			$$=std::move(arrayDimSubList);
 		}
@@ -262,22 +262,32 @@ ValueDef:
 			auto valueDef=make_unique<ValueDef>(std::move(ident),std::move(arrayDimList));
 			$$=std::move(valueDef);
 		}
-|	Ident ArrayDimList T_EQUAL InitVal
+|	Ident ArrayDimList T_EQUAL Exp
 		{
 			unique_ptr<Ident> ident=std::move($1);
 			std::vector<unique_ptr<Exp>> &arrayDimList=$2;
 			auto valueDef=make_unique<ValueDef>(std::move(ident),std::move(arrayDimList));
 			$$=std::move(valueDef);
 		}
+|	Ident ArrayDimList T_EQUAL ArrayAssignList
+		{
 
-InitVal:
+		}
+
+ArrayAssignList:
+	T_LB T_RB {}
+|	T_LB ArrayAssignSubList T_RB {}
+
+ArrayAssignSubList:
 	Exp
-|	T_LB T_RB
-|	T_LB exp_comma_list T_RB
-
-exp_comma_list:
-	InitVal
-|	exp_comma_list T_COMMA InitVal
+		{
+		}
+|	ArrayAssignSubList T_COMMA Exp
+		{
+		}
+|	ArrayAssignSubList T_COMMA ArrayAssignList
+		{
+		}
 
 FuncDef:
 	BType Ident T_LS T_RS Block
@@ -305,10 +315,10 @@ FuncParamDeclList:
 			unique_ptr<FuncParamDecl> funcParamDecl=std::move($1);
 			$$.push_back(std::move(funcParamDecl));
 		}
-|	FuncParamDecl T_COMMA FuncParamDeclList
+|	FuncParamDeclList T_COMMA FuncParamDecl
 		{
-			std::vector<unique_ptr<FuncParamDecl>> &funcParamDeclList=$3;
-			unique_ptr<FuncParamDecl> funcParamDecl=std::move($1);
+			std::vector<unique_ptr<FuncParamDecl>> &funcParamDeclList=$1;
+			unique_ptr<FuncParamDecl> funcParamDecl=std::move($3);
 			funcParamDeclList.push_back(std::move(funcParamDecl));
 			$$=std::move(funcParamDeclList);
 		}

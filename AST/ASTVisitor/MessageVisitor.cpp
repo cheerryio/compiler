@@ -60,10 +60,20 @@ void MessageVisitor::visit(ValueDef* valueDef) {
 	showDepth(depth);
 	cout << "ValueDef" << endl;
 	depth++;
-	unique_ptr<Ident>& ident = valueDef->ident;
-	vector<unique_ptr<Exp>>& arrayDimList = valueDef->arrayDimList;
-	unique_ptr<Exp>& exp = valueDef->exp;
-	ident->accept(*this);
+	valueDef->ident->accept(*this);
+	if (valueDef->isArray()) {
+		vector<unique_ptr<Exp>>& arrayDimList = valueDef->arrayDimList;
+		vector<unique_ptr<Exp>>::iterator it = arrayDimList.begin();
+		if (valueDef->isArrayFirstDimEmpty()) {
+			it++;
+		}
+		for (it; it < arrayDimList.end(); it++) {
+			(*it)->accept(*this);
+		}
+	}
+	if (valueDef->hasAssign()) {
+		valueDef->exp->accept(*this);
+	}
 	depth--;
 }
 
@@ -71,12 +81,10 @@ void MessageVisitor::visit(FuncDef* funcDef) {
 	showDepth(depth);
 	cout << "FuncDef" << endl;
 	depth++;
-	unique_ptr<Type>& type = funcDef->type;
-	unique_ptr<Ident>& ident = funcDef->ident;
 	vector<unique_ptr<FuncParamDecl>>& funcParamDeclList = funcDef->funcParamDeclList;
 	unique_ptr<BlockStmt>& block = funcDef->block;
-	type->accept(*this);
-	ident->accept(*this);
+	funcDef->type->accept(*this);
+	funcDef->ident->accept(*this);
 	for (vector<unique_ptr<FuncParamDecl>>::iterator it = funcParamDeclList.begin(); it < funcParamDeclList.end(); it++) {
 		(*it)->accept(*this);
 	}
