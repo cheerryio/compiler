@@ -21,6 +21,7 @@ namespace saltyfish {
     public:
         ReturnStmt();
         ReturnStmt(std::unique_ptr<Exp> exp);
+        bool hasExp();
         void setHasExp(bool b);
         virtual void accept(ASTVisitor& visitor);
     };

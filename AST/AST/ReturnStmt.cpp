@@ -7,13 +7,17 @@ using namespace saltyfish;
 
 ReturnStmt::ReturnStmt()
 {
-
+	setHasExp(false);
 }
 
 ReturnStmt::ReturnStmt(std::unique_ptr<Exp> exp)
 	:exp(std::move(exp))
 {
-	
+	setHasExp(true);
+}
+
+bool ReturnStmt::hasExp() {
+	return bitFields.hasExp == 1 ? true : false;
 }
 
 void ReturnStmt::setHasExp(bool b)

@@ -20,10 +20,12 @@
 		#include <vector>
 		#include <stdint.h>
 		#include "AST/AST/ASTUnit.h"
+		#include "AST/AST/CompUnit.h"
 		#include "AST/AST/ConstantInt.h"
 		#include "AST/AST/Ident.h"
 		#include "AST/AST/Type.h"
 		#include "AST/AST/ValueDef.h"
+		#include "AST/AST/FuncDef.h"
 		#include "AST/AST/Decl.h"
 		#include "AST/AST/ValueDecl.h"
 		#include "AST/AST/FuncDecl.h"
@@ -43,6 +45,7 @@
 		#include "AST/AST/EmptyStmt.h"
 		#include "AST/AST/BlockStmt.h"
 		#include "AST/AST/ExpStmt.h"
+		#include "AST/ASTVisitor/MessageVisitor.h"
 		using namespace std;
 
 		namespace saltyfish {
@@ -143,14 +146,43 @@
 %type < std::unique_ptr<Decl>>		Decl
 %type < std::vector<std::unique_ptr<ASTUnit>> > BlockItemList
 %type < std::unique_ptr<BlockStmt> >	Block
+%type < std::unique_ptr<FuncDef> >	FuncDef
+%type < std::vector<std::unique_ptr<ASTUnit>> > CompUnitList
+%type < std::unique_ptr<CompUnit> >	CompUnit
+
 %start CompUnit
 
 %%
 
 CompUnit:
+	CompUnitList
+		{
+			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$1;
+			auto compUnit=std::make_unique<CompUnit>(std::move(compUnitList));
+			MessageVisitor visitor;
+			compUnit->accept(visitor);
+			$$=std::move(compUnit);
+		}
+
+CompUnitList:
 	%empty
-|	CompUnit Decl
-|	CompUnit FuncDef
+		{
+			$$=std::vector<std::unique_ptr<ASTUnit>>();
+		}
+|	Decl CompUnitList
+		{
+			std::unique_ptr<ASTUnit> decl=std::move($1);
+			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$2;
+			compUnitList.push_back(std::move(decl));
+			$$=std::move(compUnitList);
+		}
+|	FuncDef CompUnitList 
+		{
+			std::unique_ptr<ASTUnit> funcDef=std::move($1);
+			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$2;
+			compUnitList.push_back(std::move(funcDef));
+			$$=std::move(compUnitList);
+		}
 
 ArrayDimList:
 	%empty
@@ -188,11 +220,8 @@ ArrayDimSubList:
 		}
 
 BType:
-	T_INT
-		{
-			std:string &typeStr=$1;
-			$$=make_unique<Type>(typeStr);
-		}
+	T_INT {$$=std::make_unique<Type>($1);}
+|	T_VOID {$$=std::make_unique<Type>($1);}
 
 Decl:
 	ValueDecl	{$$=std::move($1);}
@@ -228,7 +257,7 @@ ValueDefList:
 ValueDef:
 	Ident ArrayDimList
 		{
-			unique_ptr<Ident> ident=std::move($1);
+			unique_ptr<Ident> &ident=$1;
 			std::vector<unique_ptr<Exp>> &arrayDimList=$2;
 			auto valueDef=make_unique<ValueDef>(std::move(ident),std::move(arrayDimList));
 			$$=std::move(valueDef);
@@ -251,10 +280,23 @@ exp_comma_list:
 |	exp_comma_list T_COMMA InitVal
 
 FuncDef:
-	BType Ident T_LS T_RS Block {cout<<"函数无参声明"<<endl;}
-	T_VOID Ident T_LS T_RS Block {cout<<"函数无参声明"<<endl;}
-|	BType Ident T_LS FuncParamDeclList T_RS Block {cout<<"函数有参声明"<<endl;}
-|	T_VOID Ident T_LS FuncParamDeclList T_RS Block {cout<<"函数有参声明"<<endl;}
+	BType Ident T_LS T_RS Block
+	{
+		std::unique_ptr<Type> &type=$1;
+		std::unique_ptr<Ident> &ident=$2;
+		std::unique_ptr<BlockStmt> &block=$5;
+		auto funcDef=std::make_unique<FuncDef>(std::move(type),std::move(ident),std::move(block));
+		$$=std::move(funcDef);
+	}
+|	BType Ident T_LS FuncParamDeclList T_RS Block
+		{
+			std::unique_ptr<Type> &type=$1;
+			std::unique_ptr<Ident> &ident=$2;
+			std::vector<std::unique_ptr<FuncParamDecl>> &funcParamDeclList=$4;
+			std::unique_ptr<BlockStmt> &block=$6;
+			auto funcDef=std::make_unique<FuncDef>(std::move(type),std::move(ident),std::move(funcParamDeclList),std::move(block));
+			$$=std::move(funcDef);
+		}
 
 FuncParamDeclList:
 	FuncParamDecl
@@ -293,10 +335,14 @@ BlockItemList:
 	Decl
 		{
 			$$=std::vector<std::unique_ptr<ASTUnit>>();
+			std::unique_ptr<ASTUnit> decl=std::move($1);
+			$$.push_back(std::move(decl));
 		}
 |	Stmt
 		{
 			$$=std::vector<std::unique_ptr<ASTUnit>>();
+			std::unique_ptr<ASTUnit> stmt=std::move($1);
+			$$.push_back(std::move(stmt));
 		}
 |	BlockItemList Decl
 		{
@@ -409,7 +455,6 @@ FuncallParamList:
 	Exp
 		{
 			$$=std::vector<unique_ptr<Exp>>();
-
 			std::unique_ptr<Exp> &exp=$1;
 			$$.push_back(std::move(exp));
 		}

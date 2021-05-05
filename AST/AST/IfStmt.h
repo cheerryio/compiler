@@ -22,6 +22,7 @@ namespace saltyfish {
     public:
         IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody);
         IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody,std::unique_ptr<Stmt> elseBody);
+        bool hasElse();
         void setHasElse(bool b);
         virtual void accept(ASTVisitor& visitor);
     };

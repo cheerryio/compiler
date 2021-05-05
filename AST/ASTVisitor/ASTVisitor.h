@@ -1,4 +1,5 @@
 #pragma once
+#include "CompUnit.h"
 #include "Ident.h"
 #include "Type.h"
 #include "ConstantInt.h"
@@ -15,6 +16,7 @@
 #include "ValueDecl.h"
 #include "FuncParamDecl.h"
 #include "ValueDef.h"
+#include "FuncDef.h"
 #include "BinaryExp.h"
 #include "FuncallExp.h"
 #include "PrimaryExp.h"
@@ -25,10 +27,15 @@ namespace saltyfish {
 	{
 	public:
 		virtual void visit() = 0;
+
+		virtual void visit(CompUnit* compUnit) = 0;
+
 		virtual void visit(FuncDecl* funcDecl) = 0;
 		virtual void visit(FuncParamDecl* funcParamDecl) = 0;
 		virtual void visit(ValueDecl* valueDecl) = 0;
+
 		virtual void visit(ValueDef* valueDef) = 0;
+		virtual void visit(FuncDef* funcDef) = 0;
 
 		virtual void visit(AssignStmt* assignStmt) = 0;
 		virtual void visit(BlockStmt* blockStmt) = 0;

@@ -4,33 +4,42 @@ namespace saltyfish {
     class MessageVisitor :
         public ASTVisitor
     {
+	public:
+		static unsigned int depth;
+
     public:
 		MessageVisitor();
 		~MessageVisitor();
 		void visit();
-		void visit(FuncDecl* funcDecl);
-		void visit(FuncParamDecl* funcParamDecl);
-		void visit(ValueDecl* valueDecl);
-		void visit(ValueDef* valueDef);
 
-		void visit(AssignStmt* assignStmt);
-		void visit(BlockStmt* blockStmt);
-		void visit(BreakStmt* breakStmt);
-		void visit(ContinueStmt* continueStmt);
-		void visit(EmptyStmt* emptyStmt);
-		void visit(ExpStmt* expStmt);
-		void visit(IfStmt* ifStmt);
-		void visit(ReturnStmt* returnStmt);
-		void visit(WhileStmt* whileStmt);
+		virtual void visit(CompUnit* compUnit);
 
-		void visit(BinaryExp* binaryExp);
-		void visit(FuncallExp* funcallExp);
-		void visit(PrimaryExp* primaryExp);
-		void visit(UnaryExp* unaryExp);
+		virtual void visit(FuncDecl* funcDecl);
+		virtual void visit(FuncParamDecl* funcParamDecl);
+		virtual void visit(ValueDecl* valueDecl);
 
-		void visit(Type* type);
-		void visit(ConstantInt* constantInt);
-		void visit(Ident* ident);
+		virtual void visit(ValueDef* valueDef);
+		virtual void visit(FuncDef* funcDef);
 
+		virtual void visit(AssignStmt* assignStmt);
+		virtual void visit(BlockStmt* blockStmt);
+		virtual void visit(BreakStmt* breakStmt);
+		virtual void visit(ContinueStmt* continueStmt);
+		virtual void visit(EmptyStmt* emptyStmt);
+		virtual void visit(ExpStmt* expStmt);
+		virtual void visit(IfStmt* ifStmt);
+		virtual void visit(ReturnStmt* returnStmt);
+		virtual void visit(WhileStmt* whileStmt);
+
+		virtual void visit(BinaryExp* binaryExp);
+		virtual void visit(FuncallExp* funcallExp);
+		virtual void visit(PrimaryExp* primaryExp);
+		virtual void visit(UnaryExp* unaryExp);
+
+		virtual void visit(Type* type);
+		virtual void visit(ConstantInt* constantInt);
+		virtual void visit(Ident* ident);
+
+		void showDepth(unsigned int depth);
     };
 }

@@ -51,10 +51,12 @@
 		#include <vector>
 		#include <stdint.h>
 		#include "AST/AST/ASTUnit.h"
+		#include "AST/AST/CompUnit.h"
 		#include "AST/AST/ConstantInt.h"
 		#include "AST/AST/Ident.h"
 		#include "AST/AST/Type.h"
 		#include "AST/AST/ValueDef.h"
+		#include "AST/AST/FuncDef.h"
 		#include "AST/AST/Decl.h"
 		#include "AST/AST/ValueDecl.h"
 		#include "AST/AST/FuncDecl.h"
@@ -74,6 +76,7 @@
 		#include "AST/AST/EmptyStmt.h"
 		#include "AST/AST/BlockStmt.h"
 		#include "AST/AST/ExpStmt.h"
+		#include "AST/ASTVisitor/MessageVisitor.h"
 		using namespace std;
 
 		namespace saltyfish {
@@ -87,7 +90,7 @@
 			(a)=std::move(e);	\
 		}
 
-#line 91 "parser.hpp"
+#line 94 "parser.hpp"
 
 # include <cassert>
 # include <cstdlib> // std::abort
@@ -222,7 +225,7 @@
 
 #line 14 "parser.y"
 namespace  saltyfish  {
-#line 226 "parser.hpp"
+#line 229 "parser.hpp"
 
 
 
@@ -429,51 +432,58 @@ namespace  saltyfish  {
       // Block
       char dummy1[sizeof ( std::unique_ptr<BlockStmt> )];
 
+      // CompUnit
+      char dummy2[sizeof ( std::unique_ptr<CompUnit> )];
+
       // Decl
-      char dummy2[sizeof ( std::unique_ptr<Decl>)];
+      char dummy3[sizeof ( std::unique_ptr<Decl>)];
+
+      // FuncDef
+      char dummy4[sizeof ( std::unique_ptr<FuncDef> )];
 
       // Stmt
-      char dummy3[sizeof ( std::unique_ptr<Stmt> )];
+      char dummy5[sizeof ( std::unique_ptr<Stmt> )];
 
+      // CompUnitList
       // BlockItemList
-      char dummy4[sizeof ( std::vector<std::unique_ptr<ASTUnit>> )];
+      char dummy6[sizeof ( std::vector<std::unique_ptr<ASTUnit>> )];
 
       // ArrayDimList
       // ArrayDimSubList
       // FuncallParamList
-      char dummy5[sizeof ( std::vector<unique_ptr<Exp>> )];
+      char dummy7[sizeof ( std::vector<unique_ptr<Exp>> )];
 
       // FuncParamDeclList
-      char dummy6[sizeof ( std::vector<unique_ptr<FuncParamDecl>> )];
+      char dummy8[sizeof ( std::vector<unique_ptr<FuncParamDecl>> )];
 
       // ValueDefList
-      char dummy7[sizeof ( std::vector<unique_ptr<ValueDef>> )];
+      char dummy9[sizeof ( std::vector<unique_ptr<ValueDef>> )];
 
       // Number
-      char dummy8[sizeof ( unique_ptr<ConstantInt> )];
+      char dummy10[sizeof ( unique_ptr<ConstantInt> )];
 
       // Exp
-      char dummy9[sizeof ( unique_ptr<Exp> )];
+      char dummy11[sizeof ( unique_ptr<Exp> )];
 
       // FuncParamDecl
-      char dummy10[sizeof ( unique_ptr<FuncParamDecl> )];
+      char dummy12[sizeof ( unique_ptr<FuncParamDecl> )];
 
       // Ident
-      char dummy11[sizeof ( unique_ptr<Ident> )];
+      char dummy13[sizeof ( unique_ptr<Ident> )];
 
       // BType
-      char dummy12[sizeof ( unique_ptr<Type> )];
+      char dummy14[sizeof ( unique_ptr<Type> )];
 
       // ValueDecl
-      char dummy13[sizeof ( unique_ptr<ValueDecl> )];
+      char dummy15[sizeof ( unique_ptr<ValueDecl> )];
 
       // ValueDef
-      char dummy14[sizeof ( unique_ptr<ValueDef> )];
+      char dummy16[sizeof ( unique_ptr<ValueDef> )];
 
       // "十进制常数"
       // "八进制常数"
       // "十六进制常数"
-      char dummy15[sizeof (int)];
+      char dummy17[sizeof (int)];
 
       // "const关键字"
       // "int关键字"
@@ -485,7 +495,7 @@ namespace  saltyfish  {
       // "continue关键字"
       // "return关键字"
       // "标识符"
-      char dummy16[sizeof (std::string)];
+      char dummy18[sizeof (std::string)];
     };
 
     /// The size of the largest semantic type.
@@ -638,6 +648,19 @@ namespace  saltyfish  {
       {}
 #endif
 #if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t,  std::unique_ptr<CompUnit> && v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const  std::unique_ptr<CompUnit> & v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+#if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t,  std::unique_ptr<Decl>&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
@@ -645,6 +668,19 @@ namespace  saltyfish  {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const  std::unique_ptr<Decl>& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t,  std::unique_ptr<FuncDef> && v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const  std::unique_ptr<FuncDef> & v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -859,20 +895,29 @@ switch (yytype)
         value.template destroy<  std::unique_ptr<BlockStmt>  > ();
         break;
 
-      case 45: // Decl
+      case 41: // CompUnit
+        value.template destroy<  std::unique_ptr<CompUnit>  > ();
+        break;
+
+      case 46: // Decl
         value.template destroy<  std::unique_ptr<Decl> > ();
+        break;
+
+      case 52: // FuncDef
+        value.template destroy<  std::unique_ptr<FuncDef>  > ();
         break;
 
       case 57: // Stmt
         value.template destroy<  std::unique_ptr<Stmt>  > ();
         break;
 
+      case 42: // CompUnitList
       case 56: // BlockItemList
         value.template destroy<  std::vector<std::unique_ptr<ASTUnit>>  > ();
         break;
 
-      case 42: // ArrayDimList
-      case 43: // ArrayDimSubList
+      case 43: // ArrayDimList
+      case 44: // ArrayDimSubList
       case 60: // FuncallParamList
         value.template destroy<  std::vector<unique_ptr<Exp>>  > ();
         break;
@@ -881,7 +926,7 @@ switch (yytype)
         value.template destroy<  std::vector<unique_ptr<FuncParamDecl>>  > ();
         break;
 
-      case 47: // ValueDefList
+      case 48: // ValueDefList
         value.template destroy<  std::vector<unique_ptr<ValueDef>>  > ();
         break;
 
@@ -901,15 +946,15 @@ switch (yytype)
         value.template destroy<  unique_ptr<Ident>  > ();
         break;
 
-      case 44: // BType
+      case 45: // BType
         value.template destroy<  unique_ptr<Type>  > ();
         break;
 
-      case 46: // ValueDecl
+      case 47: // ValueDecl
         value.template destroy<  unique_ptr<ValueDecl>  > ();
         break;
 
-      case 48: // ValueDef
+      case 49: // ValueDef
         value.template destroy<  unique_ptr<ValueDef>  > ();
         break;
 
@@ -1698,7 +1743,7 @@ switch (yytype)
     static const signed char yydefact_[];
 
     // YYPGOTO[NTERM-NUM].
-    static const signed char yypgoto_[];
+    static const short yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
     static const signed char yydefgoto_[];
@@ -1956,9 +2001,9 @@ switch (yytype)
     enum
     {
       yyeof_ = 0,
-      yylast_ = 489,     ///< Last index in yytable_.
+      yylast_ = 451,     ///< Last index in yytable_.
       yynnts_ = 22,  ///< Number of nonterminal symbols.
-      yyfinal_ = 2, ///< Termination state number.
+      yyfinal_ = 11, ///< Termination state number.
       yyntokens_ = 40  ///< Number of tokens.
     };
 
@@ -2033,20 +2078,29 @@ switch (yytype)
         value.move<  std::unique_ptr<BlockStmt>  > (std::move (that.value));
         break;
 
-      case 45: // Decl
+      case 41: // CompUnit
+        value.move<  std::unique_ptr<CompUnit>  > (std::move (that.value));
+        break;
+
+      case 46: // Decl
         value.move<  std::unique_ptr<Decl> > (std::move (that.value));
+        break;
+
+      case 52: // FuncDef
+        value.move<  std::unique_ptr<FuncDef>  > (std::move (that.value));
         break;
 
       case 57: // Stmt
         value.move<  std::unique_ptr<Stmt>  > (std::move (that.value));
         break;
 
+      case 42: // CompUnitList
       case 56: // BlockItemList
         value.move<  std::vector<std::unique_ptr<ASTUnit>>  > (std::move (that.value));
         break;
 
-      case 42: // ArrayDimList
-      case 43: // ArrayDimSubList
+      case 43: // ArrayDimList
+      case 44: // ArrayDimSubList
       case 60: // FuncallParamList
         value.move<  std::vector<unique_ptr<Exp>>  > (std::move (that.value));
         break;
@@ -2055,7 +2109,7 @@ switch (yytype)
         value.move<  std::vector<unique_ptr<FuncParamDecl>>  > (std::move (that.value));
         break;
 
-      case 47: // ValueDefList
+      case 48: // ValueDefList
         value.move<  std::vector<unique_ptr<ValueDef>>  > (std::move (that.value));
         break;
 
@@ -2075,15 +2129,15 @@ switch (yytype)
         value.move<  unique_ptr<Ident>  > (std::move (that.value));
         break;
 
-      case 44: // BType
+      case 45: // BType
         value.move<  unique_ptr<Type>  > (std::move (that.value));
         break;
 
-      case 46: // ValueDecl
+      case 47: // ValueDecl
         value.move<  unique_ptr<ValueDecl>  > (std::move (that.value));
         break;
 
-      case 48: // ValueDef
+      case 49: // ValueDef
         value.move<  unique_ptr<ValueDef>  > (std::move (that.value));
         break;
 
@@ -2125,20 +2179,29 @@ switch (yytype)
         value.copy<  std::unique_ptr<BlockStmt>  > (YY_MOVE (that.value));
         break;
 
-      case 45: // Decl
+      case 41: // CompUnit
+        value.copy<  std::unique_ptr<CompUnit>  > (YY_MOVE (that.value));
+        break;
+
+      case 46: // Decl
         value.copy<  std::unique_ptr<Decl> > (YY_MOVE (that.value));
+        break;
+
+      case 52: // FuncDef
+        value.copy<  std::unique_ptr<FuncDef>  > (YY_MOVE (that.value));
         break;
 
       case 57: // Stmt
         value.copy<  std::unique_ptr<Stmt>  > (YY_MOVE (that.value));
         break;
 
+      case 42: // CompUnitList
       case 56: // BlockItemList
         value.copy<  std::vector<std::unique_ptr<ASTUnit>>  > (YY_MOVE (that.value));
         break;
 
-      case 42: // ArrayDimList
-      case 43: // ArrayDimSubList
+      case 43: // ArrayDimList
+      case 44: // ArrayDimSubList
       case 60: // FuncallParamList
         value.copy<  std::vector<unique_ptr<Exp>>  > (YY_MOVE (that.value));
         break;
@@ -2147,7 +2210,7 @@ switch (yytype)
         value.copy<  std::vector<unique_ptr<FuncParamDecl>>  > (YY_MOVE (that.value));
         break;
 
-      case 47: // ValueDefList
+      case 48: // ValueDefList
         value.copy<  std::vector<unique_ptr<ValueDef>>  > (YY_MOVE (that.value));
         break;
 
@@ -2167,15 +2230,15 @@ switch (yytype)
         value.copy<  unique_ptr<Ident>  > (YY_MOVE (that.value));
         break;
 
-      case 44: // BType
+      case 45: // BType
         value.copy<  unique_ptr<Type>  > (YY_MOVE (that.value));
         break;
 
-      case 46: // ValueDecl
+      case 47: // ValueDecl
         value.copy<  unique_ptr<ValueDecl>  > (YY_MOVE (that.value));
         break;
 
-      case 48: // ValueDef
+      case 49: // ValueDef
         value.copy<  unique_ptr<ValueDef>  > (YY_MOVE (that.value));
         break;
 
@@ -2224,20 +2287,29 @@ switch (yytype)
         value.move<  std::unique_ptr<BlockStmt>  > (YY_MOVE (s.value));
         break;
 
-      case 45: // Decl
+      case 41: // CompUnit
+        value.move<  std::unique_ptr<CompUnit>  > (YY_MOVE (s.value));
+        break;
+
+      case 46: // Decl
         value.move<  std::unique_ptr<Decl> > (YY_MOVE (s.value));
+        break;
+
+      case 52: // FuncDef
+        value.move<  std::unique_ptr<FuncDef>  > (YY_MOVE (s.value));
         break;
 
       case 57: // Stmt
         value.move<  std::unique_ptr<Stmt>  > (YY_MOVE (s.value));
         break;
 
+      case 42: // CompUnitList
       case 56: // BlockItemList
         value.move<  std::vector<std::unique_ptr<ASTUnit>>  > (YY_MOVE (s.value));
         break;
 
-      case 42: // ArrayDimList
-      case 43: // ArrayDimSubList
+      case 43: // ArrayDimList
+      case 44: // ArrayDimSubList
       case 60: // FuncallParamList
         value.move<  std::vector<unique_ptr<Exp>>  > (YY_MOVE (s.value));
         break;
@@ -2246,7 +2318,7 @@ switch (yytype)
         value.move<  std::vector<unique_ptr<FuncParamDecl>>  > (YY_MOVE (s.value));
         break;
 
-      case 47: // ValueDefList
+      case 48: // ValueDefList
         value.move<  std::vector<unique_ptr<ValueDef>>  > (YY_MOVE (s.value));
         break;
 
@@ -2266,15 +2338,15 @@ switch (yytype)
         value.move<  unique_ptr<Ident>  > (YY_MOVE (s.value));
         break;
 
-      case 44: // BType
+      case 45: // BType
         value.move<  unique_ptr<Type>  > (YY_MOVE (s.value));
         break;
 
-      case 46: // ValueDecl
+      case 47: // ValueDecl
         value.move<  unique_ptr<ValueDecl>  > (YY_MOVE (s.value));
         break;
 
-      case 48: // ValueDef
+      case 49: // ValueDef
         value.move<  unique_ptr<ValueDef>  > (YY_MOVE (s.value));
         break;
 
@@ -2353,7 +2425,7 @@ switch (yytype)
 
 #line 14 "parser.y"
 } //  saltyfish 
-#line 2357 "parser.hpp"
+#line 2429 "parser.hpp"
 
 
 

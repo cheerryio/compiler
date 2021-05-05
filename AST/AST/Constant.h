@@ -1,9 +1,8 @@
 #pragma once
+#include "ASTUnit.h"
 
 namespace saltyfish {
-
-	class Constant {
-
+	class Constant:public ASTUnit
+	{
 	};
-
 }
