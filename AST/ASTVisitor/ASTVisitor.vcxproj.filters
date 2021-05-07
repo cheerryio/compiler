@@ -93,12 +93,24 @@
     <ClCompile Include="ASTUnit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="SemanticVisitor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SymbolTable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTVisitor.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MessageVisitor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SemanticVisitor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SymbolTable.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

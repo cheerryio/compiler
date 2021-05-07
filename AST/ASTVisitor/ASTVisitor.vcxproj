@@ -118,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\22216\source\repos\compiler\AST\AST;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -167,10 +168,14 @@
     <ClCompile Include="ASTUnit.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageVisitor.cpp" />
+    <ClCompile Include="SemanticVisitor.cpp" />
+    <ClCompile Include="SymbolTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTVisitor.h" />
     <ClInclude Include="MessageVisitor.h" />
+    <ClInclude Include="SemanticVisitor.h" />
+    <ClInclude Include="SymbolTable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
