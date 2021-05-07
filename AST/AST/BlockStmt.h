@@ -17,6 +17,7 @@ namespace saltyfish {
     public:
         BlockStmt();
         BlockStmt(std::vector<std::unique_ptr<ASTUnit>> stmts);
+        BlockStmt(std::vector<std::unique_ptr<ASTUnit>> stmts,location loc);
         virtual void accept(ASTVisitor& visitor);
     };
 }

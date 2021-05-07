@@ -1,4 +1,5 @@
 #pragma once
+#include "../../location.hh"
 
 namespace saltyfish {
 	class ASTVisitor;
@@ -6,6 +7,10 @@ namespace saltyfish {
 	class ASTUnit
 	{
 	public:
-		virtual void accept(ASTVisitor& visitor) = 0;
+		location loc;
+	public:
+		ASTUnit();
+		ASTUnit(location loc);
+		virtual void accept(ASTVisitor& visitor);
 	};
 }

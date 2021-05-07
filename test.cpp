@@ -1,13 +1,20 @@
+int callMyFunction(int c,int d){
+    int e=c-d;
+    return e;
+}
+
 int main(){
-    int a[][5][1],b;
-    while(a==1){
-        a+1;
-        b=a+b;
+    int a[9],b;
+    b=9+8*2/(15-4);
+    while(b!=1){
+        b=b-1;
     }
-    if(b){
-        continue;;
+    if(b==1){
+        b=b+1;
+        b=b+2;
+        b=b+3;
     }else{
-        return;
+
     }
-    callMyFunction(a+1,b-2);
+    callMyFunction(b+1,b-2);
 }

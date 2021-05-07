@@ -21,6 +21,17 @@ FuncallExp::FuncallExp(std::unique_ptr<Ident> ident, std::vector<std::unique_ptr
 	
 }
 
+FuncallExp::FuncallExp(std::unique_ptr<Ident> ident,location loc)
+	:ASTUnit(loc), ident(std::move(ident))
+{
+
+}
+
+FuncallExp::FuncallExp(std::unique_ptr<Ident> ident, std::vector<std::unique_ptr<Exp>> funcallParamList,location loc)
+	:ASTUnit(loc), ident(std::move(ident)), funcallParamList(std::move(funcallParamList)) {
+
+}
+
 void FuncallExp::accept(ASTVisitor& visitor) {
 	visitor.visit(this);
 }

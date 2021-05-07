@@ -16,6 +16,18 @@ ReturnStmt::ReturnStmt(std::unique_ptr<Exp> exp)
 	setHasExp(true);
 }
 
+ReturnStmt::ReturnStmt(location loc)
+	:ASTUnit(loc)
+{
+	setHasExp(false);
+}
+
+ReturnStmt::ReturnStmt(std::unique_ptr<Exp> exp,location loc)
+	:ASTUnit(loc),exp(std::move(exp))
+{
+	setHasExp(true);
+}
+
 bool ReturnStmt::hasExp() {
 	return bitFields.hasExp == 1 ? true : false;
 }

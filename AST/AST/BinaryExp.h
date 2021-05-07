@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <map>
 
 #include "Exp.h"
 
@@ -19,9 +20,12 @@ namespace saltyfish {
 		std::unique_ptr<Exp> Lexp;
 		std::unique_ptr<Exp> Rexp;
 	public:
+		static std::map<BinaryExpType, std::string> BinaryExpTypeMap;
+	public:
 		BinaryExp();
 		BinaryExp(BinaryExpType binaryExpType, std::unique_ptr<Exp> Lexp, std::unique_ptr <Exp> Rexp);
-		BinaryExp(BinaryExpType binaryExpType, std::unique_ptr<Exp> Lexp, std::unique_ptr<Exp> Rexp, std::string opStr);
+		BinaryExp(BinaryExpType binaryExpType, std::unique_ptr<Exp> Lexp, std::unique_ptr <Exp> Rexp,location loc);
 		virtual void accept(ASTVisitor& visitor);
+		friend std::ostream& operator<<(std::ostream& o, const BinaryExp& binaryExp);
 	};
 }

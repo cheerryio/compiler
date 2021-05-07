@@ -17,6 +17,12 @@ CompUnit::CompUnit(std::vector<std::unique_ptr<ASTUnit>> compUnitList)
 	
 }
 
+CompUnit::CompUnit(std::vector<std::unique_ptr<ASTUnit>> compUnitList,location loc)
+	:ASTUnit(loc), compUnitList(std::move(compUnitList))
+{
+
+}
+
 void CompUnit::accept(ASTVisitor& visitor) {
 	visitor.visit(this);
 }

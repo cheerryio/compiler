@@ -90,6 +90,12 @@
     <ClInclude Include="EmptyStmt.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CompUnit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FuncDef.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConstantInt.cpp">
@@ -162,6 +168,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="EmptyStmt.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CompUnit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FuncDef.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

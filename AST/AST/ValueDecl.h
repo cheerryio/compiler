@@ -15,8 +15,8 @@ namespace saltyfish {
 		unique_ptr<Type> type;
 		std::vector<unique_ptr<ValueDef>> ValueDefList;
 	public:
-		ValueDecl(unique_ptr<Type> type);
 		ValueDecl(unique_ptr<Type> type,std::vector<unique_ptr<ValueDef>> ValueDefList);
+		ValueDecl(unique_ptr<Type> type, std::vector<unique_ptr<ValueDef>> ValueDefList,location loc);
 		virtual void accept(ASTVisitor& visitor);
 	};
 }

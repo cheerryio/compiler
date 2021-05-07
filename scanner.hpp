@@ -22,7 +22,7 @@
 #include "location.hh"
 
 #undef YY_DECL
-#define YY_DECL saltyfish::Parser::symbol_type saltyfish::Scanner::get_next_token()
+#define YY_DECL saltyfish::Parser::symbol_type saltyfish::Scanner::get_next_token(saltyfish::Driver& driver)
 
 
 namespace saltyfish {    
@@ -31,7 +31,7 @@ public:
 	Scanner(){}
     Scanner(std::istream *in):yyFlexLexer(in){}
 	virtual ~Scanner() {}
-	virtual saltyfish::Parser::symbol_type get_next_token();
+	virtual saltyfish::Parser::symbol_type get_next_token(saltyfish::Driver& driver);
 	using yyFlexLexer::yylex;
 private:
 

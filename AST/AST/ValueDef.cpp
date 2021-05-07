@@ -30,6 +30,26 @@ ValueDef::ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList
 	}
 }
 
+ValueDef::ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList,location loc)
+	:ASTUnit(loc), ident(std::move(ident)), arrayDimList(std::move(arrayDimList))
+{
+	setHasAssign(false);
+	setIsArray(!this->arrayDimList.empty());
+	if (isArray()) {
+		setIsArrayFirstDimEmpty((this->arrayDimList)[0] == nullptr);
+	}
+}
+
+ValueDef::ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList, unique_ptr<Exp> exp,location loc)
+	:ASTUnit(loc), ident(std::move(ident)), arrayDimList(std::move(arrayDimList)), exp(std::move(exp))
+{
+	setHasAssign(true);
+	setIsArray(!this->arrayDimList.empty());
+	if (isArray()) {
+		setIsArrayFirstDimEmpty((this->arrayDimList)[0] == nullptr);
+	}
+}
+
 bool ValueDef::hasAssign() {
 	return bitFields.hasAssign == 1 ? true : false;
 }

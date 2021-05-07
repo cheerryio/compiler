@@ -145,6 +145,7 @@
     <ClInclude Include="BinaryExp.h" />
     <ClInclude Include="BlockStmt.h" />
     <ClInclude Include="BreakStmt.h" />
+    <ClInclude Include="CompUnit.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="ConstantInt.h" />
     <ClInclude Include="ContinueStmt.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="ExpStmt.h" />
     <ClInclude Include="FuncallExp.h" />
     <ClInclude Include="FuncDecl.h" />
+    <ClInclude Include="FuncDef.h" />
     <ClInclude Include="FuncParamDecl.h" />
     <ClInclude Include="Ident.h" />
     <ClInclude Include="IfStmt.h" />
@@ -172,6 +174,7 @@
     <ClCompile Include="BinaryExp.cpp" />
     <ClCompile Include="BlockStmt.cpp" />
     <ClCompile Include="BreakStmt.cpp" />
+    <ClCompile Include="CompUnit.cpp" />
     <ClCompile Include="ConstantInt.cpp" />
     <ClCompile Include="ContinueStmt.cpp" />
     <ClCompile Include="Decl.cpp" />
@@ -180,6 +183,7 @@
     <ClCompile Include="ExpStmt.cpp" />
     <ClCompile Include="FuncallExp.cpp" />
     <ClCompile Include="FuncDecl.cpp" />
+    <ClCompile Include="FuncDef.cpp" />
     <ClCompile Include="FuncParamDecl.cpp" />
     <ClCompile Include="Ident.cpp" />
     <ClCompile Include="IfStmt.cpp" />

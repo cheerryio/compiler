@@ -4,7 +4,8 @@
 namespace saltyfish {
 	class ASTVisitor;
 
-	class Exp :public ASTUnit {
+	class Exp :
+		virtual public ASTUnit {
 	public:
 		class ExpBitFields {
 		} bitFields;

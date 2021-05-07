@@ -13,6 +13,12 @@ WhileStmt::WhileStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> body)
 	
 }
 
+WhileStmt::WhileStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> body,location loc)
+	:ASTUnit(loc), cond(std::move(cond)), body(std::move(body))
+{
+
+}
+
 void WhileStmt::accept(ASTVisitor& visitor) {
 	visitor.visit(this);
 }

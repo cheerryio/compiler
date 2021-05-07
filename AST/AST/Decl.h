@@ -5,7 +5,8 @@
 namespace saltyfish {
 	class ASTVisitor;
 
-	class Decl:public ASTUnit
+	class Decl :
+		virtual public ASTUnit
 	{
 	public:
 		virtual void accept(ASTVisitor& visitor) {

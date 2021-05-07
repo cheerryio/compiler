@@ -5,7 +5,7 @@ namespace saltyfish {
         public ASTVisitor
     {
 	public:
-		static unsigned int depth;
+		unsigned int depth=0;
 
     public:
 		MessageVisitor();
@@ -40,6 +40,6 @@ namespace saltyfish {
 		virtual void visit(ConstantInt* constantInt);
 		virtual void visit(Ident* ident);
 
-		void showDepth(unsigned int depth);
+		void showDepth();
     };
 }

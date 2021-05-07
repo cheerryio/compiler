@@ -9,7 +9,7 @@ saltyfish::Driver::Driver(){};
 
 saltyfish::Parser::symbol_type saltyfish::Driver::get_next_token(){
    if(scanner==nullptr) scanner=new Scanner(&std::cin);
-   saltyfish::Parser::symbol_type type=scanner->get_next_token();
+   saltyfish::Parser::symbol_type type=scanner->get_next_token(*this);
    return type;
 }
 
@@ -22,6 +22,7 @@ int saltyfish::Driver::parse(const std::string &filename){
    if(filename.empty()){
       return -1;
    }
+   loc.initialize((string*)&filename);
    std::ifstream stream(filename);
    if(!stream.good()){
       return -1;
@@ -42,4 +43,8 @@ int saltyfish::Driver::parseStream(std::istream &stream){
    scanner=new Scanner(&stream);
    parser=new Parser(*scanner,*this);
    return parser->parse();
+}
+
+saltyfish::location& saltyfish::Driver::getLoc(){
+   return loc;
 }

@@ -12,6 +12,12 @@ BlockStmt::BlockStmt(std::vector<std::unique_ptr<ASTUnit>> stmts)
 	
 }
 
+BlockStmt::BlockStmt(std::vector<std::unique_ptr<ASTUnit>> stmts,location loc)
+	:ASTUnit(loc), stmts(std::move(stmts))
+{
+
+}
+
 void BlockStmt::accept(ASTVisitor& visitor) {
 	visitor.visit(this);
 }

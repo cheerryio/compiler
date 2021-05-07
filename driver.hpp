@@ -8,6 +8,7 @@
 
 #include "parser.hpp"
 #include "scanner.hpp"
+#include "location.hh"
 
 namespace saltyfish{
 
@@ -19,6 +20,9 @@ public:
    int parse(const std::string &filename);
    int parse(std::istream &stream);
    int parseStream(std::istream &stream);
+   saltyfish::location& getLoc();
+private:
+   saltyfish::location loc;
 private:
    Scanner *scanner=nullptr;
    Parser *parser=nullptr;

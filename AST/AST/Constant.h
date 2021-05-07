@@ -2,7 +2,7 @@
 #include "ASTUnit.h"
 
 namespace saltyfish {
-	class Constant:public ASTUnit
+	class Constant:virtual public ASTUnit
 	{
 	};
 }

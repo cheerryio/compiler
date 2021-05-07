@@ -3,6 +3,7 @@
 %output "parser.cpp"
 %defines
 %locations
+%lex-param	 { Driver &driver }
 %parse-param { Scanner &scanner }
 %parse-param { Driver &driver }
 
@@ -54,9 +55,9 @@
 			class Scanner;
 		}
 
-		#define BINARY_EXP(a,b,c,binaryExpType) {	\
+		#define BINARY_EXP(a,b,c,binaryExpType,d) {	\
 			unique_ptr<Exp> Lexp=std::move((b));unique_ptr<Exp> Rexp=std::move((c));	\
-			auto e=make_unique<BinaryExp>(BinaryExp::BinaryExpType::binaryExpType,std::move(Lexp),std::move(Rexp));	\
+			auto e=make_unique<BinaryExp>(BinaryExp::BinaryExpType::binaryExpType,std::move(Lexp),std::move(Rexp),d);	\
 			(a)=std::move(e);	\
 		}
 }
@@ -151,6 +152,7 @@
 %type < std::vector<std::unique_ptr<ASTUnit>> > CompUnitList
 %type < std::unique_ptr<CompUnit> >	CompUnit
 
+
 %start CompUnit
 
 %%
@@ -159,7 +161,7 @@ CompUnit:
 	CompUnitList
 		{
 			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$1;
-			auto compUnit=std::make_unique<CompUnit>(std::move(compUnitList));
+			auto compUnit=std::make_unique<CompUnit>(std::move(compUnitList),@$);
 			MessageVisitor visitor;
 			compUnit->accept(visitor);
 			$$=std::move(compUnit);
@@ -235,8 +237,9 @@ ValueDecl:
 		{
 			unique_ptr<Type> type=std::move($1);
 			std::vector<unique_ptr<ValueDef>> &valueDefList=$2;
-			auto v=make_unique<ValueDecl>(std::move(type),std::move(valueDefList));
+			auto v=make_unique<ValueDecl>(std::move(type),std::move(valueDefList),@$);
 			$$=std::move(v);
+			cout<<@$<<endl;
 		}
 
 ValueDefList:
@@ -259,14 +262,14 @@ ValueDef:
 		{
 			unique_ptr<Ident> &ident=$1;
 			std::vector<unique_ptr<Exp>> &arrayDimList=$2;
-			auto valueDef=make_unique<ValueDef>(std::move(ident),std::move(arrayDimList));
+			auto valueDef=make_unique<ValueDef>(std::move(ident),std::move(arrayDimList),@$);
 			$$=std::move(valueDef);
 		}
 |	Ident ArrayDimList T_EQUAL Exp
 		{
 			unique_ptr<Ident> ident=std::move($1);
 			std::vector<unique_ptr<Exp>> &arrayDimList=$2;
-			auto valueDef=make_unique<ValueDef>(std::move(ident),std::move(arrayDimList));
+			auto valueDef=make_unique<ValueDef>(std::move(ident),std::move(arrayDimList),@$);
 			$$=std::move(valueDef);
 		}
 |	Ident ArrayDimList T_EQUAL ArrayAssignList
@@ -295,7 +298,7 @@ FuncDef:
 		std::unique_ptr<Type> &type=$1;
 		std::unique_ptr<Ident> &ident=$2;
 		std::unique_ptr<BlockStmt> &block=$5;
-		auto funcDef=std::make_unique<FuncDef>(std::move(type),std::move(ident),std::move(block));
+		auto funcDef=std::make_unique<FuncDef>(std::move(type),std::move(ident),std::move(block),@$);
 		$$=std::move(funcDef);
 	}
 |	BType Ident T_LS FuncParamDeclList T_RS Block
@@ -304,7 +307,7 @@ FuncDef:
 			std::unique_ptr<Ident> &ident=$2;
 			std::vector<std::unique_ptr<FuncParamDecl>> &funcParamDeclList=$4;
 			std::unique_ptr<BlockStmt> &block=$6;
-			auto funcDef=std::make_unique<FuncDef>(std::move(type),std::move(ident),std::move(funcParamDeclList),std::move(block));
+			auto funcDef=std::make_unique<FuncDef>(std::move(type),std::move(ident),std::move(funcParamDeclList),std::move(block),@$);
 			$$=std::move(funcDef);
 		}
 
@@ -328,7 +331,7 @@ FuncParamDecl:
 		{
 			unique_ptr<Type> type=std::move($1);
 			unique_ptr<Ident> ident=std::move($2);
-			unique_ptr<FuncParamDecl> funcParamDecl=make_unique<FuncParamDecl>(std::move(type),std::move(ident));
+			unique_ptr<FuncParamDecl> funcParamDecl=make_unique<FuncParamDecl>(std::move(type),std::move(ident),@$);
 			$$=std::move(funcParamDecl);
 		}
 
@@ -337,7 +340,7 @@ Block:
 |	T_LB BlockItemList T_RB
 		{
 			std::vector<std::unique_ptr<ASTUnit>> &blockItemList=$2;
-			auto block=std::make_unique<BlockStmt>(std::move(blockItemList));
+			auto block=std::make_unique<BlockStmt>(std::move(blockItemList),@$);
 			$$=std::move(block);
 		}
 
@@ -374,18 +377,18 @@ Stmt:
 		{
 			std::unique_ptr<Ident> &ident=$1;
 			std::unique_ptr<Exp> &exp=$3;
-			auto assignStmt=std::make_unique<AssignStmt>(std::move(ident),std::move(exp));
+			auto assignStmt=std::make_unique<AssignStmt>(std::move(ident),std::move(exp),@$);
 			$$=std::move(assignStmt);
 		}
 |	T_SEMICOLON
 		{
-			auto emptyStmt=std::make_unique<EmptyStmt>();
+			auto emptyStmt=std::make_unique<EmptyStmt>(@$);
 			$$=std::move(emptyStmt);
 		}
 |	Exp T_SEMICOLON
 		{
 			std::unique_ptr<Exp> &exp=$1;
-			auto expStmt=std::make_unique<ExpStmt>(std::move(exp));
+			auto expStmt=std::make_unique<ExpStmt>(std::move(exp),@$);
 			$$=std::move(expStmt);
 		}
 |	Block {$$=std::move($1);}
@@ -393,7 +396,7 @@ Stmt:
 		{
 			std::unique_ptr<Exp> &cond=$3;
 			std::unique_ptr<Stmt> &ifBody=$5;
-			std::unique_ptr<IfStmt> ifStmt=std::make_unique<IfStmt>(std::move(cond),std::move(ifBody));
+			std::unique_ptr<IfStmt> ifStmt=std::make_unique<IfStmt>(std::move(cond),std::move(ifBody),@$);
 			$$=std::move(ifStmt);
 		}
 |	T_IF T_LS Exp T_RS Stmt T_ELSE Stmt
@@ -401,35 +404,35 @@ Stmt:
 			std::unique_ptr<Exp> &cond=$3;
 			std::unique_ptr<Stmt> &ifBody=$5;
 			std::unique_ptr<Stmt> &elseBody=$7;
-			auto ifStmt=std::make_unique<IfStmt>(std::move(cond),std::move(ifBody),std::move(elseBody));
+			auto ifStmt=std::make_unique<IfStmt>(std::move(cond),std::move(ifBody),std::move(elseBody),@$);
 			$$=std::move(ifStmt);
 		}
 |	T_WHILE T_LS Exp T_RS Stmt
 		{
 			std::unique_ptr<Exp> &cond=$3;
 			std::unique_ptr<Stmt> &body=$5;
-			auto whileStmt=std::make_unique<WhileStmt>(std::move(cond),std::move(body));
+			auto whileStmt=std::make_unique<WhileStmt>(std::move(cond),std::move(body),@$);
 			$$=std::move(whileStmt);
 		}
 |	T_BREAK T_SEMICOLON
 		{
-			auto breakStmt=std::make_unique<BreakStmt>();
+			auto breakStmt=std::make_unique<BreakStmt>(@$);
 			$$=std::move(breakStmt);
 		}
 |	T_CONTINUE T_SEMICOLON
 		{
-			auto continueStmt=std::make_unique<ContinueStmt>();
+			auto continueStmt=std::make_unique<ContinueStmt>(@$);
 			$$=std::move(continueStmt);
 		}
 |	T_RETURN Exp T_SEMICOLON
 		{
 			std::unique_ptr<Exp> &exp=$2;
-			auto returnStmt=std::make_unique<ReturnStmt>(std::move(exp));
+			auto returnStmt=std::make_unique<ReturnStmt>(std::move(exp),@$);
 			$$=std::move(returnStmt);
 		}
 |	T_RETURN T_SEMICOLON
 		{
-			auto returnStmt=std::make_unique<ReturnStmt>();
+			auto returnStmt=std::make_unique<ReturnStmt>(@$);
 			$$=std::move(returnStmt);
 		}
 
@@ -437,7 +440,7 @@ Ident:
 	IdentStr
 		{
 			std::string identStr=$1;
-			auto ident=std::make_unique<Ident>(identStr);
+			auto ident=std::make_unique<Ident>(identStr,@$);
 			$$=std::move(ident);
 		}
 
@@ -445,19 +448,19 @@ Number:
 	DECIMAL
 		{
 			int n=$1;
-			auto constant=std::make_unique<ConstantInt>(ConstantInt::ConstantIntType::Decimal,n);
+			auto constant=std::make_unique<ConstantInt>(ConstantInt::ConstantIntType::Decimal,n,@$);
 			$$=std::move(constant);
 		}
 |	OCTAL
 		{
 			int n=$1;
-			auto constant=make_unique<ConstantInt>(ConstantInt::ConstantIntType::Octal,n);
+			auto constant=make_unique<ConstantInt>(ConstantInt::ConstantIntType::Octal,n,@$);
 			$$=std::move(constant);
 		}
 |	HEXADECIMAL
 		{
 			int n=$1;
-			auto constant=make_unique<ConstantInt>(ConstantInt::ConstantIntType::Hexadecimal,n);
+			auto constant=make_unique<ConstantInt>(ConstantInt::ConstantIntType::Hexadecimal,n,@$);
 			$$=std::move(constant);
 		}
 
@@ -477,24 +480,24 @@ FuncallParamList:
 		}
 
 Exp:
-	Exp T_MUL Exp	{BINARY_EXP($$,$1,$3,Mul);}
-|	Exp T_DIV Exp	{BINARY_EXP($$,$1,$3,Div);}
-|	Exp T_MOD Exp	{BINARY_EXP($$,$1,$3,Mod);}
-|	Exp T_ADD Exp	{BINARY_EXP($$,$1,$3,Add);}
-|	Exp T_SUB Exp	{BINARY_EXP($$,$1,$3,Sub);}
-|	Exp T_B Exp		{BINARY_EXP($$,$1,$3,B);}
-|	Exp T_A Exp		{BINARY_EXP($$,$1,$3,A);}
-|	Exp T_BE Exp	{BINARY_EXP($$,$1,$3,Be);}
-|	Exp T_AE Exp	{BINARY_EXP($$,$1,$3,Ae);}
-|	Exp T_E Exp		{BINARY_EXP($$,$1,$3,E);}
-|	Exp T_NE Exp	{BINARY_EXP($$,$1,$3,Ne);}
-|	Exp T_AND Exp	{BINARY_EXP($$,$1,$3,And);}
-|	Exp T_OR Exp	{BINARY_EXP($$,$1,$3,Or);}
-|	Exp T_EQUAL Exp	{BINARY_EXP($$,$1,$3,Equal);}
+	Exp T_MUL Exp	{BINARY_EXP($$,$1,$3,Mul,@$);}
+|	Exp T_DIV Exp	{BINARY_EXP($$,$1,$3,Div,@$);}
+|	Exp T_MOD Exp	{BINARY_EXP($$,$1,$3,Mod,@$);}
+|	Exp T_ADD Exp	{BINARY_EXP($$,$1,$3,Add,@$);}
+|	Exp T_SUB Exp	{BINARY_EXP($$,$1,$3,Sub,@$);}
+|	Exp T_B Exp		{BINARY_EXP($$,$1,$3,B,@$);}
+|	Exp T_A Exp		{BINARY_EXP($$,$1,$3,A,@$);}
+|	Exp T_BE Exp	{BINARY_EXP($$,$1,$3,Be,@$);}
+|	Exp T_AE Exp	{BINARY_EXP($$,$1,$3,Ae,@$);}
+|	Exp T_E Exp		{BINARY_EXP($$,$1,$3,E,@$);}
+|	Exp T_NE Exp	{BINARY_EXP($$,$1,$3,Ne,@$);}
+|	Exp T_AND Exp	{BINARY_EXP($$,$1,$3,And,@$);}
+|	Exp T_OR Exp	{BINARY_EXP($$,$1,$3,Or,@$);}
+|	Exp T_EQUAL Exp	{BINARY_EXP($$,$1,$3,Equal,@$);}
 |	T_LS Exp T_RS	{$$=std::move($2);}
-|	Ident			{$$=std::move(make_unique<PrimaryExp>(PrimaryExp::PrimaryExpType::Ident,std::move($1)));}
-|	Number			{$$=std::move(make_unique<PrimaryExp>(PrimaryExp::PrimaryExpType::ConstantInt,std::move($1)));}
-|	Ident T_LS T_RS	{$$=std::move(make_unique<FuncallExp>(std::move($1)));}
+|	Ident			{$$=std::move(make_unique<PrimaryExp>(PrimaryExp::PrimaryExpType::Ident,std::move($1),@$));}
+|	Number			{$$=std::move(make_unique<PrimaryExp>(PrimaryExp::PrimaryExpType::ConstantInt,std::move($1),@$));}
+|	Ident T_LS T_RS	{$$=std::move(make_unique<FuncallExp>(std::move($1),@$));}
 |	Ident T_LS FuncallParamList T_RS
 	{
 		std::vector<std::unique_ptr<Exp>> &funcallParamList=$3;
@@ -502,9 +505,9 @@ Exp:
 		auto funcallExp=make_unique<FuncallExp>(std::move(ident),std::move(funcallParamList));
 		$$=std::move(funcallExp);
 	}
-|	T_ADD Exp		{$$=std::move(make_unique<UnaryExp>(UnaryExp::UnaryExpType::Add,std::move($2)));}
-|	T_SUB Exp		{$$=std::move(make_unique<UnaryExp>(UnaryExp::UnaryExpType::Sub,std::move($2)));}
-|	T_NOT Exp		{$$=std::move(make_unique<UnaryExp>(UnaryExp::UnaryExpType::Not,std::move($2)));}
+|	T_ADD Exp		{$$=std::move(make_unique<UnaryExp>(UnaryExp::UnaryExpType::Add,std::move($2),@$));}
+|	T_SUB Exp		{$$=std::move(make_unique<UnaryExp>(UnaryExp::UnaryExpType::Sub,std::move($2),@$));}
+|	T_NOT Exp		{$$=std::move(make_unique<UnaryExp>(UnaryExp::UnaryExpType::Not,std::move($2),@$));}
 %%
 namespace saltyfish
 {

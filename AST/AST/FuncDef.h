@@ -23,6 +23,8 @@ namespace saltyfish {
     public:
         FuncDef(std::unique_ptr<Type> type, std::unique_ptr<Ident> ident, std::unique_ptr<BlockStmt> block);
         FuncDef(std::unique_ptr<Type> type, std::unique_ptr<Ident> ident, std::vector<std::unique_ptr<FuncParamDecl>> funcParamDeclList, std::unique_ptr<BlockStmt> block);
+        FuncDef(std::unique_ptr<Type> type, std::unique_ptr<Ident> ident, std::unique_ptr<BlockStmt> block,location loc);
+        FuncDef(std::unique_ptr<Type> type, std::unique_ptr<Ident> ident, std::vector<std::unique_ptr<FuncParamDecl>> funcParamDeclList, std::unique_ptr<BlockStmt> block,location loc);
         void accept(ASTVisitor& visitor);
     };
 }

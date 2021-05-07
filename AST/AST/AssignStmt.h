@@ -18,6 +18,7 @@ namespace saltyfish {
 
     public:
         AssignStmt(std::unique_ptr<Ident> ident, std::unique_ptr<Exp> exp);
+        AssignStmt(std::unique_ptr<Ident> ident, std::unique_ptr<Exp> exp,location loc);
         void accept(ASTVisitor& visitor);
     };
 }

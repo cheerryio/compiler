@@ -6,7 +6,7 @@
 
 namespace saltyfish {
     class CompUnit :
-        public ASTUnit
+        virtual public ASTUnit
     {
     public:
         std::vector<std::unique_ptr<ASTUnit>> compUnitList;
@@ -14,6 +14,7 @@ namespace saltyfish {
     public:
         CompUnit();
         CompUnit(std::vector<std::unique_ptr<ASTUnit>> compUnitList);
+        CompUnit(std::vector<std::unique_ptr<ASTUnit>> compUnitList,location loc);
         void accept(ASTVisitor& visitor);
     };
 }

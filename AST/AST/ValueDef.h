@@ -11,12 +11,15 @@ using namespace std;
 #include <memory>
 
 #include "Exp.h"
+#include "ASTUnit.h"
 
 
 namespace saltyfish {
 	class ASTVisitor;
 
-	class ValueDef {
+	class ValueDef
+		:virtual public ASTUnit
+	{
 	public:
 		class ValueDefBitFields {
 		public:
@@ -47,6 +50,8 @@ namespace saltyfish {
 		ValueDef();
 		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList);
 		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList, unique_ptr<Exp> exp);
+		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList,location loc);
+		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList, unique_ptr<Exp> exp,location loc);
 		bool hasAssign();
 		bool isArrayAssign();
 		bool isArray();

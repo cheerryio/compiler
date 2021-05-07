@@ -10,15 +10,13 @@ using namespace saltyfish;
 MessageVisitor::MessageVisitor() {}
 MessageVisitor::~MessageVisitor() {}
 
-unsigned int MessageVisitor::depth = 0;
-
 void MessageVisitor::visit() {
-	showDepth(depth);
+	showDepth();
 	cout << "Nothing" << endl;
 }
 
 void MessageVisitor::visit(CompUnit* compUnit) {
-	showDepth(depth);
+	showDepth();
 	cout << "CompUnit" << endl;
 	depth++;
 	vector<unique_ptr<ASTUnit>>& compUnitList = compUnit->compUnitList;
@@ -29,23 +27,21 @@ void MessageVisitor::visit(CompUnit* compUnit) {
 }
 
 void MessageVisitor::visit(FuncDecl* funcDecl){
-	showDepth(depth);
+	showDepth();
 	cout << "FuncDecl" << endl;
 }
 
 void MessageVisitor::visit(FuncParamDecl* funcParamDecl) {
-	showDepth(depth);
-	cout << "FuncParamDecl" << endl;
+	showDepth();
+	cout << *funcParamDecl << endl;
 	depth++;
-	unique_ptr<Type>& type = funcParamDecl->type;
-	unique_ptr<Ident> &ident = funcParamDecl->ident;
-	type->accept(*this);
-	ident->accept(*this);
+	funcParamDecl->type->accept(*this);
+	funcParamDecl->ident->accept(*this);
 	depth--;
 }
 
 void MessageVisitor::visit(ValueDecl* valueDecl){
-	showDepth(depth);
+	showDepth();
 	cout << "ValueDecl" << endl;
 	depth++;
 	unique_ptr<Type>& type = valueDecl->type;
@@ -57,7 +53,7 @@ void MessageVisitor::visit(ValueDecl* valueDecl){
 }
 
 void MessageVisitor::visit(ValueDef* valueDef) {
-	showDepth(depth);
+	showDepth();
 	cout << "ValueDef" << endl;
 	depth++;
 	valueDef->ident->accept(*this);
@@ -78,7 +74,7 @@ void MessageVisitor::visit(ValueDef* valueDef) {
 }
 
 void MessageVisitor::visit(FuncDef* funcDef) {
-	showDepth(depth);
+	showDepth();
 	cout << "FuncDef" << endl;
 	depth++;
 	vector<unique_ptr<FuncParamDecl>>& funcParamDeclList = funcDef->funcParamDeclList;
@@ -93,7 +89,7 @@ void MessageVisitor::visit(FuncDef* funcDef) {
 }
 
 void MessageVisitor::visit(AssignStmt* assignStmt){
-	showDepth(depth);
+	showDepth();
 	cout << "AssignStmt" << endl;
 	depth++;
 	unique_ptr<Ident>& ident = assignStmt->ident;
@@ -103,7 +99,7 @@ void MessageVisitor::visit(AssignStmt* assignStmt){
 	depth--;
 }
 void MessageVisitor::visit(BlockStmt* blockStmt){
-	showDepth(depth);
+	showDepth();
 	cout << "BlockStmt" << endl;
 	depth++;
 	vector<unique_ptr<ASTUnit>>& stmts = blockStmt->stmts;
@@ -113,19 +109,19 @@ void MessageVisitor::visit(BlockStmt* blockStmt){
 	depth--;
 }
 void MessageVisitor::visit(BreakStmt* breakStmt){
-	showDepth(depth);
+	showDepth();
 	cout << "BreakStmt" << endl;
 }
 void MessageVisitor::visit(ContinueStmt* continueStmt){
-	showDepth(depth);
+	showDepth();
 	cout << "ContinueStmt" << endl;
 }
 void MessageVisitor::visit(EmptyStmt* emptyStmt){
-	showDepth(depth);
+	showDepth();
 	cout << "EmptyStmt" << endl;
 }
 void MessageVisitor::visit(ExpStmt* expStmt){
-	showDepth(depth);
+	showDepth();
 	cout << "ExpStmt" << endl;
 	depth++;
 	unique_ptr<Exp>& exp = expStmt->exp;
@@ -133,7 +129,7 @@ void MessageVisitor::visit(ExpStmt* expStmt){
 	depth--;
 }
 void MessageVisitor::visit(IfStmt* ifStmt){
-	showDepth(depth);
+	showDepth();
 	cout << "IfStmt" << endl;
 	depth++;
 	unique_ptr<Exp> &cond = ifStmt->cond;
@@ -147,7 +143,7 @@ void MessageVisitor::visit(IfStmt* ifStmt){
 	depth--;
 }
 void MessageVisitor::visit(ReturnStmt* returnStmt){
-	showDepth(depth);
+	showDepth();
 	cout << "ReturnStmt" << endl;
 	depth++;
 	if (returnStmt->hasExp()) {
@@ -157,7 +153,7 @@ void MessageVisitor::visit(ReturnStmt* returnStmt){
 	depth--;
 }
 void MessageVisitor::visit(WhileStmt* whileStmt){
-	showDepth(depth);
+	showDepth();
 	cout << "WhileStmt" << endl;
 	depth++;
 	unique_ptr<Exp> &cond = whileStmt->cond;
@@ -168,13 +164,15 @@ void MessageVisitor::visit(WhileStmt* whileStmt){
 }
 
 void MessageVisitor::visit(BinaryExp* binaryExp){
-	showDepth(depth);
-	cout << "BinaryExpType: " << binaryExp->binaryExpType << endl;
+	showDepth();
+	cout << *binaryExp << endl;
+	depth++;
 	binaryExp->Lexp->accept(*this);
 	binaryExp->Rexp->accept(*this);
+	depth--;
 }
 void MessageVisitor::visit(FuncallExp* funcallExp){
-	showDepth(depth);
+	showDepth();
 	cout << "FuncallExp" << endl;
 	depth++;
 	vector<unique_ptr<Exp>>& funcParamList = funcallExp->funcallParamList;
@@ -185,8 +183,8 @@ void MessageVisitor::visit(FuncallExp* funcallExp){
 	depth--;
 }
 void MessageVisitor::visit(PrimaryExp* primaryExp){
-	showDepth(depth);
-	cout << "PrimaryExp" << endl;
+	showDepth();
+	cout << *primaryExp << endl;
 	depth++;
 	if (primaryExp->primaryExpType == PrimaryExp::PrimaryExpType::Ident) {
 		primaryExp->ident->accept(*this);
@@ -197,38 +195,29 @@ void MessageVisitor::visit(PrimaryExp* primaryExp){
 	depth--;
 }
 void MessageVisitor::visit(UnaryExp* unaryExp){
-	showDepth(depth);
-	cout << "UnaryExp" << endl;
-	depth++;
-	showDepth(depth);
-	cout << "UnaryExpType: " << unaryExp->unaryExpType << endl;
-	showDepth(depth);
-	cout << "OpStr: " << unaryExp->opStr << endl;
+	showDepth();
+	cout << *unaryExp << endl;
 	unaryExp->exp->accept(*this);
 	depth--;
 }
 
 void MessageVisitor::visit(Type* type){
-	showDepth(depth);
-	cout << "Type:" << type->typeStr << endl;
+	showDepth();
+	cout << *type << endl;
 }
 void MessageVisitor::visit(ConstantInt* constantInt){
-	showDepth(depth);
-	cout << "ConstantInt" << endl;
 	depth++;
-	showDepth(depth);
-	cout << "ConstantIntType: " << constantInt->constantIntType << endl;
-	showDepth(depth);
-	cout << "ConstantIntValue: " << constantInt->value << endl;
+	showDepth();
+	cout << *constantInt << endl;
 	depth--;
 }
 void MessageVisitor::visit(Ident* ident){
-	showDepth(depth);
-	cout << "Ident: " << ident->identStr << endl;
+	showDepth();
+	cout << *ident << endl;
 }
 
-void MessageVisitor::showDepth(unsigned int depth) {
+void MessageVisitor::showDepth() {
 	for (int i = 0; i < depth; i++) {
-		cout << "  ";
+		cout << " |";
 	}
 }
