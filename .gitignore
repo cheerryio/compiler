@@ -9,3 +9,5 @@ parser.cpp
 scanner.cpp
 a.out
 location.hh
+AST/ASTVisitor/x64
+AST/AST/x64
