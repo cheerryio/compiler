@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\AST\AssignStmt.cpp" />
+    <ClCompile Include="..\AST\ASTUnit.cpp" />
     <ClCompile Include="..\AST\BinaryExp.cpp" />
     <ClCompile Include="..\AST\BlockStmt.cpp" />
     <ClCompile Include="..\AST\BreakStmt.cpp" />
@@ -165,17 +166,18 @@
     <ClCompile Include="..\AST\ValueDecl.cpp" />
     <ClCompile Include="..\AST\ValueDef.cpp" />
     <ClCompile Include="..\AST\WhileStmt.cpp" />
-    <ClCompile Include="ASTUnit.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageVisitor.cpp" />
     <ClCompile Include="SemanticVisitor.cpp" />
     <ClCompile Include="SymbolTable.cpp" />
+    <ClCompile Include="SymbolTableList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTVisitor.h" />
     <ClInclude Include="MessageVisitor.h" />
     <ClInclude Include="SemanticVisitor.h" />
     <ClInclude Include="SymbolTable.h" />
+    <ClInclude Include="SymbolTableList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

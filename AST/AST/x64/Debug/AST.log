@@ -1,0 +1,31 @@
+﻿  AssignStmt.cpp
+  ASTUnit.cpp
+  BinaryExp.cpp
+  BlockStmt.cpp
+  BreakStmt.cpp
+  CompUnit.cpp
+  ConstantInt.cpp
+  ContinueStmt.cpp
+  Decl.cpp
+  EmptyStmt.cpp
+  Exp.cpp
+  ExpStmt.cpp
+  FuncallExp.cpp
+  FuncDecl.cpp
+  FuncDef.cpp
+  FuncParamDecl.cpp
+  Ident.cpp
+  IfStmt.cpp
+  PrimaryExp.cpp
+  ReturnStmt.cpp
+  正在生成代码...
+  正在编译...
+  Stmt.cpp
+  Type.cpp
+  UnaryExp.cpp
+  ValueDecl.cpp
+  ValueDef.cpp
+  WhileStmt.cpp
+  正在生成代码...
+MSVCRTD.lib(exe_main.obj) : error LNK2019: 无法解析的外部符号 main，函数 "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ) 中引用了该符号
+C:\Users\22216\source\repos\compiler\AST\x64\Debug\AST.exe : fatal error LNK1120: 1 个无法解析的外部命令

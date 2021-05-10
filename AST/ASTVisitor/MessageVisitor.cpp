@@ -45,7 +45,7 @@ void MessageVisitor::visit(ValueDecl* valueDecl){
 	cout << "ValueDecl" << endl;
 	depth++;
 	unique_ptr<Type>& type = valueDecl->type;
-	vector<unique_ptr<ValueDef>>& valueDefList = valueDecl->ValueDefList;
+	vector<unique_ptr<ValueDef>>& valueDefList = valueDecl->valueDefList;
 	for (vector<unique_ptr<ValueDef>>::iterator it = valueDefList.begin(); it < valueDefList.end(); it++) {
 		(*it)->accept(*this);
 	}
@@ -217,7 +217,7 @@ void MessageVisitor::visit(Ident* ident){
 }
 
 void MessageVisitor::showDepth() {
-	for (int i = 0; i < depth; i++) {
+	for (unsigned i = 0; i < depth; i++) {
 		cout << " |";
 	}
 }

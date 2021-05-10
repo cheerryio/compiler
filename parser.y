@@ -48,6 +48,7 @@
 		#include "AST/AST/BlockStmt.h"
 		#include "AST/AST/ExpStmt.h"
 		#include "AST/ASTVisitor/MessageVisitor.h"
+		#include "AST/ASTVisitor/SemanticVisitor.h"
 		using namespace std;
 
 		namespace saltyfish {
@@ -162,8 +163,9 @@ CompUnit:
 		{
 			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$1;
 			auto compUnit=std::make_unique<CompUnit>(std::move(compUnitList),@$);
-			MessageVisitor visitor;
-			compUnit->accept(visitor);
+			MessageVisitor* visitor=new MessageVisitor();
+			compUnit->accept(*visitor);
+			//cout<<*(visitor->table)<<endl;
 			$$=std::move(compUnit);
 		}
 
@@ -239,7 +241,6 @@ ValueDecl:
 			std::vector<unique_ptr<ValueDef>> &valueDefList=$2;
 			auto v=make_unique<ValueDecl>(std::move(type),std::move(valueDefList),@$);
 			$$=std::move(v);
-			cout<<@$<<endl;
 		}
 
 ValueDefList:
