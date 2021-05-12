@@ -30,9 +30,10 @@ void SemanticVisitor::visit(ValueDecl* valueDecl)
 {
 	auto &type = valueDecl->type;
 	auto &valueDefList = valueDecl->valueDefList;
+	bool isConst = valueDecl->isConst();
 	for (auto& valueDef : valueDefList) {
 		auto& ident = valueDef->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr();
+		SymbolAttr* symbolAttr = new SymbolAttr(type->type,SymbolAttr::SymbolRole::Value,0,isConst);	//确认const array
 		this->table->addSymbol(ident->identStr, symbolAttr);
 	}
 }
@@ -43,8 +44,9 @@ void SemanticVisitor::visit(ValueDef* valueDef)
 
 void SemanticVisitor::visit(FuncDef* funcDef)
 {
+	auto& type = funcDef->type;
 	auto& ident = funcDef->ident;
-	SymbolAttr* symbolAttr = new SymbolAttr();
+	SymbolAttr* symbolAttr = new SymbolAttr(type->type,SymbolAttr::SymbolRole::Function);
 	this->table->addSymbol(ident->identStr, symbolAttr);
 
 	vector<unique_ptr<FuncParamDecl>>& funcParamDeclList = funcDef->funcParamDeclList;
@@ -52,7 +54,7 @@ void SemanticVisitor::visit(FuncDef* funcDef)
 	for (vector<unique_ptr<FuncParamDecl>>::iterator it = funcParamDeclList.begin(); it < funcParamDeclList.end(); it++) {
 		auto& type = (*it)->type;
 		auto& ident = (*it)->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr();
+		SymbolAttr* symbolAttr = new SymbolAttr(type->type, SymbolAttr::SymbolRole::FunctionParam, 0, 0);	// 确认const array
 		this->table->addSymbol(ident->identStr, symbolAttr);
 	}
 	block->accept(*this);
@@ -69,7 +71,8 @@ void SemanticVisitor::visit(BlockStmt* blockStmt)
 	for (vector<unique_ptr<ASTUnit>>::iterator it = stmts.begin(); it < stmts.end(); it++) {
 		(*it)->accept(*this);
 	}
-	this->table->outScope();
+	cout << *(this->table) << endl;
+	this->table->outScope();	//包含了清空局部变量动作
 }
 
 void SemanticVisitor::visit(BreakStmt* breakStmt)

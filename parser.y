@@ -163,9 +163,9 @@ CompUnit:
 		{
 			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$1;
 			auto compUnit=std::make_unique<CompUnit>(std::move(compUnitList),@$);
-			MessageVisitor* visitor=new MessageVisitor();
+			SemanticVisitor* visitor=new SemanticVisitor();
 			compUnit->accept(*visitor);
-			//cout<<*(visitor->table)<<endl;
+			cout<<*(visitor->table)<<endl;
 			$$=std::move(compUnit);
 		}
 
@@ -224,8 +224,8 @@ ArrayDimSubList:
 		}
 
 BType:
-	T_INT {$$=std::make_unique<Type>($1);}
-|	T_VOID {$$=std::make_unique<Type>($1);}
+	T_INT {$$=std::make_unique<Type>(Type::mapType($1),@$);}
+|	T_VOID {$$=std::make_unique<Type>(Type::mapType($1),@$);}
 
 Decl:
 	ValueDecl	{$$=std::move($1);}
@@ -233,13 +233,16 @@ Decl:
 ValueDecl:
 	T_CONST BType ValueDefList T_SEMICOLON
 		{
-
+			unique_ptr<Type> type=std::move($2);
+			std::vector<unique_ptr<ValueDef>> &valueDefList=$3;
+			auto v=make_unique<ValueDecl>(std::move(type),std::move(valueDefList),1,@$);
+			$$=std::move(v);
 		}
 |	BType ValueDefList T_SEMICOLON
 		{
 			unique_ptr<Type> type=std::move($1);
 			std::vector<unique_ptr<ValueDef>> &valueDefList=$2;
-			auto v=make_unique<ValueDecl>(std::move(type),std::move(valueDefList),@$);
+			auto v=make_unique<ValueDecl>(std::move(type),std::move(valueDefList),0,@$);
 			$$=std::move(v);
 		}
 

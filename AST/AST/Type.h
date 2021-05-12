@@ -12,18 +12,15 @@ namespace saltyfish{
 	{
 	public:
 		enum IdentType {
-			Int, String, Void
+			Void = 0 , Int
 		} type;
 		std::string typeStr;
-		std::map<std::string, IdentType> strTypeMap = {
-			{"int",Int},
-			{"void",Void},
-			{"string",String}
-		};
+	public:
+		static std::map<std::string, IdentType> strTypeMap;
 	public:
 		Type();
-		Type(std::string &typeStr);
-		Type(std::string& typeStr,location loc);
+		Type(IdentType type, location loc);
+		static IdentType mapType(std::string& typeStr);
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const Type& type);
 	};

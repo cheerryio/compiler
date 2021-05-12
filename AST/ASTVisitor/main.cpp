@@ -23,7 +23,6 @@ int main() {
 	table.addSymbol("attr1", attr1);
 	table.inScope();
 	table.addSymbol("attr2", attr2);
-	table.clearSymbol();
 	table.outScope();
 	return 0;
 }

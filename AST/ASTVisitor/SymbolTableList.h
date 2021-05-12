@@ -12,11 +12,13 @@ namespace saltyfish {
     public:
         SymbolTableList();
         ~SymbolTableList();
+        level_t getLevel();
         void inScope();
         void outScope();
         int addSymbol(std::string symbolName,SymbolAttr* symbolAttr);
-        void clearSymbol();
-        SymbolAttr* declared(std::string symbolName);
+        void delSymbols();
+        SymbolAttr* getSymbol(std::string symbolName, level_t level);
+        SymbolAttr* declaredSymbol(std::string symbolName);
         bool dulplicateDeclared(std::string symbolName);
         friend std::ostream& operator<<(std::ostream& o, const SymbolTableList& symbolTable);
     };
