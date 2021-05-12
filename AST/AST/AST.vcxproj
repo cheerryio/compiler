@@ -170,16 +170,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssignStmt.cpp" />
-    <ClCompile Include="ASTUnit.cpp" />
     <ClCompile Include="BinaryExp.cpp" />
     <ClCompile Include="BlockStmt.cpp" />
     <ClCompile Include="BreakStmt.cpp" />
     <ClCompile Include="CompUnit.cpp" />
     <ClCompile Include="ConstantInt.cpp" />
     <ClCompile Include="ContinueStmt.cpp" />
-    <ClCompile Include="Decl.cpp" />
     <ClCompile Include="EmptyStmt.cpp" />
-    <ClCompile Include="Exp.cpp" />
     <ClCompile Include="ExpStmt.cpp" />
     <ClCompile Include="FuncallExp.cpp" />
     <ClCompile Include="FuncDecl.cpp" />
@@ -189,7 +186,6 @@
     <ClCompile Include="IfStmt.cpp" />
     <ClCompile Include="PrimaryExp.cpp" />
     <ClCompile Include="ReturnStmt.cpp" />
-    <ClCompile Include="Stmt.cpp" />
     <ClCompile Include="Type.cpp" />
     <ClCompile Include="UnaryExp.cpp" />
     <ClCompile Include="ValueDecl.cpp" />

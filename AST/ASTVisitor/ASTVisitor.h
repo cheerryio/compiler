@@ -26,8 +26,6 @@ namespace saltyfish {
 	class ASTVisitor
 	{
 	public:
-		virtual void visit() = 0;
-
 		virtual void visit(CompUnit* compUnit) = 0;
 
 		virtual void visit(FuncDecl* funcDecl) = 0;

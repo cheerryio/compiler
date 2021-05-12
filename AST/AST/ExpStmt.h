@@ -15,7 +15,6 @@ namespace saltyfish {
         std::unique_ptr<Exp> exp;
 
     public:
-        ExpStmt(std::unique_ptr<Exp> exp);
         ExpStmt(std::unique_ptr<Exp> exp,location loc);
         virtual void accept(ASTVisitor& visitor);
     };

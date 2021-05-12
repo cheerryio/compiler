@@ -54,18 +54,18 @@ namespace saltyfish {
 		/**
 		* 插入符号及其对应属性
 		*/
-		virtual int addSymbol(std::string symbolName,SymbolAttr* symbolAttr) = 0;
+		virtual SymbolAttr* addSymbol(std::string symbolName,SymbolAttr* symbolAttr) = 0;
 		/**
 		* 当出作用域时，清楚该作用域所有的临时变量
 		*/
 		virtual void delSymbols() = 0;
 
-		virtual SymbolAttr* getSymbol(std::string symbolName, level_t level) = 0;
+		virtual SymbolAttr* getSymbolinLevel(std::string symbolName, level_t level) = 0;
 		/**
 		* 查符号表，判断该符号是否被定义过
 		* 返回最近的被定义的符号
 		*/
-		virtual SymbolAttr* declaredSymbol(std::string symbolName) = 0;
+		virtual SymbolAttr* getSymbol(std::string symbolName) = 0;
 		/**
 		* 符号是否在当前作用域已经被定义
 		*/

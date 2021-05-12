@@ -2,6 +2,7 @@
 #include <string>
 
 #include "ASTUnit.h"
+#include "SymbolTable.h"
 
 namespace saltyfish {
 	class ASTVisitor;
@@ -10,12 +11,20 @@ namespace saltyfish {
 		:virtual public ASTUnit
 	{
 	public:
-		std::string identStr;
-
+		class IdentBitFields {
+		public:
+			unsigned isConst : 1;
+			unsigned isArray : 1;
+		} bitFields;
 	public:
-		Ident();
-		Ident(std::string identStr);
+		std::string identStr;
+		SymbolAttr* symbolAttr = nullptr;
+	public:
 		Ident(std::string identStr, location loc);
+		void setConst();
+		void setArray();
+		bool getConst() const;
+		bool getArray() const;
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const Ident& ident);
 	};

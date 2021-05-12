@@ -3,15 +3,10 @@
 
 using namespace saltyfish;
 
-EmptyStmt::EmptyStmt()
-{
-
-}
-
 EmptyStmt::EmptyStmt(location loc)
 	:ASTUnit(loc)
 {
-
+	this->unitType = ASTUnit::UnitType::isEmptyStmt;
 }
 
 void EmptyStmt::accept(ASTVisitor& visitor) {

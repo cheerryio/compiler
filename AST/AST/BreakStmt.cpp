@@ -4,14 +4,10 @@
 using namespace std;
 using namespace saltyfish;
 
-BreakStmt::BreakStmt() {
-	
-}
-
 BreakStmt::BreakStmt(location loc)
 	:ASTUnit(loc)
 {
-
+	this->unitType = ASTUnit::UnitType::isBreakStmt;
 }
 
 void BreakStmt::accept(ASTVisitor& visitor) {

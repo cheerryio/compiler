@@ -19,8 +19,6 @@ namespace saltyfish {
         std::unique_ptr<Exp> exp;
 
     public:
-        ReturnStmt();
-        ReturnStmt(std::unique_ptr<Exp> exp);
         ReturnStmt(location loc);
         ReturnStmt(std::unique_ptr<Exp> exp,location loc);
         bool hasExp();

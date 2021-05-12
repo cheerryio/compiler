@@ -3,9 +3,9 @@
 
 using namespace saltyfish;
 
-ContinueStmt::ContinueStmt() {}
-
-ContinueStmt::ContinueStmt(location loc):ASTUnit(loc) {}
+ContinueStmt::ContinueStmt(location loc):ASTUnit(loc) {
+	this->unitType = ASTUnit::UnitType::isContinueStmt;
+}
 
 void ContinueStmt::accept(ASTVisitor& visitor) {
 	visitor.visit(this);

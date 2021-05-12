@@ -5,27 +5,18 @@
 using namespace std;
 using namespace saltyfish;
 
-ReturnStmt::ReturnStmt()
-{
-	setHasExp(false);
-}
-
-ReturnStmt::ReturnStmt(std::unique_ptr<Exp> exp)
-	:exp(std::move(exp))
-{
-	setHasExp(true);
-}
-
 ReturnStmt::ReturnStmt(location loc)
 	:ASTUnit(loc)
 {
 	setHasExp(false);
+	this->unitType = ASTUnit::UnitType::isReturnStmt;
 }
 
 ReturnStmt::ReturnStmt(std::unique_ptr<Exp> exp,location loc)
 	:ASTUnit(loc),exp(std::move(exp))
 {
 	setHasExp(true);
+	this->unitType = ASTUnit::UnitType::isReturnStmt;
 }
 
 bool ReturnStmt::hasExp() {

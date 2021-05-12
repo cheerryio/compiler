@@ -1,18 +1,21 @@
 #pragma once
-#include <vector>
 #include "ASTVisitor.h"
+#include "MessageVisitor.h"
+#include "SemanticVisitor.h"
 #include "SymbolTableList.h"
 
 namespace saltyfish {
-	class SemanticVisitor :
-		public ASTVisitor
-	{
-	public:
-		SymbolTableList* table = nullptr;
-
-	public:
-		SemanticVisitor(SymbolTableList* table);
-
+    class MainVisitor :
+        public ASTVisitor
+    {
+    public:
+		SymbolTableList* table;
+        ASTVisitor* messageVisitor = nullptr;
+        ASTVisitor* semanticVisitor = nullptr;
+		std::vector<ASTVisitor*> visitors;
+    public:
+        MainVisitor(unsigned mode);
+		MainVisitor(unsigned mode, SymbolTableList* table);
 		virtual void visit(CompUnit* compUnit);
 
 		virtual void visit(FuncDecl* funcDecl);
@@ -40,6 +43,6 @@ namespace saltyfish {
 		virtual void visit(Type* type);
 		virtual void visit(ConstantInt* constantInt);
 		virtual void visit(Ident* ident);
-	};
+    };
 }
 

@@ -24,7 +24,6 @@ namespace saltyfish {
 		class ValueDefBitFields {
 		public:
 			unsigned hasAssign : 1;
-			unsigned isArray : 1;
 			unsigned isArrayFirstDimEmpty : 1;
 			unsigned isArrayAssign : 1;
 		} bitFields;
@@ -47,19 +46,16 @@ namespace saltyfish {
 		unique_ptr<Exp> exp;
 
 	public:
-		ValueDef();
-		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList);
-		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList, unique_ptr<Exp> exp);
 		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList,location loc);
 		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList, unique_ptr<Exp> exp,location loc);
 		bool hasAssign();
 		bool isArrayAssign();
-		bool isArray();
 		bool isArrayFirstDimEmpty();
 		void setHasAssign(bool b);
 		void setIsArrayAssign(bool b);
-		void setIsArray(bool b);
 		void setIsArrayFirstDimEmpty(bool b);
+		void setIdentConst();
+		void setIdentArray();
 		virtual void accept(ASTVisitor& visitor);
 	};
 }

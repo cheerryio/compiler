@@ -47,8 +47,7 @@
 		#include "AST/AST/EmptyStmt.h"
 		#include "AST/AST/BlockStmt.h"
 		#include "AST/AST/ExpStmt.h"
-		#include "AST/ASTVisitor/MessageVisitor.h"
-		#include "AST/ASTVisitor/SemanticVisitor.h"
+		#include "AST/ASTVisitor/MainVisitor.h"
 		using namespace std;
 
 		namespace saltyfish {
@@ -163,9 +162,9 @@ CompUnit:
 		{
 			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$1;
 			auto compUnit=std::make_unique<CompUnit>(std::move(compUnitList),@$);
-			SemanticVisitor* visitor=new SemanticVisitor();
+			SymbolTableList* table=new SymbolTableList();
+			ASTVisitor* visitor=new MainVisitor(0x00000010,table);
 			compUnit->accept(*visitor);
-			cout<<*(visitor->table)<<endl;
 			$$=std::move(compUnit);
 		}
 
@@ -235,14 +234,15 @@ ValueDecl:
 		{
 			unique_ptr<Type> type=std::move($2);
 			std::vector<unique_ptr<ValueDef>> &valueDefList=$3;
-			auto v=make_unique<ValueDecl>(std::move(type),std::move(valueDefList),1,@$);
+			auto v=make_unique<ValueDecl>(std::move(type),std::move(valueDefList),@$);
+			v->setIdentConst();
 			$$=std::move(v);
 		}
 |	BType ValueDefList T_SEMICOLON
 		{
 			unique_ptr<Type> type=std::move($1);
 			std::vector<unique_ptr<ValueDef>> &valueDefList=$2;
-			auto v=make_unique<ValueDecl>(std::move(type),std::move(valueDefList),0,@$);
+			auto v=make_unique<ValueDecl>(std::move(type),std::move(valueDefList),@$);
 			$$=std::move(v);
 		}
 
@@ -340,7 +340,7 @@ FuncParamDecl:
 		}
 
 Block:
-	T_LB T_RB {$$=std::move(std::make_unique<BlockStmt>());}
+	T_LB T_RB {$$=std::move(std::make_unique<BlockStmt>(@$));}
 |	T_LB BlockItemList T_RB
 		{
 			std::vector<std::unique_ptr<ASTUnit>> &blockItemList=$2;
@@ -505,7 +505,7 @@ Exp:
 	{
 		std::vector<std::unique_ptr<Exp>> &funcallParamList=$3;
 		std::unique_ptr<Ident> &ident=$1;
-		auto funcallExp=make_unique<FuncallExp>(std::move(ident),std::move(funcallParamList));
+		auto funcallExp=make_unique<FuncallExp>(std::move(ident),std::move(funcallParamList),@$);
 		$$=std::move(funcallExp);
 	}
 |	T_ADD Exp		{$$=std::move(make_unique<UnaryExp>(UnaryExp::UnaryExpType::Add,std::move($2),@$));}

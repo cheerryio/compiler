@@ -22,11 +22,10 @@ namespace saltyfish {
 	public:
 		static std::map<PrimaryExpType, std::string> primaryExpTypeMap;
 	public:
-		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Ident> ident);
-		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Constant> constant);
 		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Ident> ident,location loc);
 		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Constant> constant,location loc);
 		~PrimaryExp();
+		virtual bool isConstExp() const;
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const PrimaryExp& primaryExp);
 	};

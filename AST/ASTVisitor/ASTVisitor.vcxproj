@@ -143,15 +143,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\AST\AssignStmt.cpp" />
-    <ClCompile Include="..\AST\ASTUnit.cpp" />
     <ClCompile Include="..\AST\BinaryExp.cpp" />
     <ClCompile Include="..\AST\BlockStmt.cpp" />
     <ClCompile Include="..\AST\BreakStmt.cpp" />
     <ClCompile Include="..\AST\ConstantInt.cpp" />
     <ClCompile Include="..\AST\ContinueStmt.cpp" />
-    <ClCompile Include="..\AST\Decl.cpp" />
     <ClCompile Include="..\AST\EmptyStmt.cpp" />
-    <ClCompile Include="..\AST\Exp.cpp" />
     <ClCompile Include="..\AST\ExpStmt.cpp" />
     <ClCompile Include="..\AST\FuncallExp.cpp" />
     <ClCompile Include="..\AST\FuncDecl.cpp" />
@@ -160,7 +157,6 @@
     <ClCompile Include="..\AST\IfStmt.cpp" />
     <ClCompile Include="..\AST\PrimaryExp.cpp" />
     <ClCompile Include="..\AST\ReturnStmt.cpp" />
-    <ClCompile Include="..\AST\Stmt.cpp" />
     <ClCompile Include="..\AST\Type.cpp" />
     <ClCompile Include="..\AST\UnaryExp.cpp" />
     <ClCompile Include="..\AST\ValueDecl.cpp" />
@@ -169,7 +165,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageVisitor.cpp" />
     <ClCompile Include="SemanticVisitor.cpp" />
-    <ClCompile Include="SymbolTable.cpp" />
     <ClCompile Include="SymbolTableList.cpp" />
   </ItemGroup>
   <ItemGroup>

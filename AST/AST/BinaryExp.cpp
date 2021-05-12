@@ -26,13 +26,18 @@ BinaryExp::BinaryExp() {}
 BinaryExp::BinaryExp(BinaryExp::BinaryExpType binaryExpType, unique_ptr<Exp> Lexp, unique_ptr<Exp> Rexp)
 	:binaryExpType(binaryExpType), Lexp(std::move(Lexp)), Rexp(std::move(Rexp))
 {
-	
+	this->unitType = ASTUnit::UnitType::isBinaryExp;
 }
 
 BinaryExp::BinaryExp(BinaryExp::BinaryExpType binaryExpType, unique_ptr<Exp> Lexp, unique_ptr<Exp> Rexp,location loc)
 	:ASTUnit(loc), binaryExpType(binaryExpType), Lexp(std::move(Lexp)), Rexp(std::move(Rexp))
 {
+	this->unitType = ASTUnit::UnitType::isBinaryExp;
+}
 
+bool BinaryExp::isConstExp() const
+{
+	return Lexp->isConstExp() && Rexp->isConstExp();
 }
 
 void BinaryExp::accept(ASTVisitor& visitor) {
@@ -44,7 +49,8 @@ namespace saltyfish {
 	{
 		o << "<";
 		o << "BinaryExp \'" << BinaryExp::BinaryExpTypeMap.at(binaryExp.binaryExpType) << "\' ";
-		cout << "\'" << binaryExp.loc << "\'";
+		o << "\'" << "isConst: " << (binaryExp.isConstExp() ? "Yes" : "No") << "\'";
+		o << "\'" << binaryExp.loc << "\' ";
 		o << ">";
 		return o;
 	}

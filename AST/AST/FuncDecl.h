@@ -13,7 +13,6 @@ namespace saltyfish {
 		std::unique_ptr<Ident> ident;
 
 	public:
-		FuncDecl(std::unique_ptr<Ident> ident);
 		FuncDecl(std::unique_ptr<Ident> ident,location loc);
 		virtual void accept(ASTVisitor& visitor);
 	};

@@ -9,6 +9,9 @@ namespace saltyfish {
 		virtual public ASTUnit
 	{
 	public:
+		Decl() {
+			this->unitType = ASTUnit::UnitType::isDecl;
+		}
 		virtual void accept(ASTVisitor& visitor) {
 			
 		}

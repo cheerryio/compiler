@@ -8,6 +8,9 @@ namespace saltyfish {
         virtual public ASTUnit
     {
     public:
+        Stmt() {
+            this->unitType = ASTUnit::UnitType::isStmt;
+        }
         virtual void accept(ASTVisitor& visitor) {
 
         }

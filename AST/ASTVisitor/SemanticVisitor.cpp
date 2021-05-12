@@ -5,8 +5,10 @@
 using namespace std;
 using namespace saltyfish;
 
-void SemanticVisitor::visit()
+SemanticVisitor::SemanticVisitor(SymbolTableList* table)
+	:table(table)
 {
+	
 }
 
 void SemanticVisitor::visit(CompUnit* compUnit)
@@ -30,11 +32,14 @@ void SemanticVisitor::visit(ValueDecl* valueDecl)
 {
 	auto &type = valueDecl->type;
 	auto &valueDefList = valueDecl->valueDefList;
-	bool isConst = valueDecl->isConst();
 	for (auto& valueDef : valueDefList) {
 		auto& ident = valueDef->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr(type->type,SymbolAttr::SymbolRole::Value,0,isConst);	//确认const array
-		this->table->addSymbol(ident->identStr, symbolAttr);
+		SymbolAttr* symbolAttr = new SymbolAttr(type->type,SymbolAttr::SymbolRole::Value,ident->getArray(),ident->getConst());	//确认const array
+		if (this->table->addSymbol(ident->identStr, symbolAttr) == nullptr) {
+			cerr << "dulplicate declare" << ident->identStr << endl;
+			exit(-1);
+		}
+		ident->symbolAttr = symbolAttr;
 	}
 }
 
@@ -47,7 +52,10 @@ void SemanticVisitor::visit(FuncDef* funcDef)
 	auto& type = funcDef->type;
 	auto& ident = funcDef->ident;
 	SymbolAttr* symbolAttr = new SymbolAttr(type->type,SymbolAttr::SymbolRole::Function);
-	this->table->addSymbol(ident->identStr, symbolAttr);
+	if (this->table->addSymbol(ident->identStr, symbolAttr) == nullptr) {
+		cerr << "function name been declared" << endl;
+		exit(-1);
+	}
 
 	vector<unique_ptr<FuncParamDecl>>& funcParamDeclList = funcDef->funcParamDeclList;
 	unique_ptr<BlockStmt>& block = funcDef->block;
@@ -66,13 +74,10 @@ void SemanticVisitor::visit(AssignStmt* assignStmt)
 
 void SemanticVisitor::visit(BlockStmt* blockStmt)
 {
-	this->table->inScope();
 	vector<unique_ptr<ASTUnit>>& stmts = blockStmt->stmts;
 	for (vector<unique_ptr<ASTUnit>>::iterator it = stmts.begin(); it < stmts.end(); it++) {
 		(*it)->accept(*this);
 	}
-	cout << *(this->table) << endl;
-	this->table->outScope();	//包含了清空局部变量动作
 }
 
 void SemanticVisitor::visit(BreakStmt* breakStmt)

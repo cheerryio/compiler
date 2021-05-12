@@ -4,28 +4,18 @@
 using namespace std;
 using namespace saltyfish;
 
-IfStmt::IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody)
-	:cond(std::move(cond)), ifBody(std::move(ifBody))
-{
-	setHasElse(false);
-}
-
-IfStmt::IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody, std::unique_ptr<Stmt> elseBody)
-	: cond(std::move(cond)), ifBody(std::move(ifBody)), elseBody(std::move(elseBody))
-{
-	setHasElse(true);
-}
-
 IfStmt::IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody,location loc)
 	:ASTUnit(loc), cond(std::move(cond)), ifBody(std::move(ifBody))
 {
 	setHasElse(false);
+	this->unitType = ASTUnit::UnitType::isIfStmt;
 }
 
 IfStmt::IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody, std::unique_ptr<Stmt> elseBody,location loc)
 	:ASTUnit(loc), cond(std::move(cond)), ifBody(std::move(ifBody)), elseBody(std::move(elseBody))
 {
 	setHasElse(true);
+	this->unitType = ASTUnit::UnitType::isIfStmt;
 }
 
 bool IfStmt::hasElse() {

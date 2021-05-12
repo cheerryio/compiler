@@ -57,7 +57,7 @@ void MessageVisitor::visit(ValueDef* valueDef) {
 	cout << "ValueDef" << endl;
 	depth++;
 	valueDef->ident->accept(*this);
-	if (valueDef->isArray()) {
+	if (valueDef->ident->getArray()) {
 		vector<unique_ptr<Exp>>& arrayDimList = valueDef->arrayDimList;
 		vector<unique_ptr<Exp>>::iterator it = arrayDimList.begin();
 		if (valueDef->isArrayFirstDimEmpty()) {

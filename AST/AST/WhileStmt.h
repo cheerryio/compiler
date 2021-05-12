@@ -16,7 +16,6 @@ namespace saltyfish {
         std::unique_ptr<Stmt> body;
 
     public:
-        WhileStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> body);
         WhileStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> body,location loc);
         virtual void accept(ASTVisitor& visitor);
     };

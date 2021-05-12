@@ -7,20 +7,10 @@
 using namespace std;
 using namespace saltyfish;
 
-CompUnit::CompUnit() {
-	
-}
-
-CompUnit::CompUnit(std::vector<std::unique_ptr<ASTUnit>> compUnitList)
-	:compUnitList(std::move(compUnitList))
-{
-	
-}
-
 CompUnit::CompUnit(std::vector<std::unique_ptr<ASTUnit>> compUnitList,location loc)
 	:ASTUnit(loc), compUnitList(std::move(compUnitList))
 {
-
+	this->unitType = ASTUnit::UnitType::isCompUnit;
 }
 
 void CompUnit::accept(ASTVisitor& visitor) {

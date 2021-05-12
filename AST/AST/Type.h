@@ -17,10 +17,11 @@ namespace saltyfish{
 		std::string typeStr;
 	public:
 		static std::map<std::string, IdentType> strTypeMap;
+		static std::map<Type::IdentType, std::string> typeMap;
 	public:
-		Type();
 		Type(IdentType type, location loc);
 		static IdentType mapType(std::string& typeStr);
+		static std::string mapTypeStr(const Type& type);
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const Type& type);
 	};

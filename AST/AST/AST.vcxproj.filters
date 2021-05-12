@@ -107,9 +107,6 @@
     <ClCompile Include="ValueDef.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Exp.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="BinaryExp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -125,9 +122,6 @@
     <ClCompile Include="FuncallExp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Decl.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ValueDecl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -135,12 +129,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="FuncParamDecl.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ASTUnit.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Stmt.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="IfStmt.cpp">

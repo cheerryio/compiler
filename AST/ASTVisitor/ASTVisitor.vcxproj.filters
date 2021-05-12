@@ -39,13 +39,7 @@
     <ClCompile Include="..\AST\ContinueStmt.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\AST\Decl.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\AST\EmptyStmt.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\AST\Exp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\AST\ExpStmt.cpp">
@@ -69,9 +63,6 @@
     <ClCompile Include="..\AST\ReturnStmt.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\AST\Stmt.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="..\AST\Type.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -93,13 +84,7 @@
     <ClCompile Include="SemanticVisitor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="SymbolTable.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="SymbolTableList.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\AST\ASTUnit.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

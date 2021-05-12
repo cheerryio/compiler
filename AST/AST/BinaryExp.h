@@ -25,6 +25,7 @@ namespace saltyfish {
 		BinaryExp();
 		BinaryExp(BinaryExpType binaryExpType, std::unique_ptr<Exp> Lexp, std::unique_ptr <Exp> Rexp);
 		BinaryExp(BinaryExpType binaryExpType, std::unique_ptr<Exp> Lexp, std::unique_ptr <Exp> Rexp,location loc);
+		virtual bool isConstExp() const;
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const BinaryExp& binaryExp);
 	};

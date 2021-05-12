@@ -16,8 +16,6 @@ namespace saltyfish {
 		std::unique_ptr<Ident> ident;
 
 	public:
-		FuncParamDecl();
-		FuncParamDecl(std::unique_ptr<Type> type,std::unique_ptr<Ident> ident);
 		FuncParamDecl(std::unique_ptr<Type> type, std::unique_ptr<Ident> ident,location loc);
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const FuncParamDecl& funcParamDecl);

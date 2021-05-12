@@ -15,10 +15,10 @@ namespace saltyfish {
         level_t getLevel();
         void inScope();
         void outScope();
-        int addSymbol(std::string symbolName,SymbolAttr* symbolAttr);
+        SymbolAttr* addSymbol(std::string symbolName,SymbolAttr* symbolAttr);
         void delSymbols();
-        SymbolAttr* getSymbol(std::string symbolName, level_t level);
-        SymbolAttr* declaredSymbol(std::string symbolName);
+        SymbolAttr* getSymbolinLevel(std::string symbolName, level_t level);
+        SymbolAttr* getSymbol(std::string symbolName);
         bool dulplicateDeclared(std::string symbolName);
         friend std::ostream& operator<<(std::ostream& o, const SymbolTableList& symbolTable);
     };

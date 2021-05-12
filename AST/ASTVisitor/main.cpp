@@ -13,16 +13,24 @@
 using namespace std;
 using namespace saltyfish;
 
+class A {
+public:
+	enum AEnum {
+		Enum1, Enum2
+	} Aenum;
+public:
+	void AFunc() const {
+		cout << "function" << endl;
+	}
+};
+
+class B
+	:public A {
+
+};
+
 int main() {
-	SymbolTableList table;
-	SymbolAttr* attr1 = new SymbolAttr();
-	SymbolAttr* attr2 = new SymbolAttr();
-	attr1->level = 1;
-	attr2->level = 2;
-	table.inScope();
-	table.addSymbol("attr1", attr1);
-	table.inScope();
-	table.addSymbol("attr2", attr2);
-	table.outScope();
+	A a;
+	a.AFunc();
 	return 0;
 }

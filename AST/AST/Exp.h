@@ -5,15 +5,16 @@ namespace saltyfish {
 	class ASTVisitor;
 
 	class Exp :
-		virtual public ASTUnit {
+		virtual public ASTUnit 
+	{
 	public:
 		class ExpBitFields {
 		} bitFields;
 
 	public:
-		Exp();
-		virtual void accept(ASTVisitor& visitor) {
-			
+		Exp() {
+			this->unitType = ASTUnit::UnitType::isExp;
 		}
+		virtual bool isConstExp() const = 0;
 	};
 }

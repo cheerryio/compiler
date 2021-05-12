@@ -4,16 +4,10 @@
 using namespace std;
 using namespace saltyfish;
 
-ExpStmt::ExpStmt(std::unique_ptr<Exp> exp)
-	:exp(std::move(exp))
-{
-	
-}
-
 ExpStmt::ExpStmt(std::unique_ptr<Exp> exp,location loc)
 	:ASTUnit(loc), exp(std::move(exp))
 {
-
+	this->unitType = ASTUnit::UnitType::isExpStmt;
 }
 
 

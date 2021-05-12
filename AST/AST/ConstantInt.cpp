@@ -12,18 +12,10 @@ map<ConstantInt::ConstantIntType, string> ConstantInt::constantIntTypeMap = {
 	{ConstantInt::ConstantIntType::Hexadecimal,"Hexadecimal Integer"}
 };
 
-ConstantInt::ConstantInt() {}
-
-ConstantInt::ConstantInt(ConstantInt::ConstantIntType constantIntType,int value)
-	:constantIntType(constantIntType),value(value)
-{
-	
-}
-
 ConstantInt::ConstantInt(ConstantInt::ConstantIntType constantIntType, int value,location loc)
 	:ASTUnit(loc),constantIntType(constantIntType), value(value)
 {
-
+	this->unitType = ASTUnit::UnitType::isConstantInt;
 }
 
 void ConstantInt::accept(ASTVisitor& visitor) {

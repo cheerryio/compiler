@@ -31,9 +31,12 @@ void SymbolTableList::outScope() {
 	this->level--;
 }
 
-int SymbolTableList::addSymbol(std::string symbolName,SymbolAttr* symbolAttr) {
+/**
+* 加入符号，实现是将新的symbolAttr插入到头节点后面
+*/
+SymbolAttr* SymbolTableList::addSymbol(std::string symbolName,SymbolAttr* symbolAttr) {
 	if (this->dulplicateDeclared(symbolName)) {
-		return -1;
+		return nullptr;
 	}
 	symbolAttr->level = this->level;
 	SymbolAttr* head = nullptr;
@@ -46,39 +49,35 @@ int SymbolTableList::addSymbol(std::string symbolName,SymbolAttr* symbolAttr) {
 	else {
 		head = this->table.find(symbolName)->second;
 	}
-	symbolAttr->next = head;
-	symbolAttr->prev = head->prev;
-	head->prev->next = symbolAttr;
-	head->prev = symbolAttr;
-	this->table[symbolName] = symbolAttr;
+	symbolAttr->prev = head;
+	symbolAttr->next = head->next;
+	head->next->prev = symbolAttr;
+	head->next = symbolAttr;
 
-	return this->level;
+	return symbolAttr;
 }
 
 // 删除层号等于level的所有符号
 void SymbolTableList::delSymbols() {
 	for (unordered_map<string, SymbolAttr*>::iterator it = this->table.begin(); it != table.end(); it++) {
 		SymbolAttr* head = it->second;
-		SymbolAttr* pos = head;
+		SymbolAttr* pos = head->next;
 		if (pos->level == this->level) {
 			pos->prev->next = pos->next;
 			pos->next->prev = pos->prev;
-			this->table[it->first] = pos->next;
 			delete pos;
 		}
 	}
 }
 
-SymbolAttr* SymbolTableList::getSymbol(std::string symbolName, level_t level) {
+SymbolAttr* SymbolTableList::getSymbolinLevel(std::string symbolName, level_t level) {
 	if (level > this->level)
 		return nullptr;
 	if (this->table.find(symbolName) == this->table.end())
 		return nullptr;
 	SymbolAttr* head = this->table.find(symbolName)->second;
-	if (head->next == head)
-		return nullptr;
 
-	for (SymbolAttr* pos = head; pos != head->prev; pos = pos->next) {
+	for (SymbolAttr* pos = head->next; pos != head; pos = pos->next) {
 		if (pos->level == this->level) {
 			return pos;
 		}
@@ -86,13 +85,13 @@ SymbolAttr* SymbolTableList::getSymbol(std::string symbolName, level_t level) {
 	return nullptr;
 }
 
-SymbolAttr* SymbolTableList::declaredSymbol(std::string symbolName) {
+SymbolAttr* SymbolTableList::getSymbol(std::string symbolName) {
 	if (this->table.find(symbolName) == this->table.end()) {
 		return nullptr;
 	}
 	SymbolAttr* head = this->table.find(symbolName)->second;
 	if (head->next != head)
-		return head;
+		return head->next;
 	return nullptr;
 }
 
@@ -101,7 +100,7 @@ bool SymbolTableList::dulplicateDeclared(std::string symbolName) {
 		return false;
 	}
 	SymbolAttr* head = this->table.find(symbolName)->second;
-	SymbolAttr* pos = head;
+	SymbolAttr* pos = head->next;
 	if (pos->level != this->level) {
 		return false;
 	}
@@ -111,6 +110,9 @@ bool SymbolTableList::dulplicateDeclared(std::string symbolName) {
 namespace saltyfish {
 	std::ostream& operator<<(std::ostream& o, const SymbolTableList& symbolTable)
 	{
+		o << setfill(' ')
+			<< endl << endl << endl << endl << endl << endl;
+
 		o << setfill(' ')
 			<< setw(16) << "ident"
 			<< setw(6) << "|"
@@ -129,7 +131,7 @@ namespace saltyfish {
 		for (auto it = (symbolTable.table).begin(); it != symbolTable.table.end(); it++) {
 			SymbolAttr* head = it->second;
 			SymbolAttr* pos = nullptr;
-			for (pos = head; pos != head->prev; pos = pos -> next) {
+			for (pos = head->next; pos != head; pos = pos -> next) {
 				o << setfill('-') << setw(120) << "" << endl;
 				o << setfill(' ')
 					<< setw(16) << it->first

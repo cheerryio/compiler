@@ -8,7 +8,6 @@ namespace saltyfish {
         public Stmt
     {
     public:
-        ContinueStmt();
         ContinueStmt(location loc);
         virtual void accept(ASTVisitor& visitor);
     };

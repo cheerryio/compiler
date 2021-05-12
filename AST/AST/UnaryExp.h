@@ -19,8 +19,8 @@ namespace saltyfish {
 	public:
 		static std::map<UnaryExpType, std::string> unaryExpTypeMap;
 	public:
-		UnaryExp(UnaryExpType unaryExpType,std::unique_ptr<Exp> exp);
 		UnaryExp(UnaryExpType unaryExpType, std::unique_ptr<Exp> exp,location loc);
+		virtual bool isConstExp() const;
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const UnaryExp& unaryExp);
 	};
