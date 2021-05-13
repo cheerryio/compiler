@@ -30,7 +30,8 @@ class B
 };
 
 int main() {
-	A a;
-	a.AFunc();
+	cout << "aaa";
+	string a = "abababa";
+	cout << a + "dddddd";
 	return 0;
 }

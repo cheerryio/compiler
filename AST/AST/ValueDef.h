@@ -48,12 +48,6 @@ namespace saltyfish {
 	public:
 		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList,location loc);
 		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList, unique_ptr<Exp> exp,location loc);
-		bool hasAssign();
-		bool isArrayAssign();
-		bool isArrayFirstDimEmpty();
-		void setHasAssign(bool b);
-		void setIsArrayAssign(bool b);
-		void setIsArrayFirstDimEmpty(bool b);
 		void setIdentConst();
 		void setIdentArray();
 		virtual void accept(ASTVisitor& visitor);

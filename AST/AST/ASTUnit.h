@@ -3,6 +3,7 @@
 
 namespace saltyfish {
 	class ASTVisitor;
+	struct TAC;
 
 	class ASTUnit
 	{
@@ -16,6 +17,7 @@ namespace saltyfish {
 			isExpStmt
 		} unitType;
 		location loc;
+		TAC* tac;
 	public:
 		ASTUnit() {
 			this->unitType = ASTUnit::UnitType::isASTUnit;
@@ -25,6 +27,9 @@ namespace saltyfish {
 		}
 		virtual UnitType getUnitType() {
 			return this->unitType;
+		}
+		location getLoc() {
+			return this->loc;
 		}
 		virtual void accept(ASTVisitor& visitor) = 0;
 	};

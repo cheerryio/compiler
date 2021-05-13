@@ -2,10 +2,10 @@
 #include <string>
 
 #include "ASTUnit.h"
-#include "SymbolTable.h"
 
 namespace saltyfish {
 	class ASTVisitor;
+	class SymbolAttr;
 
 	class Ident
 		:virtual public ASTUnit

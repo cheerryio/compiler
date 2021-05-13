@@ -58,9 +58,7 @@ void MainVisitor::visit(AssignStmt* assignStmt)
 
 void MainVisitor::visit(BlockStmt* blockStmt)
 {
-	this->table->inScope();
 	for (ASTVisitor* visitor : this->visitors)	visitor->visit(blockStmt);
-	this->table->outScope();	//包含了清空局部变量动作
 }
 
 void MainVisitor::visit(BreakStmt* breakStmt)

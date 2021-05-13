@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <map>
 #include "ASTVisitor.h"
 #include "SymbolTableList.h"
 
@@ -8,7 +9,21 @@ namespace saltyfish {
 		public ASTVisitor
 	{
 	public:
+		class SemanticBitFields {
+		public:
+			unsigned inWhile : 1;
+			unsigned inFunction : 1;
+
+		} bitFields;
+		enum class ErrorCode {
+			DulicateDeclare,VariableNotDeclared,AssignNotLVal,
+			BreakNotInLoop,ContinueNotInLoop,ReturnNotInFunction,
+			ConstNotAssignedByVar
+		};
 		SymbolTableList* table = nullptr;
+
+	public:
+		static std::map<ErrorCode, std::string> errorMessage;
 
 	public:
 		SemanticVisitor(SymbolTableList* table);
@@ -40,6 +55,8 @@ namespace saltyfish {
 		virtual void visit(Type* type);
 		virtual void visit(ConstantInt* constantInt);
 		virtual void visit(Ident* ident);
+
+		void error(ErrorCode code,std::string& message,location loc);
 	};
 }
 

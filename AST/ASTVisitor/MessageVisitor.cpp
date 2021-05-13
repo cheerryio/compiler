@@ -60,14 +60,14 @@ void MessageVisitor::visit(ValueDef* valueDef) {
 	if (valueDef->ident->getArray()) {
 		vector<unique_ptr<Exp>>& arrayDimList = valueDef->arrayDimList;
 		vector<unique_ptr<Exp>>::iterator it = arrayDimList.begin();
-		if (valueDef->isArrayFirstDimEmpty()) {
+		if (valueDef->bitFields.isArrayFirstDimEmpty) {
 			it++;
 		}
 		for (it; it < arrayDimList.end(); it++) {
 			(*it)->accept(*this);
 		}
 	}
-	if (valueDef->hasAssign()) {
+	if (valueDef->bitFields.hasAssign) {
 		valueDef->exp->accept(*this);
 	}
 	depth--;
@@ -190,7 +190,7 @@ void MessageVisitor::visit(PrimaryExp* primaryExp){
 		primaryExp->ident->accept(*this);
 	}
 	else {
-		primaryExp->constant->accept(*this);
+		primaryExp->constantInt->accept(*this);
 	}
 	depth--;
 }

@@ -38,7 +38,8 @@ SymbolAttr* SymbolTableList::addSymbol(std::string symbolName,SymbolAttr* symbol
 	if (this->dulplicateDeclared(symbolName)) {
 		return nullptr;
 	}
-	symbolAttr->level = this->level;
+
+	symbolAttr->level = this->level;	//强制设置符号层数
 	SymbolAttr* head = nullptr;
 	if (this->table.find(symbolName) == table.end()) {
 		head = new SymbolAttr();

@@ -5,6 +5,7 @@
 #include "Exp.h"
 #include "Ident.h"
 #include "Constant.h"
+#include "ConstantInt.h"
 
 namespace saltyfish {
 	class ASTVisitor;
@@ -17,13 +18,13 @@ namespace saltyfish {
 		} primaryExpType;
 		union {
 			std::unique_ptr<saltyfish::Ident> ident;
-			std::unique_ptr<saltyfish::Constant> constant;
+			std::unique_ptr<saltyfish::ConstantInt> constantInt;
 		};
 	public:
 		static std::map<PrimaryExpType, std::string> primaryExpTypeMap;
 	public:
 		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Ident> ident,location loc);
-		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Constant> constant,location loc);
+		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::ConstantInt> constantInt,location loc);
 		~PrimaryExp();
 		virtual bool isConstExp() const;
 		virtual void accept(ASTVisitor& visitor);

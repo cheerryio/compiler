@@ -8,6 +8,8 @@ namespace saltyfish {
         public SymbolTable
     {
     public:
+        unsigned tempIndex = 0;
+    public:
         std::unordered_map<std::string, SymbolAttr*> table;
     public:
         SymbolTableList();

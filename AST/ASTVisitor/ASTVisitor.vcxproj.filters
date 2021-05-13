@@ -87,6 +87,9 @@
     <ClCompile Include="SymbolTableList.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MainVisitor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTVisitor.h">
@@ -102,6 +105,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SymbolTableList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MainVisitor.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,8 @@
 #include "Exp.h"
 #include "PrimaryExp.h"
 #include "../ASTVisitor/ASTVisitor.h"
+#include "Ident.h"
+#include "SymbolTable.h"
 
 using namespace saltyfish;
 using namespace std;
@@ -16,8 +18,8 @@ PrimaryExp::PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish:
 	this->unitType = ASTUnit::UnitType::isPrimaryExp;
 }
 
-PrimaryExp::PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Constant> constant,location loc)
-	:ASTUnit(loc), primaryExpType(primaryExpType), constant(std::move(constant))
+PrimaryExp::PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::ConstantInt> constantInt,location loc)
+	:ASTUnit(loc), primaryExpType(primaryExpType), constantInt(std::move(constantInt))
 {
 	this->unitType = ASTUnit::UnitType::isPrimaryExp;
 }
@@ -29,7 +31,7 @@ PrimaryExp::~PrimaryExp()
 
 bool PrimaryExp::isConstExp() const
 {
-	return primaryExpType == PrimaryExp::PrimaryExpType::Ident ? ident->getConst() : true;
+	return primaryExpType == PrimaryExp::PrimaryExpType::Ident ? (ident->symbolAttr == nullptr ? false : ident->symbolAttr->isConst) : true;
 }
 
 void PrimaryExp::accept(ASTVisitor& visitor) {

@@ -273,7 +273,9 @@ ValueDef:
 		{
 			unique_ptr<Ident> ident=std::move($1);
 			std::vector<unique_ptr<Exp>> &arrayDimList=$2;
-			auto valueDef=make_unique<ValueDef>(std::move(ident),std::move(arrayDimList),@$);
+			unique_ptr<Exp> &exp=$4;
+			auto valueDef=make_unique<ValueDef>(std::move(ident),std::move(arrayDimList),std::move(exp),@$);
+			valueDef->bitFields.hasAssign=1;
 			$$=std::move(valueDef);
 		}
 |	Ident ArrayDimList T_EQUAL ArrayAssignList
