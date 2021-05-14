@@ -9,6 +9,12 @@ namespace saltyfish {
         public ASTVisitor
     {
 	public:
+		class TACBitFields {
+		public:
+			unsigned calcBranch : 1;
+		} bitFields;
+
+	public:
 		SymbolTableList* table = nullptr;
 	public:
 		TACVisitor();
@@ -43,6 +49,9 @@ namespace saltyfish {
 
 		std::string getAlias();
 		SymbolAttr* getTemp();
+		void mergeCode(TACCode* code1,TACCode* code2);
+		void displayCode(TACCode* code);
+		string getLable();
     };
 }
 

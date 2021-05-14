@@ -162,10 +162,12 @@
     <ClCompile Include="..\AST\ValueDecl.cpp" />
     <ClCompile Include="..\AST\ValueDef.cpp" />
     <ClCompile Include="..\AST\WhileStmt.cpp" />
+    <ClCompile Include="Exp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageVisitor.cpp" />
     <ClCompile Include="SemanticVisitor.cpp" />
     <ClCompile Include="SymbolTableList.cpp" />
+    <ClCompile Include="TAC.cpp" />
     <ClCompile Include="TACVisitor.cpp" />
     <ClCompile Include="VisitorLauncher.cpp" />
   </ItemGroup>
@@ -175,6 +177,7 @@
     <ClInclude Include="SemanticVisitor.h" />
     <ClInclude Include="SymbolTable.h" />
     <ClInclude Include="SymbolTableList.h" />
+    <ClInclude Include="TAC.h" />
     <ClInclude Include="TACVisitor.h" />
     <ClInclude Include="VisitorLauncher.h" />
   </ItemGroup>

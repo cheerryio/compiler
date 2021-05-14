@@ -7,15 +7,10 @@
 using namespace saltyfish;
 using namespace std;
 
-std::map<UnaryExp::UnaryExpType, std::string> UnaryExp::unaryExpTypeMap = {
-	{UnaryExp::UnaryExpType::Add,"Add +"},
-	{UnaryExp::UnaryExpType::Sub,"Sub -"},
-	{UnaryExp::UnaryExpType::Not,"Not !"}
-};
-
-UnaryExp::UnaryExp(UnaryExpType unaryExpType, std::unique_ptr<Exp> exp,location loc)
+UnaryExp::UnaryExp(Exp::ExpType expType, std::unique_ptr<Exp> exp,location loc)
 	:ASTUnit(loc), exp(std::move(exp))
 {
+	this->expType = expType;
 	this->unitType = ASTUnit::UnitType::isUnaryExp;
 }
 
@@ -32,7 +27,7 @@ namespace saltyfish{
 	std::ostream& operator<<(std::ostream& o, const UnaryExp& unaryExp)
 	{
 		o << "<";
-		o << "UnaryExp " << "\'" << UnaryExp::unaryExpTypeMap.at(unaryExp.unaryExpType) << "\' ";
+		o << "UnaryExp " << "\'" << Exp::ExpTypeMap.at(unaryExp.expType) << "\' ";
 		o << "\'" << unaryExp.loc << "\' ";
 		o << "\'" << "isConst: " << (unaryExp.isConstExp() ? "Yes" : "No") << "\'";
 		o << ">";

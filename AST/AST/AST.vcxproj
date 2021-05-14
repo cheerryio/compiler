@@ -178,6 +178,7 @@
     <ClCompile Include="ConstantInt.cpp" />
     <ClCompile Include="ContinueStmt.cpp" />
     <ClCompile Include="EmptyStmt.cpp" />
+    <ClCompile Include="Exp.cpp" />
     <ClCompile Include="ExpStmt.cpp" />
     <ClCompile Include="FuncallExp.cpp" />
     <ClCompile Include="FuncDecl.cpp" />

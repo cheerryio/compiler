@@ -57,7 +57,7 @@
 
 		#define BINARY_EXP(a,b,c,binaryExpType,d) {	\
 			unique_ptr<Exp> Lexp=std::move((b));unique_ptr<Exp> Rexp=std::move((c));	\
-			auto e=make_unique<BinaryExp>(BinaryExp::BinaryExpType::binaryExpType,std::move(Lexp),std::move(Rexp),d);	\
+			auto e=make_unique<BinaryExp>(Exp::ExpType::binaryExpType,std::move(Lexp),std::move(Rexp),d);	\
 			(a)=std::move(e);	\
 		}
 }
@@ -509,9 +509,9 @@ Exp:
 		auto funcallExp=make_unique<FuncallExp>(std::move(ident),std::move(funcallParamList),@$);
 		$$=std::move(funcallExp);
 	}
-|	T_ADD Exp		{$$=std::move(make_unique<UnaryExp>(UnaryExp::UnaryExpType::Add,std::move($2),@$));}
-|	T_SUB Exp		{$$=std::move(make_unique<UnaryExp>(UnaryExp::UnaryExpType::Sub,std::move($2),@$));}
-|	T_NOT Exp		{$$=std::move(make_unique<UnaryExp>(UnaryExp::UnaryExpType::Not,std::move($2),@$));}
+|	T_ADD Exp		{$$=std::move(make_unique<UnaryExp>(Exp::ExpType::UnaryAdd,std::move($2),@$));}
+|	T_SUB Exp		{$$=std::move(make_unique<UnaryExp>(Exp::ExpType::UnarySub,std::move($2),@$));}
+|	T_NOT Exp		{$$=std::move(make_unique<UnaryExp>(Exp::ExpType::Not,std::move($2),@$));}
 %%
 namespace saltyfish
 {

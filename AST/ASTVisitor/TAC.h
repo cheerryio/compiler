@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "SymbolTable.h"
+#include "Exp.h"
 
 using namespace std;
 
@@ -25,15 +26,12 @@ namespace saltyfish {
 
 	struct TACCode {
 	public:
-		enum class TACCodeOp {
-			Assign,
-			Mul, Div, Add, Sub
-		} op;
+		Exp::ExpType op;
 		TACOpn* opn1, * opn2, * result;
 		TACCode* prev, * next;
 	public:
-		TACCode(TACCodeOp op, TACOpn* opn1, TACOpn* result);
-		TACCode(TACCodeOp op, TACOpn* opn1, TACOpn* opn2, TACOpn* result);
+		TACCode(Exp::ExpType op, TACOpn* opn1, TACOpn* result);
+		TACCode(Exp::ExpType op, TACOpn* opn1, TACOpn* opn2, TACOpn* result);
 		~TACCode();
 		friend std::ostream& operator<<(std::ostream& o, const TACCode& code);
 	};

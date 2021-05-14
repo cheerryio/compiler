@@ -93,6 +93,12 @@
     <ClCompile Include="VisitorLauncher.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TAC.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Exp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTVisitor.h">
@@ -114,6 +120,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="VisitorLauncher.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TAC.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

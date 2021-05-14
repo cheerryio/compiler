@@ -29,14 +29,14 @@ saltyfish::TACOpn::~TACOpn()
 	this->prev=this;	\
 	this->next=this;
 
-saltyfish::TACCode::TACCode(TACCodeOp op, TACOpn* opn1, TACOpn* result)
+saltyfish::TACCode::TACCode(Exp::ExpType op, TACOpn* opn1, TACOpn* result)
 	:op(op), opn1(opn1), result(result)
 {
 	//检验操作符类型
 	INIT_LIST;
 }
 
-saltyfish::TACCode::TACCode(TACCodeOp op, TACOpn* opn1, TACOpn* opn2, TACOpn* result)
+saltyfish::TACCode::TACCode(Exp::ExpType op, TACOpn* opn1, TACOpn* opn2, TACOpn* result)
 	: op(op), opn1(opn1), opn2(opn2), result(result)
 {
 	//检验操作符类型
@@ -51,7 +51,7 @@ namespace saltyfish {
 	std::ostream& operator<<(std::ostream& o, const TACCode& code) {
 		o << "("
 			<< setfill(' ')
-			<< setw(6) << "Add";
+			<< setw(8) << Exp::ExpTypeMap.at(code.op) << ",";
 		TACOpn* opn1 = code.opn1, * opn2 = code.opn2, * result = code.result;
 		vector<TACOpn*> opns = { opn1,opn2,result };
 		for (TACOpn* opn : opns) {
