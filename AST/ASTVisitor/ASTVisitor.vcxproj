@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -163,18 +163,20 @@
     <ClCompile Include="..\AST\ValueDef.cpp" />
     <ClCompile Include="..\AST\WhileStmt.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MainVisitor.cpp" />
     <ClCompile Include="MessageVisitor.cpp" />
     <ClCompile Include="SemanticVisitor.cpp" />
     <ClCompile Include="SymbolTableList.cpp" />
+    <ClCompile Include="TACVisitor.cpp" />
+    <ClCompile Include="VisitorLauncher.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTVisitor.h" />
-    <ClInclude Include="MainVisitor.h" />
     <ClInclude Include="MessageVisitor.h" />
     <ClInclude Include="SemanticVisitor.h" />
     <ClInclude Include="SymbolTable.h" />
     <ClInclude Include="SymbolTableList.h" />
+    <ClInclude Include="TACVisitor.h" />
+    <ClInclude Include="VisitorLauncher.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

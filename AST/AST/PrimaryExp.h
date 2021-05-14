@@ -6,6 +6,7 @@
 #include "Ident.h"
 #include "Constant.h"
 #include "ConstantInt.h"
+#include "SymbolTable.h"
 
 namespace saltyfish {
 	class ASTVisitor;

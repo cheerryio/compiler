@@ -47,7 +47,7 @@
 		#include "AST/AST/EmptyStmt.h"
 		#include "AST/AST/BlockStmt.h"
 		#include "AST/AST/ExpStmt.h"
-		#include "AST/ASTVisitor/MainVisitor.h"
+		#include "AST/ASTVisitor/VisitorLauncher.h"
 		using namespace std;
 
 		namespace saltyfish {
@@ -161,11 +161,10 @@ CompUnit:
 	CompUnitList
 		{
 			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$1;
-			auto compUnit=std::make_unique<CompUnit>(std::move(compUnitList),@$);
-			SymbolTableList* table=new SymbolTableList();
-			ASTVisitor* visitor=new MainVisitor(0x00000010,table);
-			compUnit->accept(*visitor);
-			$$=std::move(compUnit);
+			CompUnit* compUnit=new CompUnit(std::move(compUnitList),@$);
+			VisitorLauncher* visitorLauncher=new VisitorLauncher(0x00000100);
+			visitorLauncher->launch(compUnit);
+			//$$=std::move(compUnit);
 		}
 
 CompUnitList:

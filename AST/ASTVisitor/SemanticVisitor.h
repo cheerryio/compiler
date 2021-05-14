@@ -26,6 +26,7 @@ namespace saltyfish {
 		static std::map<ErrorCode, std::string> errorMessage;
 
 	public:
+		SemanticVisitor();
 		SemanticVisitor(SymbolTableList* table);
 
 		virtual void visit(CompUnit* compUnit);

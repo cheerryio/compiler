@@ -15,7 +15,7 @@ namespace saltyfish {
 		Type::IdentType type;
 		unsigned isArray : 1;
 		unsigned isConst : 1;
-		enum SymbolRole {
+		enum class SymbolRole {
 			Function, FunctionParam, Value,TempValue
 		} role : 3;
 		std::string name;
@@ -27,8 +27,10 @@ namespace saltyfish {
 	public:
 		SymbolAttr()
 			:level(0),isArray(0),isConst(0) {}
-		SymbolAttr(std::string name, std::string alias, SymbolAttr::SymbolRole role)
-			:name(name),alias(alias),role(role) {}
+		SymbolAttr(std::string name, std::string alias,Type::IdentType type, SymbolAttr::SymbolRole role)
+			:name(name),alias(alias),type(type), role(role) {}
+		SymbolAttr(std::string name, std::string alias, Type::IdentType type, SymbolAttr::SymbolRole role, unsigned isArray, unsigned isConst)
+			:name(name), alias(alias), type(type), role(role), isArray(isArray), isConst(isConst) {}
 		SymbolAttr(Type::IdentType type, SymbolAttr::SymbolRole role)
 			:level(0), type(type), role(role), isArray(0),isConst(0) {}
 		SymbolAttr(Type::IdentType type, SymbolAttr::SymbolRole role, unsigned isArray, unsigned isConst)

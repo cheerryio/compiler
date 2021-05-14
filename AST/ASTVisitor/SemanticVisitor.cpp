@@ -15,6 +15,10 @@ map<SemanticVisitor::ErrorCode, string> SemanticVisitor::errorMessage = {
 	{SemanticVisitor::ErrorCode::ConstNotAssignedByVar,"ConstNotAssignedByVar"}
 };
 
+SemanticVisitor::SemanticVisitor() {
+	this->table = new SymbolTableList();
+}
+
 SemanticVisitor::SemanticVisitor(SymbolTableList* table)
 	:table(table)
 {

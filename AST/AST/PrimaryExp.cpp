@@ -1,8 +1,8 @@
 #include "Exp.h"
 #include "PrimaryExp.h"
+#include "ASTUnit.h"
 #include "../ASTVisitor/ASTVisitor.h"
 #include "Ident.h"
-#include "SymbolTable.h"
 
 using namespace saltyfish;
 using namespace std;

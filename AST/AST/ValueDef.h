@@ -29,7 +29,7 @@ namespace saltyfish {
 		} bitFields;
 
 		struct ArrayList {
-			enum Type {
+			enum class Type {
 				Val, List
 			} type;
 			union {
