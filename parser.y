@@ -105,10 +105,10 @@
 %token T_DIV "除号"
 %token T_MOD "余号"
 %token T_NOT "感叹号"
-%token T_B "小于号"
-%token T_A "大于号"
-%token T_BE "小于等于号"
-%token T_AE "大于等于号"
+%token T_L "小于号"
+%token T_G "大于号"
+%token T_LE "小于等于号"
+%token T_GE "大于等于号"
 %token T_E "等于等于号"
 %token T_NE "不等于号"
 %token T_AND "与号"
@@ -117,7 +117,7 @@
 %left T_EQUAL
 %left T_OR
 %left  T_AND
-%left T_B T_A T_BE T_AE
+%left T_L T_G T_LE T_GE
 %left T_E T_NE
 %left T_ADD T_SUB
 %left T_MUL T_DIV T_MOD
@@ -490,10 +490,10 @@ Exp:
 |	Exp T_MOD Exp	{BINARY_EXP($$,$1,$3,Mod,@$);}
 |	Exp T_ADD Exp	{BINARY_EXP($$,$1,$3,Add,@$);}
 |	Exp T_SUB Exp	{BINARY_EXP($$,$1,$3,Sub,@$);}
-|	Exp T_B Exp		{BINARY_EXP($$,$1,$3,B,@$);}
-|	Exp T_A Exp		{BINARY_EXP($$,$1,$3,A,@$);}
-|	Exp T_BE Exp	{BINARY_EXP($$,$1,$3,Be,@$);}
-|	Exp T_AE Exp	{BINARY_EXP($$,$1,$3,Ae,@$);}
+|	Exp T_L Exp		{BINARY_EXP($$,$1,$3,L,@$);}
+|	Exp T_G Exp		{BINARY_EXP($$,$1,$3,G,@$);}
+|	Exp T_LE Exp	{BINARY_EXP($$,$1,$3,Le,@$);}
+|	Exp T_GE Exp	{BINARY_EXP($$,$1,$3,Ge,@$);}
 |	Exp T_E Exp		{BINARY_EXP($$,$1,$3,E,@$);}
 |	Exp T_NE Exp	{BINARY_EXP($$,$1,$3,Ne,@$);}
 |	Exp T_AND Exp	{BINARY_EXP($$,$1,$3,And,@$);}

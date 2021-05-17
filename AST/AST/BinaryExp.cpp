@@ -36,7 +36,7 @@ bool BinaryExp::isOpExp()
 
 bool saltyfish::BinaryExp::isRelExp()
 {
-	if (ISTYPE(B) || ISTYPE(A) || ISTYPE(Be) || ISTYPE(Ae) || ISTYPE(E) || ISTYPE(Ne)) {
+	if (ISTYPE(L) || ISTYPE(G) || ISTYPE(Le) || ISTYPE(Ge) || ISTYPE(E) || ISTYPE(Ne)) {
 		return true;
 	}
 	return false;

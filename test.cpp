@@ -1,7 +1,9 @@
-int main(){
-    int a[9],b;
-    b=9+8*2/(15-4);
 
-    int c;
-    c=-1;
+int func(){
+    int b;
+    return b;
+}
+
+int main(){
+    func(1+2);
 }

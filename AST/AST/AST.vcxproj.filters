@@ -164,8 +164,5 @@
     <ClCompile Include="FuncDef.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Exp.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

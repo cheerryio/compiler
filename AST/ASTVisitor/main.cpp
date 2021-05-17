@@ -16,6 +16,15 @@ using namespace saltyfish;
 #define TEST(format,...) printf(format,__VA_ARGS__)
 
 int main() {
-	TEST("%d", 12,13,14);
+	while (true) {
+		cout << 1 << endl;
+		{
+			cout << 2 << endl;
+			{
+				cout << 3 << endl;
+				break;
+			}
+		}
+	}
 	return 0;
 }

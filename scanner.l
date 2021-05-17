@@ -43,10 +43,10 @@
 "/"                                     {return saltyfish::Parser::make_T_DIV(driver.getLoc());}
 "%"                                     {return saltyfish::Parser::make_T_MOD(driver.getLoc());}
 
-"<"                                     {return saltyfish::Parser::make_T_B(driver.getLoc());}
-">"                                     {return saltyfish::Parser::make_T_A(driver.getLoc());}
-"<="                                    {return saltyfish::Parser::make_T_BE(driver.getLoc());}
-">="                                    {return saltyfish::Parser::make_T_AE(driver.getLoc());}
+"<"                                     {return saltyfish::Parser::make_T_L(driver.getLoc());}
+">"                                     {return saltyfish::Parser::make_T_G(driver.getLoc());}
+"<="                                    {return saltyfish::Parser::make_T_LE(driver.getLoc());}
+">="                                    {return saltyfish::Parser::make_T_GE(driver.getLoc());}
 "!"                                     {return saltyfish::Parser::make_T_NOT(driver.getLoc());}
 "=="                                    {return saltyfish::Parser::make_T_E(driver.getLoc());}
 "!="                                    {return saltyfish::Parser::make_T_NE(driver.getLoc());}

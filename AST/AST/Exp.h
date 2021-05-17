@@ -11,8 +11,8 @@ namespace saltyfish {
 	{
 	public:
 		enum ExpType {
-			Mul, Div, Mod, Add, Sub,
-			B, A, Be, Ae, E, Ne,
+			Add, Sub, Mul, Div, Mod,
+			L, G, Le, Ge, E, Ne,
 			And, Or,
 			Equal, Not,
 			UnaryAdd, UnarySub,
