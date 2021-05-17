@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "ASTVisitor.h"
 #include "SymbolTableList.h"
 #include "TAC.h"
@@ -16,6 +17,8 @@ namespace saltyfish {
 
 	public:
 		SymbolTableList* table = nullptr;
+		std::vector<TACCode*> codes;
+		unsigned nextinstr = 0;
 	public:
 		TACVisitor();
 		~TACVisitor();
@@ -49,8 +52,9 @@ namespace saltyfish {
 
 		std::string getAlias();
 		SymbolAttr* getTemp();
-		void mergeCode(TACCode* code1,TACCode* code2);
-		void displayCode(TACCode* code);
+		void mergeCode(TACCode* code);
+		void mergeCode(vector<TACCode*> codes);
+		void displayCode();
 		string getLable();
     };
 }

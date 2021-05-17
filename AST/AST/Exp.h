@@ -21,10 +21,13 @@ namespace saltyfish {
 	public:
 		static std::map<Exp::ExpType, std::string> ExpTypeMap;
 	public:
+		class ExpBitFields {
+		public:
+			unsigned isConst : 1;
+		} bitFields;
+	public:
 		Exp() {
 			this->unitType = ASTUnit::UnitType::isExp;
 		}
-		bool isCondExp();
-		virtual bool isConstExp() const = 0;
 	};
 }

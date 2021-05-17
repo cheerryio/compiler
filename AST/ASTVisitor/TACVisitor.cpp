@@ -75,9 +75,9 @@ void TACVisitor::visit(AssignStmt* assignStmt)
 	TACOpn* result = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
 	TACCode* code = new TACCode(Exp::ExpType::Assign, opn1, result);
 	assignStmt->tac = new TAC();
-	this->mergeCode(exp->tac->code, code);
+	this->mergeCode(code);
 	assignStmt->tac->code = exp->tac->code;
-	this->displayCode(exp->tac->code);
+	this->displayCode();
 }
 
 void TACVisitor::visit(BlockStmt* blockStmt)
@@ -113,8 +113,6 @@ void TACVisitor::visit(IfStmt* ifStmt)
 	auto& cond = ifStmt->cond;
 	auto& ifBody = ifStmt->ifBody;
 	cond->tac = new TAC();
-	cond->tac->Etrue = this->getLable();
-	cond->tac->Efalse = this->getLable();
 	this->bitFields.calcBranch = 1;
 
 }
@@ -144,16 +142,48 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 	Rexp->accept(*this);
 	TAC* tac = new TAC();
 	binaryExp->tac = tac;
-
 	TACOpn* opn1 = new TACOpn(TACOpn::OpnType::Var, Lexp->tac->place->alias);
 	TACOpn* opn2 = new TACOpn(TACOpn::OpnType::Var, Rexp->tac->place->alias);
-	SymbolAttr* temp = this->getTemp();
-	binaryExp->tac->place = temp;
-	TACOpn* result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
-	TACCode* code = new TACCode(binaryExp->expType, opn1, opn2, result);
-	this->mergeCode(Lexp->tac->code, Rexp->tac->code);
-	this->mergeCode(Lexp->tac->code,code);
-	binaryExp->tac->code = Lexp->tac->code;
+
+	/**
+	* 仅仅是op的二元运算节点，一条tac语句运算即可
+	* 需要生成新的临时变量
+	*/
+	if (binaryExp->isOpExp()) {
+		SymbolAttr* temp = this->getTemp();
+		binaryExp->tac->place = temp;
+		TACOpn* result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
+		TACCode* code = new TACCode(binaryExp->expType, opn1, opn2, result);
+		this->mergeCode(code);
+		binaryExp->tac->code = Lexp->tac->code;
+	}
+	/**
+	* 大于小于 等关系运算符，需要生成并设置truelist,falselist为nextistr,nextistr+1
+	* 不需要生成新的临时变量
+	*/
+	else if (binaryExp->isRelExp()) {
+		binaryExp->tac->truelist.push_back(nextinstr);
+		binaryExp->tac->falselist.push_back(nextinstr + 1);
+	}
+	/**
+	* 布尔运算符，此处需要回填
+	* 不需要新的临时变量
+	*/
+	else if (binaryExp->isBoolExp()) {
+		switch (binaryExp->expType) {
+		case(Exp::ExpType::And):
+			// 需要false短路
+
+			break;
+		case(Exp::ExpType::Or):
+			// 需要true短路
+
+			break;
+		default:
+			
+			break;
+		}
+	}
 }
 
 /**
@@ -188,13 +218,18 @@ void TACVisitor::visit(UnaryExp* unaryExp)
 	unaryExp->tac = new TAC();
 	auto& exp = unaryExp->exp;
 	exp->accept(*this);
-	TACOpn* opn1 = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
-	SymbolAttr* temp = this->getTemp();
-	unaryExp->tac->place = temp;
-	TACOpn* result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
-	TACCode* code = new TACCode(unaryExp->expType, opn1, result);
-	this->mergeCode(exp->tac->code, code);
-	unaryExp->tac->code = exp->tac->code;
+	if (unaryExp->expType == Exp::ExpType::Not) {
+		
+	}
+	else {
+		TACOpn* opn1 = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
+		SymbolAttr* temp = this->getTemp();
+		unaryExp->tac->place = temp;
+		TACOpn* result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
+		TACCode* code = new TACCode(unaryExp->expType, opn1, result);
+		this->mergeCode(code);
+		unaryExp->tac->code = exp->tac->code;
+	}
 }
 
 void TACVisitor::visit(Type* type)
@@ -228,25 +263,32 @@ SymbolAttr* TACVisitor::getTemp() {
 * 将code2插入到code1前面
 * 注意顺序
 */
-void TACVisitor::mergeCode(TACCode* code1, TACCode* code2)
+void TACVisitor::mergeCode(TACCode* code)
 {
-	if (code1 == nullptr || code2 == nullptr)
+	if (code == nullptr) {
 		return;
-	code1->prev->next = code2;
-	code2->prev->next = code1;
-	TACCode* t = code2->prev;
-	code2->prev = code1->prev;
-	code1->prev = t;
+	}
+	this->codes.push_back(code);
+	code->instr = this->nextinstr;
+	this->nextinstr++;
 }
 
-void TACVisitor::displayCode(TACCode* code) {
-	if (code == nullptr)
-		return;
-	TACCode* c = code;
-	do {
-		cout << *c << endl;
-		c = c->next;
-	} while (c != code);
+void TACVisitor::mergeCode(vector<TACCode*> codes)
+{
+	// 正确设置指令位置
+	for (int i = 0; i < codes.size(); i++) {
+		codes[i]->instr = this->nextinstr + i;
+	}
+	this->codes.reserve(this->codes.size() + codes.size());
+	this->codes.insert(this->codes.end(), this->codes.begin(), this->codes.end());
+	this->codes.insert(this->codes.end(), codes.begin(), codes.end());
+	nextinstr += codes.size();
+}
+
+void TACVisitor::displayCode() {
+	for (vector<TACCode*>::iterator it = this->codes.begin(); it != this->codes.end(); it++) {
+		cout << **it << endl;
+	}
 }
 
 string TACVisitor::getLable() {

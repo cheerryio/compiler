@@ -13,25 +13,9 @@
 using namespace std;
 using namespace saltyfish;
 
-class A {
-public:
-	enum AEnum {
-		Enum1, Enum2
-	} Aenum;
-public:
-	void AFunc() const {
-		cout << "function" << endl;
-	}
-};
-
-class B
-	:public A {
-
-};
+#define TEST(format,...) printf(format,__VA_ARGS__)
 
 int main() {
-	cout << "aaa";
-	string a = "abababa";
-	cout << a + "dddddd";
+	TEST("%d", 12,13,14);
 	return 0;
 }

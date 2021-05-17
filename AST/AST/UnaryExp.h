@@ -15,7 +15,6 @@ namespace saltyfish {
 		std::unique_ptr<Exp> exp;
 	public:
 		UnaryExp(Exp::ExpType expType, std::unique_ptr<Exp> exp,location loc);
-		virtual bool isConstExp() const;
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const UnaryExp& unaryExp);
 	};

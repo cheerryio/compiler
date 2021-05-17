@@ -29,11 +29,6 @@ PrimaryExp::~PrimaryExp()
 	
 }
 
-bool PrimaryExp::isConstExp() const
-{
-	return primaryExpType == PrimaryExp::PrimaryExpType::Ident ? (ident->symbolAttr == nullptr ? false : ident->symbolAttr->isConst) : true;
-}
-
 void PrimaryExp::accept(ASTVisitor& visitor) {
 	visitor.visit(this);
 }
@@ -44,7 +39,6 @@ namespace saltyfish {
 		o << "<";
 		o << "PrimaryExp " << "\'" << PrimaryExp::primaryExpTypeMap.at(primaryExp.primaryExpType) << "\' ";
 		o << "\'" << primaryExp.loc << "\'";
-		o << "\'" << "isConst: " << (primaryExp.isConstExp() ? "Yes" : "No") << "\'";
 		o << ">";
 		return o;
 	}

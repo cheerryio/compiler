@@ -22,10 +22,3 @@ std::map<Exp::ExpType, std::string> Exp::ExpTypeMap = {
 	{Exp::ExpType::UnarySub,"USub -"},
 	{Exp::ExpType::Assign,"Assign ="}
 };
-
-bool Exp::isCondExp()
-{
-	if (this->expType <= Exp::ExpType::Not && this->expType >= Exp::ExpType::B)
-		return true;
-	return false;
-}

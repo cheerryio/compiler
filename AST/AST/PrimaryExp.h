@@ -6,7 +6,6 @@
 #include "Ident.h"
 #include "Constant.h"
 #include "ConstantInt.h"
-#include "SymbolTable.h"
 
 namespace saltyfish {
 	class ASTVisitor;
@@ -27,7 +26,6 @@ namespace saltyfish {
 		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Ident> ident,location loc);
 		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::ConstantInt> constantInt,location loc);
 		~PrimaryExp();
-		virtual bool isConstExp() const;
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const PrimaryExp& primaryExp);
 	};

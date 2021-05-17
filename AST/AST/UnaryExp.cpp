@@ -14,11 +14,6 @@ UnaryExp::UnaryExp(Exp::ExpType expType, std::unique_ptr<Exp> exp,location loc)
 	this->unitType = ASTUnit::UnitType::isUnaryExp;
 }
 
-bool UnaryExp::isConstExp() const
-{
-	return exp->isConstExp();
-}
-
 void UnaryExp::accept(ASTVisitor& visitor) {
 	visitor.visit(this);
 }
@@ -29,7 +24,6 @@ namespace saltyfish{
 		o << "<";
 		o << "UnaryExp " << "\'" << Exp::ExpTypeMap.at(unaryExp.expType) << "\' ";
 		o << "\'" << unaryExp.loc << "\' ";
-		o << "\'" << "isConst: " << (unaryExp.isConstExp() ? "Yes" : "No") << "\'";
 		o << ">";
 		return o;
 	}

@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include <string>
 #include "SymbolTable.h"
 #include "Exp.h"
@@ -26,6 +27,7 @@ namespace saltyfish {
 
 	struct TACCode {
 	public:
+		unsigned instr;	// 数字表示的指令位置（第几条指令）
 		Exp::ExpType op;
 		TACOpn* opn1, * opn2, * result;
 		TACCode* prev, * next;
@@ -43,8 +45,8 @@ namespace saltyfish {
 		unsigned offset;
 		unsigned width;
 		TACCode* code;
-		string Etrue;
-		string Efalse;
+		vector<int> truelist;
+		vector<int> falselist;
 		string Snext;
 	public:
 		TAC() {}

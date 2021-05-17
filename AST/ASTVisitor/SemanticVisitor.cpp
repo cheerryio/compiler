@@ -57,9 +57,10 @@ void SemanticVisitor::visit(ValueDecl* valueDecl)
 		//检验赋值表达式常量变量
 		if (valueDef->bitFields.hasAssign) {
 			auto& exp = valueDef->exp;
-			exp->accept(*this);		//判断exp中是否有符号未被定义
+			exp->accept(*this);		//判断exp中是否有符号未被定义,以及计算exp是否为const，设置expBitFields的isConst位
 			if (ident->getConst()) {
-				if (!exp->isConstExp()) {
+				//检验表达式是否为常量表达式
+				if (!(exp->bitFields.isConst)) {
 					string message = "";
 					this->error(SemanticVisitor::ErrorCode::ConstNotAssignedByVar, message, ident->getLoc());
 					//exit(-1);
@@ -192,6 +193,7 @@ void SemanticVisitor::visit(BinaryExp* binaryExp)
 	auto& Rexp = binaryExp->Rexp;
 	Lexp->accept(*this);
 	Rexp->accept(*this);
+	binaryExp->bitFields.isConst = Lexp->bitFields.isConst && Rexp->bitFields.isConst;
 }
 
 void SemanticVisitor::visit(FuncallExp* funcallExp)
@@ -206,6 +208,12 @@ void SemanticVisitor::visit(PrimaryExp* primaryExp)
 	if (primaryExp->primaryExpType == PrimaryExp::PrimaryExpType::Ident) {
 		auto& ident = primaryExp->ident;
 		ident->accept(*this);
+		if (ident->bitFields.isConst) {
+			primaryExp->bitFields.isConst = 1;
+		}
+	}
+	else {
+		primaryExp->bitFields.isConst = 1;
 	}
 }
 
@@ -213,6 +221,7 @@ void SemanticVisitor::visit(UnaryExp* unaryExp)
 {
 	auto& exp = unaryExp->exp;
 	exp->accept(*this);
+	unaryExp->bitFields.isConst = exp->bitFields.isConst;
 }
 
 void SemanticVisitor::visit(Type* type)

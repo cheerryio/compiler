@@ -56,7 +56,6 @@ namespace saltyfish {
 		virtual void visit(Type* type);
 		virtual void visit(ConstantInt* constantInt);
 		virtual void visit(Ident* ident);
-
 		void error(ErrorCode code,std::string& message,location loc);
 	};
 }
