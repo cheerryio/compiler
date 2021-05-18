@@ -29,14 +29,15 @@ void SymbolTableList::inScope()
 }
 
 void SymbolTableList::outScope() {
-	cout << (*this) << endl;
-	this->delSymbols();
-	this->level--;
-	if (this->level == 0) {
+	if (this->level == 1) {
 		if (this->functionSymbol != nullptr) {
 			functionSymbol->offset = this->offset;
 		}
 	}
+	cout << (*this) << endl;
+
+	this->delSymbols();
+	this->level--;
 	this->offset = this->offsetStack.back();
 	this->offsetStack.pop_back();
 }
