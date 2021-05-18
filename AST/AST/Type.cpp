@@ -4,23 +4,23 @@
 using namespace std;
 using namespace saltyfish;
 
-std::map<std::string, Type::IdentType> Type::strTypeMap = {
-	{"void",Type::IdentType::Void},
-	{"int",Type::IdentType::Int}
+std::map<std::string, Type::TypeCode> Type::strTypeMap = {
+	{"void",Type::TypeCode::Void},
+	{"int",Type::TypeCode::Int}
 };
 
-std::map<Type::IdentType, std::string> Type::typeMap = {
-	{Type::IdentType::Void,"void"},
-	{Type::IdentType::Int, "int "}
+std::map<Type::TypeCode, std::string> Type::typeMap = {
+	{Type::TypeCode::Void,"void"},
+	{Type::TypeCode::Int, "int "}
 };
 
-Type::Type(IdentType type, location loc)
+Type::Type(TypeCode type, location loc)
 	:ASTUnit(loc),type(type)
 {
 	this->unitType = ASTUnit::UnitType::isType;
 }
 
-Type::IdentType Type::mapType(std::string& typeStr)
+Type::TypeCode Type::mapType(std::string& typeStr)
 {
 	return Type::strTypeMap.at(typeStr);
 }

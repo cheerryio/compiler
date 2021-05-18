@@ -14,7 +14,7 @@ namespace saltyfish {
 	public:
 		class TACBitFields {
 		public:
-			unsigned calcBranch : 1;
+			unsigned calcCond : 1;
 		} bitFields;
 
 	public:
@@ -59,6 +59,7 @@ namespace saltyfish {
 		std::string getAlias();
 		SymbolAttr* getTemp();
 		void mergeCode(TACCode* code);
+		void mergeCode(TACCode* code1, TACCode* code2);
 		void mergeCode(vector<TACCode*> codes);
 		vector<int> mergeList(vector<int>& a, vector<int>& b);
 		vector<int> mergeList(vector<int>& a, vector<int>& b, vector<int>& c);

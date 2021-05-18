@@ -19,6 +19,7 @@ namespace saltyfish {
 		unsigned offset;
 	public:
 		TACOpn();
+		TACOpn(OpnType opnType);
 		TACOpn(OpnType opnType,int intVal);
 		TACOpn(OpnType opnType, string identName);
 		~TACOpn();
@@ -41,6 +42,7 @@ namespace saltyfish {
 	public:
 		static std::map<TACCode::OpCode, std::string> OpCodeMap;
 	public:
+		TACCode(TACCode::OpCode op, TACOpn* result);
 		TACCode(TACCode::OpCode op, TACOpn* opn1, TACOpn* result);
 		TACCode(TACCode::OpCode op, TACOpn* opn1, TACOpn* opn2, TACOpn* result);
 		~TACCode();
@@ -50,7 +52,7 @@ namespace saltyfish {
 	struct TAC {
 	public:
 		SymbolAttr* place;
-		Type::IdentType type;
+		Type::TypeCode type;
 		unsigned offset;
 		unsigned width;
 		TACCode* code;

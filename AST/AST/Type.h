@@ -11,16 +11,16 @@ namespace saltyfish{
 		:virtual public ASTUnit
 	{
 	public:
-		enum IdentType {
+		enum TypeCode {
 			Void = 0 , Int
 		} type;
 		std::string typeStr;
 	public:
-		static std::map<std::string, IdentType> strTypeMap;
-		static std::map<Type::IdentType, std::string> typeMap;
+		static std::map<std::string, TypeCode> strTypeMap;
+		static std::map<Type::TypeCode, std::string> typeMap;
 	public:
-		Type(IdentType type, location loc);
-		static IdentType mapType(std::string& typeStr);
+		Type(TypeCode type, location loc);
+		static TypeCode mapType(std::string& typeStr);
 		static std::string mapTypeStr(const Type& type);
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const Type& type);

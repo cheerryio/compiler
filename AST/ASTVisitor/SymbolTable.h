@@ -12,7 +12,9 @@ namespace saltyfish {
 		typedef unsigned times_t;
 	public:
 		level_t level;
-		Type::IdentType type;
+		unsigned offset;
+		unsigned width;
+		Type::TypeCode type;
 		unsigned isArray : 1;
 		unsigned isConst : 1;
 		enum class SymbolRole {
@@ -27,13 +29,13 @@ namespace saltyfish {
 	public:
 		SymbolAttr()
 			:level(0),isArray(0),isConst(0) {}
-		SymbolAttr(std::string name, std::string alias,Type::IdentType type, SymbolAttr::SymbolRole role)
+		SymbolAttr(std::string name, std::string alias,Type::TypeCode type, SymbolAttr::SymbolRole role)
 			:name(name),alias(alias),type(type), role(role) {}
-		SymbolAttr(std::string name, std::string alias, Type::IdentType type, SymbolAttr::SymbolRole role, unsigned isArray, unsigned isConst)
+		SymbolAttr(std::string name, std::string alias, Type::TypeCode type, SymbolAttr::SymbolRole role, unsigned isArray, unsigned isConst)
 			:name(name), alias(alias), type(type), role(role), isArray(isArray), isConst(isConst) {}
-		SymbolAttr(Type::IdentType type, SymbolAttr::SymbolRole role)
+		SymbolAttr(Type::TypeCode type, SymbolAttr::SymbolRole role)
 			:level(0), type(type), role(role), isArray(0),isConst(0) {}
-		SymbolAttr(Type::IdentType type, SymbolAttr::SymbolRole role, unsigned isArray, unsigned isConst)
+		SymbolAttr(Type::TypeCode type, SymbolAttr::SymbolRole role, unsigned isArray, unsigned isConst)
 			:level(0), type(type), role(role), isArray(isArray), isConst(isConst) {}
 	};
 

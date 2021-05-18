@@ -48,12 +48,12 @@ void SemanticVisitor::visit(ValueDecl* valueDecl)
 	auto &valueDefList = valueDecl->valueDefList;
 	for (auto& valueDef : valueDefList) {
 		auto& ident = valueDef->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr(type->type,SymbolAttr::SymbolRole::Value,ident->getArray(),ident->getConst());	//确认const array
+		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr,ident->identStr,type->type,SymbolAttr::SymbolRole::Value,ident->getArray(),ident->getConst());	//确认const array
 		if (this->table->addSymbol(ident->identStr, symbolAttr) == nullptr) {
 			this->error(SemanticVisitor::ErrorCode::DulicateDeclare, ident->identStr, ident->getLoc());
 			//exit(-1);
 		}
-		ident->symbolAttr = symbolAttr;
+
 		//检验赋值表达式常量变量
 		if (valueDef->bitFields.hasAssign) {
 			auto& exp = valueDef->exp;
@@ -81,23 +81,21 @@ void SemanticVisitor::visit(FuncDef* funcDef)
 {
 	auto& type = funcDef->type;
 	auto& ident = funcDef->ident;
-	SymbolAttr* symbolAttr = new SymbolAttr(type->type,SymbolAttr::SymbolRole::Function);
+	SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr, ident->identStr, type->type, SymbolAttr::SymbolRole::Function);
 	if (this->table->addSymbol(ident->identStr, symbolAttr) == nullptr) {
 		this->error(SemanticVisitor::ErrorCode::DulicateDeclare, ident->identStr, ident->getLoc());
 		//exit(-1);
 	}
-	vector<unique_ptr<FuncParamDecl>>& funcParamDeclList = funcDef->funcParamDeclList;
-	unique_ptr<BlockStmt>& block = funcDef->block;
+	auto& funcParamDeclList = funcDef->funcParamDeclList;
+	auto& block = funcDef->block;
 	for (vector<unique_ptr<FuncParamDecl>>::iterator it = funcParamDeclList.begin(); it < funcParamDeclList.end(); it++) {
 		auto& type = (*it)->type;
 		auto& ident = (*it)->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr(type->type, SymbolAttr::SymbolRole::FunctionParam, 0, 0);	// 确认const array
+		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr,ident->identStr,type->type, SymbolAttr::SymbolRole::FunctionParam, 0, 0);	// 确认const array
 		this->table->addSymbol(ident->identStr, symbolAttr);
 	}
 
-	this->bitFields.inFunction = 1;
 	block->accept(*this);
-	this->bitFields.inFunction = 0;
 }
 
 void SemanticVisitor::visit(AssignStmt* assignStmt)
@@ -165,12 +163,6 @@ void SemanticVisitor::visit(IfStmt* ifStmt)
 
 void SemanticVisitor::visit(ReturnStmt* returnStmt)
 {
-	//return语句只能出现在函数之中
-	if (this->bitFields.inFunction == 0) {
-		string message = "";
-		this->error(SemanticVisitor::ErrorCode::ReturnNotInFunction, message, returnStmt->getLoc());
-		//exit(-1);
-	}
 	if (returnStmt->hasExp()) {
 		auto& exp = returnStmt->exp;
 		exp->accept(*this);
@@ -199,7 +191,7 @@ void SemanticVisitor::visit(BinaryExp* binaryExp)
 void SemanticVisitor::visit(FuncallExp* funcallExp)
 {
 	auto& ident = funcallExp->ident;
-	//在符号表中查找函数名字定义
+	//在符号表中查找函数名字定义，并检验参数类型是否正确
 
 }
 

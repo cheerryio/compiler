@@ -35,6 +35,7 @@ void TACVisitor::visit(CompUnit* compUnit)
 	for (vector<unique_ptr<ASTUnit>>::iterator it = compUnitList.begin(); it != compUnitList.end(); it++) {
 		(*it)->accept(*this);
 	}
+
 	this->displayCode();
 }
 
@@ -69,10 +70,8 @@ void TACVisitor::visit(ValueDef* valueDef)
 		auto& exp = valueDef->exp;
 		exp->accept(*this);
 		SymbolAttr* symbolAttr = this->table->getSymbol(valueDef->ident->identStr);
-		opn = new TACOpn();
-		result = new TACOpn();
-		result->identName = symbolAttr->alias;
-		opn->identName = exp->tac->place->alias;
+		opn = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
+		result = new TACOpn(TACOpn::OpnType::Var, symbolAttr->alias);
 		TACCode* code = new TACCode(TACCode::OpCode::Assign, opn, result);
 		this->mergeCode(code);
 	}
@@ -86,16 +85,15 @@ void TACVisitor::visit(FuncDef* funcDef)
 	// 处理符号表
 	auto& type = funcDef->type;
 	auto& ident = funcDef->ident;
+	auto& funcParamDeclList = funcDef->funcParamDeclList;
+	auto& block = funcDef->block;
 	SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr,this->getAlias(),type->type, SymbolAttr::SymbolRole::Function);
 	this->table->addSymbol(ident->identStr, symbolAttr);
-	vector<unique_ptr<FuncParamDecl>>& funcParamDeclList = funcDef->funcParamDeclList;
-	unique_ptr<BlockStmt>& block = funcDef->block;
 
 	// 生成中间代码
 	TACCode* code = nullptr;
 	TACOpn* result = nullptr;
-	result = new TACOpn();
-	result->identName = symbolAttr->name;
+	result = new TACOpn(TACOpn::OpnType::Var, symbolAttr->name);
 	code = new TACCode(TACCode::OpCode::Function, nullptr, nullptr, result);
 	this->mergeCode(code);
 
@@ -104,10 +102,10 @@ void TACVisitor::visit(FuncDef* funcDef)
 		auto& type = (*it)->type;
 		auto& ident = (*it)->ident;
 		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr, this->getAlias(), type->type, SymbolAttr::SymbolRole::FunctionParam, 0, 0);	// 确认const array
+		symbolAttr->level = this->table->getLevel() + 1;
 		this->table->addSymbol(ident->identStr, symbolAttr);
-
 		// 中间代码
-		result->identName = symbolAttr->name;
+		result = new TACOpn(TACOpn::OpnType::Var, symbolAttr->name);
 		code = new TACCode(TACCode::OpCode::Param, nullptr, nullptr, result);
 		this->mergeCode(code);
 	}
@@ -124,18 +122,14 @@ void TACVisitor::visit(AssignStmt* assignStmt)
 	TACOpn* opn1 = new TACOpn(TACOpn::OpnType::Var, symbolAttr->alias);
 	TACOpn* result = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
 	TACCode* code = new TACCode(TACCode::OpCode::Assign, opn1, result);
-	assignStmt->tac = new TAC();
 	this->mergeCode(code);
-	assignStmt->tac->code = exp->tac->code;
 }
 
 void TACVisitor::visit(BlockStmt* blockStmt)
 {
 	this->table->inScope();
 	blockStmt->tac = new TAC();
-	vector<unique_ptr<ASTUnit>>& stmts = blockStmt->stmts;
-	TACCode* code = nullptr;
-	TACOpn* result = nullptr;
+	auto& stmts = blockStmt->stmts;
 	for (vector<unique_ptr<ASTUnit>>::iterator it = stmts.begin(); it < stmts.end(); it++) {
 			(*it)->accept(*this);
 			if ((*it)->tac != nullptr) {
@@ -148,8 +142,7 @@ void TACVisitor::visit(BlockStmt* blockStmt)
 void TACVisitor::visit(BreakStmt* breakStmt)
 {
 	this->breaklist.push_back(this->nextinstr);
-	TACOpn* result = new TACOpn();
-	result->opnType = TACOpn::OpnType::J;
+	TACOpn* result = new TACOpn(TACOpn::OpnType::J);
 	TACCode* code = new TACCode(TACCode::OpCode::GOTO, nullptr, nullptr, result);
 	this->mergeCode(code);
 }
@@ -157,8 +150,7 @@ void TACVisitor::visit(BreakStmt* breakStmt)
 void TACVisitor::visit(ContinueStmt* continueStmt)
 {
 	this->continuelist.push_back(this->nextinstr);
-	TACOpn* result = new TACOpn();
-	result->opnType = TACOpn::OpnType::J;
+	TACOpn* result = new TACOpn(TACOpn::OpnType::J);
 	TACCode* code = new TACCode(TACCode::OpCode::GOTO, nullptr, nullptr, result);
 	this->mergeCode(code);
 }
@@ -179,25 +171,30 @@ void TACVisitor::visit(IfStmt* ifStmt)
 	auto& cond = ifStmt->cond;
 	auto& ifBody = ifStmt->ifBody;
 	ifStmt->tac = new TAC();
+	this->bitFields.calcCond = 1;	// 该属性指示最近的BinaryOpExp, PrimaryExp, UnaryExp计算生成list属性
 	if (!ifStmt->bitFields.hasElse) {
 		cond->accept(*this);
 		this->backpatch(cond->tac->truelist, nextinstr);
 		ifBody->accept(*this);
-		this->mergeList(cond->tac->falselist, ifBody->tac->nextlist);
+		ifStmt->tac->nextlist = this->mergeList(cond->tac->falselist, ifBody->tac->nextlist);
 	}
 	else {
 		auto& elseBody = ifStmt->elseBody;
 		cond->accept(*this);
-		this->backpatch(cond->tac->truelist, nextinstr);
+		unsigned M1_instr = this->nextinstr;
 		ifBody->accept(*this);
-		ifStmt->tac->nextlist.push_back(nextinstr);
-		TACOpn* result = new TACOpn();
-		result->opnType = TACOpn::OpnType::J;
+		unsigned N_instr = this->nextinstr;
+		// 此代码需要回填整个if语句跳出到哪里
+		TACOpn* result = new TACOpn(TACOpn::OpnType::J);
 		TACCode* code = new TACCode(TACCode::OpCode::GOTO, nullptr, nullptr, result);
 		this->mergeCode(code);
-		this->backpatch(cond->tac->falselist, nextinstr);
+		unsigned M2_instr = this->nextinstr;
 		elseBody->accept(*this);
-		ifStmt->tac->nextlist = this->mergeList(ifStmt->tac->nextlist, ifBody->tac->nextlist, elseBody->tac->nextlist);
+
+		this->backpatch(cond->tac->truelist, M1_instr);
+		this->backpatch(cond->tac->falselist, M2_instr);
+		ifStmt->tac->nextlist = this->mergeList(ifBody->tac->nextlist, elseBody->tac->nextlist);
+		ifStmt->tac->nextlist.push_back(N_instr);
 	}
 }
 
@@ -208,8 +205,7 @@ void TACVisitor::visit(ReturnStmt* returnStmt)
 	if (returnStmt->bitFields.hasExp) {
 		auto& exp = returnStmt->exp;
 		exp->accept(*this);
-		TACOpn* result = new TACOpn();
-		result->identName = exp->tac->place->alias;
+		TACOpn* result = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
 		code = new TACCode(TACCode::OpCode::Return, nullptr, nullptr, result);
 	}
 	else {
@@ -224,6 +220,7 @@ void TACVisitor::visit(WhileStmt* whileStmt)
 	auto& cond = whileStmt->cond;
 	auto& body = whileStmt->body;
 	unsigned M1_instr = nextinstr;
+	this->bitFields.calcCond = 1;
 	cond->accept(*this);
 	unsigned M2_instr = nextinstr;
 	body->accept(*this);
@@ -233,8 +230,7 @@ void TACVisitor::visit(WhileStmt* whileStmt)
 	whileStmt->tac->nextlist = this->mergeList(whileStmt->tac->nextlist, this->breaklist, cond->tac->falselist);
 	this->continuelist.clear();
 	this->breaklist.clear();
-	TACOpn* result = new TACOpn();
-	result->opnType = TACOpn::OpnType::J;
+	TACOpn* result = new TACOpn(TACOpn::OpnType::J);
 	result->labelInstr = M1_instr;
 	TACCode* code = new TACCode(TACCode::OpCode::GOTO, nullptr, nullptr, result);
 	this->mergeCode(code);
@@ -249,21 +245,19 @@ void TACVisitor::visit(FuncallExp* funcallExp)
 	TACCode* code = nullptr;
 	TACOpn* opn = nullptr;
 	TACOpn* result = nullptr;
-	ident->accept(*this);
+	ident->accept(*this);	// 让ident去找自己的symbolAttr属性（即在符号表中的对应）
+
 	for (auto& param : params) {
 		param->accept(*this);
-		result = new TACOpn();
-		result->identName = param->tac->place->alias;
+		result = new TACOpn(TACOpn::OpnType::Var, param->tac->place->alias);
 		code = new TACCode(TACCode::OpCode::Arg, nullptr, nullptr, result);
 		paramCodes.push_back(code);
 	}
 	this->mergeCode(paramCodes);
-	SymbolAttr* symbolAttr = this->table->getSymbol(ident->identStr);
-	opn = new TACOpn();
-	result = new TACOpn();
-	opn->identName = symbolAttr->name;
+	SymbolAttr* symbolAttr = ident->tac->place;
+	opn = new TACOpn(TACOpn::OpnType::Var, symbolAttr->name);
 	SymbolAttr* temp = this->getTemp();
-	result->identName = temp->alias;
+	result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
 	funcallExp->tac->place = temp;
 	code = new TACCode(TACCode::OpCode::Call, opn, result);
 	this->mergeCode(code);
@@ -280,8 +274,9 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 	// 先递归处理孩子，得到需要的数据
 	TAC* tac = new TAC();
 	binaryExp->tac = tac;
-	TACOpn* opn1 = nullptr;
-	TACOpn* opn2 = nullptr;
+	TACOpn* opn1, *opn2;
+	TACOpn* trueResult, * falseResult;
+	TACCode* code1, * code2;
 
 	/**
 	* 仅仅是op的二元运算节点，一条tac语句运算即可
@@ -297,7 +292,18 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 		TACOpn* result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
 		TACCode* code = new TACCode(expTypeMapOpCode.at(binaryExp->expType), opn1, opn2, result);
 		this->mergeCode(code);
-		binaryExp->tac->code = Lexp->tac->code;
+		if (this->bitFields.calcCond) {
+			this->bitFields.calcCond = 0;
+			binaryExp->tac->truelist.push_back(nextinstr);
+			binaryExp->tac->falselist.push_back(nextinstr + 1);
+			opn1 = new TACOpn(TACOpn::OpnType::Var, binaryExp->tac->place->alias);
+			opn2 = new TACOpn(TACOpn::OpnType::Int, 0);
+			trueResult = new TACOpn(TACOpn::OpnType::J);
+			falseResult = new TACOpn(TACOpn::OpnType::J);
+			code1 = new TACCode(TACCode::OpCode::JNE, opn1, opn2, trueResult);
+			code2 = new TACCode(TACCode::OpCode::GOTO, NULL, NULL, falseResult);
+			this->mergeCode(code1, code2);
+		}
 	}
 	/**
 	* 大于小于 等关系运算符，需要生成并设置truelist,falselist为nextistr,nextistr+1
@@ -310,14 +316,11 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 		opn2 = new TACOpn(TACOpn::OpnType::Var, Rexp->tac->place->alias);
 		binaryExp->tac->truelist.push_back(nextinstr);
 		binaryExp->tac->falselist.push_back(nextinstr + 1);
-		TACOpn* trueResult = new TACOpn();
-		TACOpn* falseResult = new TACOpn();
-		trueResult->opnType = TACOpn::OpnType::J;
-		falseResult->opnType = TACOpn::OpnType::J;
-		TACCode* code1 = new TACCode(expTypeMapOpCode.at(binaryExp->expType), opn1, opn2, trueResult);
-		TACCode* code2 = new TACCode(TACCode::OpCode::GOTO, NULL, NULL, falseResult);
-		this->mergeCode(code1);
-		this->mergeCode(code2);
+		trueResult = new TACOpn(TACOpn::OpnType::J);
+		falseResult = new TACOpn(TACOpn::OpnType::J);
+		code1 = new TACCode(expTypeMapOpCode.at(binaryExp->expType), opn1, opn2, trueResult);
+		code2 = new TACCode(TACCode::OpCode::GOTO, NULL, NULL, falseResult);
+		this->mergeCode(code1, code2);
 	}
 	/**
 	* 布尔运算符，此处需要回填
@@ -357,45 +360,71 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 void TACVisitor::visit(PrimaryExp* primaryExp)
 {
 	primaryExp->tac = new TAC();
+	TACOpn* opn1, * opn2, * result, * trueResult, * falseResult;
+	TACCode* code, * code1, * code2;
 	if (primaryExp->primaryExpType == PrimaryExp::PrimaryExpType::Ident) {
-		SymbolAttr* symbolAttr = this->table->getSymbol(primaryExp->ident->identStr);
+		auto& ident = primaryExp->ident;
+		ident->accept(*this);	// 让ident去寻找自己的symbolAttr
+		SymbolAttr* symbolAttr = ident->tac->place;
 		primaryExp->tac->place = symbolAttr;
-		//opn->offset
 	}
 	else if (primaryExp->primaryExpType == PrimaryExp::PrimaryExpType::ConstantInt) {
-		TACOpn* opn1 = new TACOpn();
-		TACOpn* result = new TACOpn();
-		result->opnType = TACOpn::OpnType::Var;
-		opn1->opnType = TACOpn::OpnType::Int;
+		opn1 = new TACOpn(TACOpn::OpnType::Int, primaryExp->constantInt->value);
 		SymbolAttr* temp = this->getTemp();
-		result->identName = temp->alias;
-		opn1->intVal = primaryExp->constantInt->value;
+		result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
 		primaryExp->tac->place = temp;
-		TACCode* code = new TACCode(TACCode::OpCode::Assign, opn1, result);
+		code = new TACCode(TACCode::OpCode::Assign, opn1, result);
 		this->mergeCode(code);
+	}
+
+	// 计算cond
+	if (this->bitFields.calcCond) {
+		this->bitFields.calcCond = 0;
+		primaryExp->tac->truelist.push_back(nextinstr);
+		primaryExp->tac->falselist.push_back(nextinstr + 1);
+
+		opn1 = new TACOpn(TACOpn::OpnType::Var, primaryExp->tac->place->alias);
+		opn2 = new TACOpn(TACOpn::OpnType::Int, 0);
+		trueResult = new TACOpn(TACOpn::OpnType::J);
+		falseResult = new TACOpn(TACOpn::OpnType::J);
+		code1 = new TACCode(TACCode::OpCode::JNE, opn1, opn2, trueResult);
+		code2 = new TACCode(TACCode::OpCode::GOTO, nullptr, nullptr, falseResult);
+		this->mergeCode(code1,code2);
 	}
 }
 
 void TACVisitor::visit(UnaryExp* unaryExp)
 {
+	TACOpn* opn1, * opn2, * result, * trueResult, * falseResult;
+	TACCode* code, * code1, * code2;
 	unaryExp->tac = new TAC();
 	auto& exp = unaryExp->exp;
 	exp->accept(*this);
 	if (unaryExp->expType == Exp::ExpType::Not) {
-		vector<int> t = unaryExp->tac->truelist;
-		unaryExp->tac->truelist = unaryExp->tac->falselist;
-		unaryExp->tac->falselist = t;
+		unaryExp->tac->truelist = exp->tac->falselist;
+		unaryExp->tac->falselist = exp->tac->truelist;
 	}
 	else {
-		TACOpn* opn1 = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
-		TACOpn* result = new TACOpn();
-		result->opnType = TACOpn::OpnType::Var;
+		opn1 = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
 		SymbolAttr* temp = this->getTemp();
-		opn1->identName = temp->alias;
-		result->identName = temp->alias;
+		result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
 		unaryExp->tac->place = temp;
+
 		TACCode* code = new TACCode(expTypeMapOpCode.at(unaryExp->expType), opn1, result);
 		this->mergeCode(code);
+
+		if (this->bitFields.calcCond) {
+			this->bitFields.calcCond = 0;
+			unaryExp->tac->truelist.push_back(nextinstr);
+			unaryExp->tac->falselist.push_back(nextinstr + 1);
+			opn1 = new TACOpn(TACOpn::OpnType::Var, unaryExp->tac->place->alias);
+			opn2 = new TACOpn(TACOpn::OpnType::Int, 0);
+			trueResult = new TACOpn(TACOpn::OpnType::J);
+			falseResult = new TACOpn(TACOpn::OpnType::J);
+			code1 = new TACCode(TACCode::OpCode::JNE, opn1, opn2, trueResult);
+			code2 = new TACCode(TACCode::OpCode::GOTO, nullptr, nullptr, falseResult);
+			this->mergeCode(code1, code2);
+		}
 	}
 }
 
@@ -424,7 +453,8 @@ SymbolAttr* TACVisitor::getTemp() {
 	static unsigned index = 0;
 	string name = "_t" + to_string(index);
 	index++;
-	SymbolAttr* symbolAttr = new SymbolAttr(name, name, Type::IdentType::Int, SymbolAttr::SymbolRole::TempValue);
+	SymbolAttr* symbolAttr = new SymbolAttr(name, name, Type::TypeCode::Int, SymbolAttr::SymbolRole::TempValue);
+	this->table->addSymbol(name, symbolAttr);
 	return symbolAttr;
 }
 
@@ -442,6 +472,12 @@ void TACVisitor::mergeCode(TACCode* code)
 	this->nextinstr++;
 }
 
+void TACVisitor::mergeCode(TACCode* code1, TACCode* code2)
+{
+	this->mergeCode(code1);
+	this->mergeCode(code2);
+}
+
 void TACVisitor::mergeCode(vector<TACCode*> codes)
 {
 	// 正确设置指令位置
@@ -455,9 +491,6 @@ void TACVisitor::mergeCode(vector<TACCode*> codes)
 
 vector<int> TACVisitor::mergeList(vector<int>& a, vector<int>& b)
 {
-	if (a.size() + b.size() == 0) {
-		return vector<int>();
-	}
 	vector<int> newList;
 	newList.reserve(a.size() + b.size());
 	newList.insert(newList.end(), a.begin(), a.end());
@@ -468,9 +501,6 @@ vector<int> TACVisitor::mergeList(vector<int>& a, vector<int>& b)
 
 vector<int> TACVisitor::mergeList(vector<int>& a, vector<int>& b, vector<int>& c)
 {
-	if (a.size() + b.size() + c.size() == 0) {
-		return vector<int>();
-	}
 	vector<int> newList;
 	newList.reserve(a.size() + b.size() + c.size());
 	newList.insert(newList.end(), a.begin(), a.end());

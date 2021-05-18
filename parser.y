@@ -162,7 +162,7 @@ CompUnit:
 		{
 			std::vector<std::unique_ptr<ASTUnit>> &compUnitList=$1;
 			CompUnit* compUnit=new CompUnit(std::move(compUnitList),@$);
-			VisitorLauncher* visitorLauncher=new VisitorLauncher(0x00000100);
+			VisitorLauncher* visitorLauncher=new VisitorLauncher(0x00000110);
 			visitorLauncher->launch(compUnit);
 			//$$=std::move(compUnit);
 		}

@@ -1,9 +1,7 @@
 
-int func(){
-    int b;
-    return b;
-}
-
-int main(){
-    func(1+2);
+int main(int f){
+    int a=1;
+    while(a==1){
+        a=1-2;
+    }
 }

@@ -31,45 +31,54 @@ std::map<TACCode::OpCode, std::string> TACCode::OpCodeMap = {
 	{TACCode::OpCode::Function,"Function"}
 };
 
-saltyfish::TACOpn::TACOpn()
+/**
+* 无参构造操作数，类型默认为Var
+*/
+TACOpn::TACOpn()
 	:opnType(TACOpn::OpnType::Var)
 {
 
 }
 
-saltyfish::TACOpn::TACOpn(OpnType opnType, int intVal)
+TACOpn::TACOpn(OpnType opnType)
+	:opnType(opnType)
+{
+}
+
+TACOpn::TACOpn(OpnType opnType, int intVal)
 	:opnType(opnType), intVal(intVal)
 {
 }
 
-saltyfish::TACOpn::TACOpn(OpnType opnType, string identName)
+TACOpn::TACOpn(OpnType opnType, string identName)
 	: opnType(opnType), identName(identName)
 {
 }
 
-saltyfish::TACOpn::~TACOpn()
+TACOpn::~TACOpn()
 {
 }
 
-#define INIT_LIST	\
-	this->prev=this;	\
-	this->next=this;
+TACCode::TACCode(TACCode::OpCode op, TACOpn* result)
+	:op(op), result(result)
+{
+}
 
-saltyfish::TACCode::TACCode(TACCode::OpCode op, TACOpn* opn1, TACOpn* result)
+TACCode::TACCode(TACCode::OpCode op, TACOpn* opn1, TACOpn* result)
 	:op(op), opn1(opn1), result(result)
 {
 	//检验操作符类型
-	INIT_LIST;
+
 }
 
-saltyfish::TACCode::TACCode(TACCode::OpCode op, TACOpn* opn1, TACOpn* opn2, TACOpn* result)
+TACCode::TACCode(TACCode::OpCode op, TACOpn* opn1, TACOpn* opn2, TACOpn* result)
 	: op(op), opn1(opn1), opn2(opn2), result(result)
 {
 	//检验操作符类型
-	INIT_LIST;
+
 }
 
-saltyfish::TACCode::~TACCode()
+TACCode::~TACCode()
 {
 }
 

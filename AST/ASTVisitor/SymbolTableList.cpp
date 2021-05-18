@@ -24,22 +24,53 @@ SymbolTable::level_t SymbolTableList::getLevel()
 void SymbolTableList::inScope()
 {
 	this->level++;
+	this->offsetStack.push_back(this->offset);
+	this->offset = 0;
 }
 
 void SymbolTableList::outScope() {
+	cout << (*this) << endl;
 	this->delSymbols();
 	this->level--;
+	if (this->level == 0) {
+		if (this->functionSymbol != nullptr) {
+			functionSymbol->offset = this->offset;
+		}
+	}
+	this->offset = this->offsetStack.back();
+	this->offsetStack.pop_back();
 }
 
 /**
 * 加入符号，实现是将新的symbolAttr插入到头节点后面
 */
-SymbolAttr* SymbolTableList::addSymbol(std::string symbolName,SymbolAttr* symbolAttr) {
+SymbolAttr* SymbolTableList::addSymbol(std::string symbolName, SymbolAttr* symbolAttr)
+{
 	if (this->dulplicateDeclared(symbolName)) {
 		return nullptr;
 	}
+	// 记录最近的一次function符号
+	if (symbolAttr->role == SymbolAttr::SymbolRole::Function) {
+		this->functionSymbol = symbolAttr;
+		symbolAttr->level = this->level;
+	}
+	else if (symbolAttr->role == SymbolAttr::SymbolRole::FunctionParam) {
+		paramOffset = paramOffset == -1 ? 0 : paramOffset;
+		symbolAttr->offset = this->paramOffset;
+		symbolAttr->width = 4;
+		paramOffset += symbolAttr->width;
+	}
+	else {
+		if (this->paramOffset != -1) {
+			this->offset = this->paramOffset;
+			this->paramOffset = -1;
+		}
+		symbolAttr->offset = this->offset;
+		symbolAttr->width = 4;	// 查type得到宽度
+		this->offset = symbolAttr->offset + symbolAttr->width;
+		symbolAttr->level = this->level;
+	}
 
-	symbolAttr->level = this->level;	//强制设置符号层数
 	SymbolAttr* head = nullptr;
 	if (this->table.find(symbolName) == table.end()) {
 		head = new SymbolAttr();
@@ -112,43 +143,54 @@ namespace saltyfish {
 	std::ostream& operator<<(std::ostream& o, const SymbolTableList& symbolTable)
 	{
 		o << setfill(' ')
-			<< endl << endl << endl << endl << endl << endl;
+			<< endl << endl
+			<< "Level: " << symbolTable.level
+			<< endl << endl << endl << endl;
 
 		o << setfill(' ')
-			<< setw(16) << "ident"
-			<< setw(6) << "|"
+			<< setw(6) << "ident"
+			<< setw(3) << "|"
+			<< setw(6) << "alias"
+			<< setw(3) << "|"
 			<< setw(6) << "level"
-			<< setw(6) << "|"
+			<< setw(3) << "|"
 			<< setw(6) << "type"
-			<< setw(6) << "|"
+			<< setw(3) << "|"
 			<< setw(6) << "array"
-			<< setw(6) << "|"
+			<< setw(3) << "|"
 			<< setw(6) << "const"
-			<< setw(6) << "|"
+			<< setw(3) << "|"
 			<< setw(18) << "role"
-			<< setw(6) << "|"
+			<< setw(3) << "|"
 			<< setw(6) << "offset"
-			<< setw(6) << "|" << endl;
+			<< setw(3) << "|"
+			<< setw(6) << "width"
+			<< setw(3) << "|"
+			<< endl;
 		for (auto it = (symbolTable.table).begin(); it != symbolTable.table.end(); it++) {
 			SymbolAttr* head = it->second;
 			SymbolAttr* pos = nullptr;
 			for (pos = head->next; pos != head; pos = pos -> next) {
 				o << setfill('-') << setw(120) << "" << endl;
 				o << setfill(' ')
-					<< setw(16) << it->first
-					<< setw(6) << "|"
+					<< setw(6) << it->first
+					<< setw(3) << "|"
+					<< setw(6) << pos->alias
+					<< setw(3) << "|"
 					<< setw(6) << pos->level
-					<< setw(6) << "|"
-					<< setw(6) << (pos->type == Type::IdentType::Void ? "Void" : "Int")
-					<< setw(6) << "|"
+					<< setw(3) << "|"
+					<< setw(6) << (pos->type == Type::TypeCode::Void ? "Void" : "Int")
+					<< setw(3) << "|"
 					<< setw(6) << (pos->isArray ? "Yes" : "No")
-					<< setw(6) << "|"
+					<< setw(3) << "|"
 					<< setw(6) << (pos->isConst ? "Yes" : "No")
-					<< setw(6) << "|"
+					<< setw(3) << "|"
 					<< setw(18) << (pos->role == SymbolAttr::SymbolRole::Function ? "Function" : pos->role == SymbolAttr::SymbolRole::FunctionParam ? "FunctionParam" : "Value")
-					<< setw(6) << "|"
-					<< setw(6) << 15
-					<< setw(6) << "|" << endl;
+					<< setw(3) << "|"
+					<< setw(6) << pos->offset
+					<< setw(3) << "|"
+					<< setw(6) << pos->width
+					<< setw(3) << "|" << endl;
 			}
 		}
 		return o;

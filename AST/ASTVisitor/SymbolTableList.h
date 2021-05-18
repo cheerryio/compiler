@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <string>
+#include <deque>
 #include "SymbolTable.h"
 
 namespace saltyfish {
@@ -9,6 +10,10 @@ namespace saltyfish {
     {
     public:
         unsigned tempIndex = 0;
+        unsigned offset = 0;
+        int paramOffset = -1;
+        SymbolAttr* functionSymbol;
+        std::deque<unsigned> offsetStack;
     public:
         std::unordered_map<std::string, SymbolAttr*> table;
     public:
