@@ -292,6 +292,7 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 		TACOpn* result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
 		TACCode* code = new TACCode(expTypeMapOpCode.at(binaryExp->expType), opn1, opn2, result);
 		this->mergeCode(code);
+
 		if (this->bitFields.calcCond) {
 			this->bitFields.calcCond = 0;
 			binaryExp->tac->truelist.push_back(nextinstr);
@@ -310,6 +311,7 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 	* 不需要生成新的临时变量
 	*/
 	else if (binaryExp->isRelExp()) {
+		this->bitFields.calcCond = 0;
 		Lexp->accept(*this);
 		Rexp->accept(*this);
 		opn1 = new TACOpn(TACOpn::OpnType::Var, Lexp->tac->place->alias);
@@ -327,6 +329,7 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 	* 不需要新的临时变量
 	*/
 	else if (binaryExp->isBoolExp()) {
+		this->bitFields.calcCond = 0;
 		switch (binaryExp->expType) {
 		case(Exp::ExpType::And):
 			// 需要false短路
@@ -401,6 +404,7 @@ void TACVisitor::visit(UnaryExp* unaryExp)
 	auto& exp = unaryExp->exp;
 	exp->accept(*this);
 	if (unaryExp->expType == Exp::ExpType::Not) {
+		this->bitFields.calcCond = 0;
 		unaryExp->tac->truelist = exp->tac->falselist;
 		unaryExp->tac->falselist = exp->tac->truelist;
 	}
