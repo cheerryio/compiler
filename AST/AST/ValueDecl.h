@@ -12,11 +12,11 @@ namespace saltyfish {
 	class ValueDecl:public Decl
 	{
 	public:
-		unique_ptr<Type> type;
-		std::vector<unique_ptr<ValueDef>> valueDefList;
+		Type* type;
+		std::vector<ValueDef*> valueDefList;
 
 	public:
-		ValueDecl(unique_ptr<Type> type, std::vector<unique_ptr<ValueDef>> valueDefList, location loc);
+		ValueDecl(Type* type, std::vector<ValueDef*> valueDefList, location loc);
 		void setIdentConst();
 		virtual void accept(ASTVisitor& visitor);
 	};

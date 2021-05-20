@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <memory>
 
 #include "Stmt.h"
 #include "Ident.h"
@@ -13,12 +12,12 @@ namespace saltyfish {
         public Stmt
     {
     public:
-        std::unique_ptr<Ident> ident;
-        std::unique_ptr<Exp> exp;
+        Ident* ident;
+        Exp* exp;
 
     public:
-        AssignStmt(std::unique_ptr<Ident> ident, std::unique_ptr<Exp> exp);
-        AssignStmt(std::unique_ptr<Ident> ident, std::unique_ptr<Exp> exp,location loc);
+        AssignStmt(Ident* ident, Exp* exp);
+        AssignStmt(Ident* ident, Exp* exp,location loc);
         void accept(ASTVisitor& visitor);
     };
 }

@@ -12,10 +12,10 @@ namespace saltyfish {
         public Stmt
     {
     public:
-        std::unique_ptr<Exp> exp;
+        Exp* exp;
 
     public:
-        ExpStmt(std::unique_ptr<Exp> exp,location loc);
+        ExpStmt(Exp* exp,location loc);
         virtual void accept(ASTVisitor& visitor);
     };
 }

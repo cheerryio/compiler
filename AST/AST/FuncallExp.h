@@ -13,12 +13,13 @@ namespace saltyfish {
 	class FuncallExp:public Exp
 	{
 	public:
-		std::unique_ptr<Ident> ident;
-		std::vector<std::unique_ptr<Exp>> funcallParamList;
+		Ident* ident;
+		std::vector<Exp*> funcallParamList;
 	public:
-		FuncallExp(std::unique_ptr<Ident> ident,location loc);
-		FuncallExp(std::unique_ptr<Ident> ident, std::vector<std::unique_ptr<Exp>> funcallParamList,location loc);
-		virtual bool isConstExp() const;
+		FuncallExp(Ident* ident,location loc);
+		FuncallExp(Ident* ident, std::vector<Exp*>& funcallParamList,location loc);
+		virtual bool isConstExp();
+
 		virtual void accept(ASTVisitor& visitor);
 	};
 }

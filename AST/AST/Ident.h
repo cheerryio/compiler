@@ -2,6 +2,7 @@
 #include <string>
 
 #include "ASTUnit.h"
+#include "Exp.h"
 
 namespace saltyfish {
 	class ASTVisitor;
@@ -19,6 +20,7 @@ namespace saltyfish {
 	public:
 		std::string identStr;
 		SymbolAttr* symbolAttr = nullptr;
+		Exp* exp;
 	public:
 		Ident(std::string identStr, location loc);
 		void setConst();

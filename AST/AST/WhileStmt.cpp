@@ -7,8 +7,8 @@
 using namespace std;
 using namespace saltyfish;
 
-WhileStmt::WhileStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> body,location loc)
-	:ASTUnit(loc), cond(std::move(cond)), body(std::move(body))
+WhileStmt::WhileStmt(Exp* cond, Stmt* body,location loc)
+	:ASTUnit(loc), cond(cond), body(body)
 {
 	this->unitType = ASTUnit::UnitType::isWhileStmt;
 }

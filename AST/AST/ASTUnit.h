@@ -1,5 +1,8 @@
 #pragma once
+#include <iostream>
 #include "../../location.hh"
+
+using namespace std;
 
 namespace saltyfish {
 	class ASTVisitor;
@@ -28,8 +31,14 @@ namespace saltyfish {
 		virtual UnitType getUnitType() {
 			return this->unitType;
 		}
+		bool isAExp() {
+			return unitType == UnitType::isBinaryExp || unitType == UnitType::isUnaryExp || unitType == UnitType::isPrimaryExp;
+		}
 		location getLoc() {
 			return this->loc;
+		}
+		bool isSameUnitType(ASTUnit* unit) {
+			return this->unitType == unit->unitType;
 		}
 		virtual void accept(ASTVisitor& visitor) = 0;
 	};

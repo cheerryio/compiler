@@ -5,6 +5,9 @@
 
 namespace saltyfish {
 	class ASTVisitor;
+	class BinaryExp;
+	class UnaryExp;
+	class PrimaryExp;
 
 	class Exp :
 		virtual public ASTUnit 
@@ -29,5 +32,21 @@ namespace saltyfish {
 		Exp() {
 			this->unitType = ASTUnit::UnitType::isExp;
 		}
+		virtual bool equals(Exp* exp) {
+			switch (exp->unitType) {
+			case(ASTUnit::UnitType::isBinaryExp):
+				return this->equals((BinaryExp*)exp);
+			case(ASTUnit::UnitType::isUnaryExp):
+				return this->equals((UnaryExp*)exp);
+			case(ASTUnit::UnitType::isPrimaryExp):
+				return this->equals((PrimaryExp*)exp);
+			default:
+				return false;
+			}
+		}
+		virtual bool equals(BinaryExp* binaryExp) { return false; }
+		virtual bool equals(UnaryExp* unaryExp) { return false; }
+		virtual bool equals(PrimaryExp* primaryExp) { return false; }
+		virtual bool isConstExp() = 0;
 	};
 }

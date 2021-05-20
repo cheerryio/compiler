@@ -16,12 +16,12 @@ namespace saltyfish {
         public:
             unsigned hasElse : 1;
         } bitFields;
-        std::unique_ptr<Exp> cond;
-        std::unique_ptr<Stmt> ifBody, elseBody;
+        Exp* cond;
+        Stmt* ifBody,* elseBody;
 
     public:
-        IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody,location loc);
-        IfStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> ifBody, std::unique_ptr<Stmt> elseBody,location loc);
+        IfStmt(Exp* cond, Stmt* ifBody,location loc);
+        IfStmt(Exp* cond, Stmt* ifBody, Stmt* elseBody,location loc);
         bool hasElse();
         void setHasElse(bool b);
         virtual void accept(ASTVisitor& visitor);

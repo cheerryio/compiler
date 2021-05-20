@@ -7,8 +7,8 @@
 using namespace std;
 using namespace saltyfish;
 
-CompUnit::CompUnit(std::vector<std::unique_ptr<ASTUnit>> compUnitList,location loc)
-	:ASTUnit(loc), compUnitList(std::move(compUnitList))
+CompUnit::CompUnit(std::vector<ASTUnit*> compUnitList,location loc)
+	:ASTUnit(loc), compUnitList(compUnitList)
 {
 	this->unitType = ASTUnit::UnitType::isCompUnit;
 }

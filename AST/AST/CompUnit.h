@@ -9,10 +9,10 @@ namespace saltyfish {
         virtual public ASTUnit
     {
     public:
-        std::vector<std::unique_ptr<ASTUnit>> compUnitList;
+        std::vector<ASTUnit*> compUnitList;
 
     public:
-        CompUnit(std::vector<std::unique_ptr<ASTUnit>> compUnitList,location loc);
+        CompUnit(std::vector<ASTUnit*> compUnitList,location loc);
         void accept(ASTVisitor& visitor);
     };
 }

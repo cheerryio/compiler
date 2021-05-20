@@ -5,8 +5,8 @@
 using namespace std;
 using namespace saltyfish;
 
-FuncParamDecl::FuncParamDecl(unique_ptr<Type> type, unique_ptr<Ident> ident,location loc)
-	:ASTUnit(loc), type(std::move(type)), ident(std::move(ident))
+FuncParamDecl::FuncParamDecl(Type* type, Ident* ident,location loc)
+	:ASTUnit(loc), type(type), ident(ident)
 {
 	this->unitType = ASTUnit::UnitType::isFuncParamDecl;
 }

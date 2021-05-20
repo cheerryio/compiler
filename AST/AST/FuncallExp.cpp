@@ -10,19 +10,19 @@
 using namespace std;
 using namespace saltyfish;
 
-FuncallExp::FuncallExp(std::unique_ptr<Ident> ident,location loc)
-	:ASTUnit(loc), ident(std::move(ident))
+FuncallExp::FuncallExp(Ident* ident,location loc)
+	:ASTUnit(loc), ident(ident)
 {
 	this->unitType = ASTUnit::UnitType::isFuncallExp;
 }
 
-FuncallExp::FuncallExp(std::unique_ptr<Ident> ident, std::vector<std::unique_ptr<Exp>> funcallParamList,location loc)
-	:ASTUnit(loc), ident(std::move(ident)), funcallParamList(std::move(funcallParamList))
+FuncallExp::FuncallExp(Ident* ident, std::vector<Exp*>& funcallParamList,location loc)
+	:ASTUnit(loc), ident(ident), funcallParamList(funcallParamList)
 {
 	this->unitType = ASTUnit::UnitType::isFuncallExp;
 }
 
-bool saltyfish::FuncallExp::isConstExp() const
+bool FuncallExp::isConstExp()
 {
 	return false;
 }

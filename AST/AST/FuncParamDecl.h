@@ -12,11 +12,11 @@ namespace saltyfish {
         public Decl
     {
 	public:
-		std::unique_ptr<Type> type;
-		std::unique_ptr<Ident> ident;
+		Type* type;
+		Ident* ident;
 
 	public:
-		FuncParamDecl(std::unique_ptr<Type> type, std::unique_ptr<Ident> ident,location loc);
+		FuncParamDecl(Type* type, Ident* ident,location loc);
 		virtual void accept(ASTVisitor& visitor);
 		friend std::ostream& operator<<(std::ostream& o, const FuncParamDecl& funcParamDecl);
 	};

@@ -12,10 +12,13 @@ namespace saltyfish {
 	{
 	public:
 		std::string opStr;
-		std::unique_ptr<Exp> exp;
+		Exp* exp;
 	public:
-		UnaryExp(Exp::ExpType expType, std::unique_ptr<Exp> exp,location loc);
+		UnaryExp(Exp::ExpType expType, Exp* exp,location loc);
 		virtual void accept(ASTVisitor& visitor);
+		virtual bool isConstExp();
+		virtual bool equals(UnaryExp* unaryExp);
+
 		friend std::ostream& operator<<(std::ostream& o, const UnaryExp& unaryExp);
 	};
 

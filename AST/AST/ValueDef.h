@@ -33,7 +33,7 @@ namespace saltyfish {
 				Val, List
 			} type;
 			union {
-				unique_ptr<Exp> val;
+				Exp* val;
 				vector<ArrayList*> list;
 			};
 		public:
@@ -41,15 +41,13 @@ namespace saltyfish {
 			~ArrayList() {}
 		};
 
-		unique_ptr<Ident> ident;
-		vector<unique_ptr<Exp>> arrayDimList;
-		unique_ptr<Exp> exp;
+		Ident* ident;
+		vector<Exp*> arrayDimList;
+		Exp* exp;
 
 	public:
-		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList,location loc);
-		ValueDef(unique_ptr<Ident> ident, vector<unique_ptr<Exp>> arrayDimList, unique_ptr<Exp> exp,location loc);
-		void setIdentConst();
-		void setIdentArray();
+		ValueDef(Ident* ident, vector<Exp*> arrayDimList,location loc);
+		ValueDef(Ident* ident, vector<Exp*> arrayDimList, Exp* exp,location loc);
 		virtual void accept(ASTVisitor& visitor);
 	};
 }

@@ -16,11 +16,11 @@ namespace saltyfish {
         public:
             unsigned hasExp : 1;
         } bitFields;
-        std::unique_ptr<Exp> exp;
+        Exp* exp;
 
     public:
         ReturnStmt(location loc);
-        ReturnStmt(std::unique_ptr<Exp> exp,location loc);
+        ReturnStmt(Exp* exp,location loc);
         bool hasExp();
         void setHasExp(bool b);
         virtual void accept(ASTVisitor& visitor);

@@ -12,11 +12,11 @@ namespace saltyfish {
         public Stmt
     {
     public:
-        std::unique_ptr<Exp> cond;
-        std::unique_ptr<Stmt> body;
+        Exp* cond;
+        Stmt* body;
 
     public:
-        WhileStmt(std::unique_ptr<Exp> cond, std::unique_ptr<Stmt> body,location loc);
+        WhileStmt(Exp* cond, Stmt* body,location loc);
         virtual void accept(ASTVisitor& visitor);
     };
 }

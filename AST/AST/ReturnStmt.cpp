@@ -12,8 +12,8 @@ ReturnStmt::ReturnStmt(location loc)
 	this->unitType = ASTUnit::UnitType::isReturnStmt;
 }
 
-ReturnStmt::ReturnStmt(std::unique_ptr<Exp> exp,location loc)
-	:ASTUnit(loc),exp(std::move(exp))
+ReturnStmt::ReturnStmt(Exp* exp,location loc)
+	:ASTUnit(loc),exp(exp)
 {
 	setHasExp(true);
 	this->unitType = ASTUnit::UnitType::isReturnStmt;

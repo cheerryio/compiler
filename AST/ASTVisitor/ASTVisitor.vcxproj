@@ -142,27 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\AST\AssignStmt.cpp" />
-    <ClCompile Include="..\AST\BinaryExp.cpp" />
-    <ClCompile Include="..\AST\BlockStmt.cpp" />
-    <ClCompile Include="..\AST\BreakStmt.cpp" />
-    <ClCompile Include="..\AST\ConstantInt.cpp" />
-    <ClCompile Include="..\AST\ContinueStmt.cpp" />
-    <ClCompile Include="..\AST\EmptyStmt.cpp" />
-    <ClCompile Include="..\AST\ExpStmt.cpp" />
-    <ClCompile Include="..\AST\FuncallExp.cpp" />
-    <ClCompile Include="..\AST\FuncDecl.cpp" />
-    <ClCompile Include="..\AST\FuncParamDecl.cpp" />
-    <ClCompile Include="..\AST\Ident.cpp" />
-    <ClCompile Include="..\AST\IfStmt.cpp" />
-    <ClCompile Include="..\AST\PrimaryExp.cpp" />
-    <ClCompile Include="..\AST\ReturnStmt.cpp" />
-    <ClCompile Include="..\AST\Type.cpp" />
-    <ClCompile Include="..\AST\UnaryExp.cpp" />
-    <ClCompile Include="..\AST\ValueDecl.cpp" />
-    <ClCompile Include="..\AST\ValueDef.cpp" />
-    <ClCompile Include="..\AST\WhileStmt.cpp" />
-    <ClCompile Include="Exp.cpp" />
+    <ClCompile Include="DAGVisitor.cpp" />
+    <ClCompile Include="DemoVisitor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageVisitor.cpp" />
     <ClCompile Include="SemanticVisitor.cpp" />
@@ -173,6 +154,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTVisitor.h" />
+    <ClInclude Include="DAGVisitor.h" />
+    <ClInclude Include="DemoVisitor.h" />
     <ClInclude Include="MessageVisitor.h" />
     <ClInclude Include="SemanticVisitor.h" />
     <ClInclude Include="SymbolTable.h" />

@@ -27,8 +27,8 @@ SemanticVisitor::SemanticVisitor(SymbolTableList* table)
 
 void SemanticVisitor::visit(CompUnit* compUnit)
 {
-	vector<unique_ptr<ASTUnit>>& compUnitList = compUnit->compUnitList;
-	for (vector<unique_ptr<ASTUnit>>::iterator it = compUnitList.begin(); it < compUnitList.end(); it++) {
+	vector<ASTUnit*>& compUnitList = compUnit->compUnitList;
+	for (vector<ASTUnit*>::iterator it = compUnitList.begin(); it < compUnitList.end(); it++) {
 		(*it)->accept(*this);
 	}
 }
@@ -44,10 +44,10 @@ void SemanticVisitor::visit(FuncParamDecl* funcParamDecl)
 
 void SemanticVisitor::visit(ValueDecl* valueDecl)
 {
-	auto &type = valueDecl->type;
-	auto &valueDefList = valueDecl->valueDefList;
-	for (auto& valueDef : valueDefList) {
-		auto& ident = valueDef->ident;
+	Type* type = valueDecl->type;
+	auto& valueDefList = valueDecl->valueDefList;
+	for (ValueDef* valueDef : valueDefList) {
+		Ident* ident = valueDef->ident;
 		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr,ident->identStr,type->type,SymbolAttr::SymbolRole::Value,ident->getArray(),ident->getConst());	//确认const array
 		if (this->table->addSymbol(ident->identStr, symbolAttr) == nullptr) {
 			this->error(SemanticVisitor::ErrorCode::DulicateDeclare, ident->identStr, ident->getLoc());
@@ -56,7 +56,7 @@ void SemanticVisitor::visit(ValueDecl* valueDecl)
 
 		//检验赋值表达式常量变量
 		if (valueDef->bitFields.hasAssign) {
-			auto& exp = valueDef->exp;
+			Exp* exp = valueDef->exp;
 			exp->accept(*this);		//判断exp中是否有符号未被定义,以及计算exp是否为const，设置expBitFields的isConst位
 			if (ident->getConst()) {
 				//检验表达式是否为常量表达式
@@ -79,18 +79,18 @@ void SemanticVisitor::visit(ValueDef* valueDef)
 */
 void SemanticVisitor::visit(FuncDef* funcDef)
 {
-	auto& type = funcDef->type;
-	auto& ident = funcDef->ident;
+	auto type = funcDef->type;
+	auto ident = funcDef->ident;
 	SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr, ident->identStr, type->type, SymbolAttr::SymbolRole::Function);
 	if (this->table->addSymbol(ident->identStr, symbolAttr) == nullptr) {
 		this->error(SemanticVisitor::ErrorCode::DulicateDeclare, ident->identStr, ident->getLoc());
 		//exit(-1);
 	}
 	auto& funcParamDeclList = funcDef->funcParamDeclList;
-	auto& block = funcDef->block;
-	for (vector<unique_ptr<FuncParamDecl>>::iterator it = funcParamDeclList.begin(); it < funcParamDeclList.end(); it++) {
-		auto& type = (*it)->type;
-		auto& ident = (*it)->ident;
+	auto block = funcDef->block;
+	for (vector<FuncParamDecl*>::iterator it = funcParamDeclList.begin(); it < funcParamDeclList.end(); it++) {
+		auto type = (*it)->type;
+		auto ident = (*it)->ident;
 		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr,ident->identStr,type->type, SymbolAttr::SymbolRole::FunctionParam, 0, 0);	// 确认const array
 		this->table->addSymbol(ident->identStr, symbolAttr);
 	}
@@ -114,8 +114,8 @@ void SemanticVisitor::visit(AssignStmt* assignStmt)
 void SemanticVisitor::visit(BlockStmt* blockStmt)
 {
 	this->table->inScope();
-	vector<unique_ptr<ASTUnit>>& stmts = blockStmt->stmts;
-	for (vector<unique_ptr<ASTUnit>>::iterator it = stmts.begin(); it < stmts.end(); it++) {
+	vector<ASTUnit*>& stmts = blockStmt->stmts;
+	for (vector<ASTUnit*>::iterator it = stmts.begin(); it < stmts.end(); it++) {
 		(*it)->accept(*this);
 	}
 	this->table->outScope();
@@ -151,9 +151,9 @@ void SemanticVisitor::visit(ExpStmt* expStmt)
 
 void SemanticVisitor::visit(IfStmt* ifStmt)
 {
-	auto& cond = ifStmt->cond;
-	auto& ifBody = ifStmt->ifBody;
-	auto& elseBody = ifStmt->elseBody;
+	auto cond = ifStmt->cond;
+	auto ifBody = ifStmt->ifBody;
+	auto elseBody = ifStmt->elseBody;
 	cond->accept(*this);
 	ifBody->accept(*this);
 	if (ifStmt->hasElse()) {
@@ -197,14 +197,14 @@ void SemanticVisitor::visit(FuncallExp* funcallExp)
 
 void SemanticVisitor::visit(PrimaryExp* primaryExp)
 {
-	if (primaryExp->primaryExpType == PrimaryExp::PrimaryExpType::Ident) {
+	if (primaryExp->childType == ASTUnit::UnitType::isIdent) {
 		auto& ident = primaryExp->ident;
 		ident->accept(*this);
 		if (ident->bitFields.isConst) {
 			primaryExp->bitFields.isConst = 1;
 		}
 	}
-	else {
+	else if(primaryExp->childType == ASTUnit::UnitType::isConstantInt) {
 		primaryExp->bitFields.isConst = 1;
 	}
 }

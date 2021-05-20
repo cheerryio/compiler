@@ -10,10 +10,10 @@ namespace saltyfish {
 	class FuncDecl:public Decl
 	{
 	public:
-		std::unique_ptr<Ident> ident;
+		Ident* ident;
 
 	public:
-		FuncDecl(std::unique_ptr<Ident> ident,location loc);
+		FuncDecl(Ident* ident,location loc);
 		virtual void accept(ASTVisitor& visitor);
 	};
 }

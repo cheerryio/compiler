@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <memory>
 
 #include "ASTUnit.h"
 #include "Stmt.h"
@@ -12,11 +11,11 @@ namespace saltyfish {
         public Stmt
     {
     public:
-        std::vector<std::unique_ptr<ASTUnit>> stmts;
+        std::vector<ASTUnit*> stmts;
 
     public:
         BlockStmt(location loc);
-        BlockStmt(std::vector<std::unique_ptr<ASTUnit>> stmts,location loc);
+        BlockStmt(std::vector<ASTUnit*> stmts,location loc);
         virtual void accept(ASTVisitor& visitor);
     };
 }

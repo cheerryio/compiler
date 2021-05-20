@@ -13,20 +13,20 @@ namespace saltyfish {
 	class PrimaryExp:public Exp
 	{
 	public:
-		enum PrimaryExpType {
-			Ident, ConstantInt
-		} primaryExpType;
+		ASTUnit::UnitType childType;
+	public:
 		union {
-			std::unique_ptr<saltyfish::Ident> ident;
-			std::unique_ptr<saltyfish::ConstantInt> constantInt;
+			saltyfish::Ident* ident;
+			saltyfish::ConstantInt* constantInt;
 		};
 	public:
-		static std::map<PrimaryExpType, std::string> primaryExpTypeMap;
-	public:
-		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::Ident> ident,location loc);
-		PrimaryExp(PrimaryExpType primaryExpType, std::unique_ptr<saltyfish::ConstantInt> constantInt,location loc);
+		PrimaryExp(saltyfish::Ident* ident,location loc);
+		PrimaryExp(saltyfish::ConstantInt* constantInt,location loc);
 		~PrimaryExp();
 		virtual void accept(ASTVisitor& visitor);
+		virtual bool isConstExp();
+		virtual bool equals(PrimaryExp* primaryExp);
+
 		friend std::ostream& operator<<(std::ostream& o, const PrimaryExp& primaryExp);
 	};
 }

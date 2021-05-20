@@ -4,8 +4,8 @@
 using namespace std;
 using namespace saltyfish;
 
-FuncDecl::FuncDecl(unique_ptr<Ident> ident,location loc)
-	:ASTUnit(loc), ident(std::move(ident))
+FuncDecl::FuncDecl(Ident* ident,location loc)
+	:ASTUnit(loc), ident(ident)
 {
 	this->unitType = ASTUnit::UnitType::isFuncDecl;
 }

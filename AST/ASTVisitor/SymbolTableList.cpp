@@ -34,7 +34,7 @@ void SymbolTableList::outScope() {
 			functionSymbol->offset = this->offset;
 		}
 	}
-	cout << (*this) << endl;
+	// cout << (*this) << endl;
 
 	this->delSymbols();
 	this->level--;

@@ -7,8 +7,8 @@
 using namespace saltyfish;
 using namespace std;
 
-UnaryExp::UnaryExp(Exp::ExpType expType, std::unique_ptr<Exp> exp,location loc)
-	:ASTUnit(loc), exp(std::move(exp))
+UnaryExp::UnaryExp(Exp::ExpType expType, Exp* exp,location loc)
+	:ASTUnit(loc), exp(exp)
 {
 	this->expType = expType;
 	this->unitType = ASTUnit::UnitType::isUnaryExp;
@@ -16,6 +16,19 @@ UnaryExp::UnaryExp(Exp::ExpType expType, std::unique_ptr<Exp> exp,location loc)
 
 void UnaryExp::accept(ASTVisitor& visitor) {
 	visitor.visit(this);
+}
+
+bool UnaryExp::isConstExp()
+{
+	return exp->isConstExp();
+}
+
+bool UnaryExp::equals(UnaryExp* unaryExp)
+{
+	if (this->expType == unaryExp->expType) {
+		return this->exp->equals(unaryExp);
+	}
+	return false;
 }
 
 namespace saltyfish{

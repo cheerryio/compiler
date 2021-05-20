@@ -4,8 +4,8 @@
 using namespace std;
 using namespace saltyfish;
 
-ExpStmt::ExpStmt(std::unique_ptr<Exp> exp,location loc)
-	:ASTUnit(loc), exp(std::move(exp))
+ExpStmt::ExpStmt(Exp* exp,location loc)
+	:ASTUnit(loc), exp(exp)
 {
 	this->unitType = ASTUnit::UnitType::isExpStmt;
 }

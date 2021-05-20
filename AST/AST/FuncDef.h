@@ -15,14 +15,14 @@ namespace saltyfish {
         public ASTUnit
     {
     public:
-        std::unique_ptr<Type> type;
-        std::unique_ptr<Ident> ident;
-        std::vector<std::unique_ptr<FuncParamDecl>> funcParamDeclList;
-        std::unique_ptr<BlockStmt> block;
+        Type* type;
+        Ident* ident;
+        std::vector<FuncParamDecl*> funcParamDeclList;
+        BlockStmt* block;
 
     public:
-        FuncDef(std::unique_ptr<Type> type, std::unique_ptr<Ident> ident, std::unique_ptr<BlockStmt> block,location loc);
-        FuncDef(std::unique_ptr<Type> type, std::unique_ptr<Ident> ident, std::vector<std::unique_ptr<FuncParamDecl>> funcParamDeclList, std::unique_ptr<BlockStmt> block,location loc);
+        FuncDef(Type* type, Ident* ident, BlockStmt* block,location loc);
+        FuncDef(Type* type, Ident* ident, std::vector<FuncParamDecl*> funcParamDeclList, BlockStmt* block,location loc);
         void accept(ASTVisitor& visitor);
     };
 }

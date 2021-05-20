@@ -10,8 +10,8 @@ BlockStmt::BlockStmt(location loc)
 	this->unitType = ASTUnit::UnitType::isBlockStmt;
 }
 
-BlockStmt::BlockStmt(std::vector<std::unique_ptr<ASTUnit>> stmts,location loc)
-	:ASTUnit(loc), stmts(std::move(stmts))
+BlockStmt::BlockStmt(std::vector<ASTUnit*> stmts,location loc)
+	:ASTUnit(loc), stmts(stmts)
 {
 	this->unitType = ASTUnit::UnitType::isBlockStmt;
 }

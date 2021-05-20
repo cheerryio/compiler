@@ -4,14 +4,14 @@
 using namespace std;
 using namespace saltyfish;
 
-AssignStmt::AssignStmt(std::unique_ptr<Ident> ident, std::unique_ptr<Exp> exp)
-	:ident(std::move(ident)), exp(std::move(exp))
+AssignStmt::AssignStmt(Ident* ident, Exp* exp)
+	:ident(ident), exp(exp)
 {
 	this->unitType = ASTUnit::UnitType::isAssignStmt;
 }
 
-AssignStmt::AssignStmt(std::unique_ptr<Ident> ident, std::unique_ptr<Exp> exp, location loc)
-	:ASTUnit(loc), ident(std::move(ident)), exp(std::move(exp))
+AssignStmt::AssignStmt(Ident* ident, Exp* exp, location loc)
+	:ASTUnit(loc), ident(ident), exp(exp)
 {
 	this->unitType = ASTUnit::UnitType::isAssignStmt;
 }

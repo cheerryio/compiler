@@ -13,18 +13,18 @@
 using namespace std;
 using namespace saltyfish;
 
-#define TEST(format,...) printf(format,__VA_ARGS__)
+class A {
+public:
+	int a, b;
+	friend bool operator==(const A& A1,const A& A2) {
+		return A1.a == A2.a && A1.b == A2.b;
+	}
+};
 
 int main() {
-	while (true) {
-		cout << 1 << endl;
-		{
-			cout << 2 << endl;
-			{
-				cout << 3 << endl;
-				break;
-			}
-		}
-	}
+	A A1, A2;
+	A1.a = A2.a = 1;
+	A1.b = A2.b = 3;
+	cout << (A1 == A2) << endl;
 	return 0;
 }
