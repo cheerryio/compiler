@@ -36,7 +36,7 @@ bool BinaryExp::equals(BinaryExp* binaryExp)
 	Exp* Rexp1 = this->Rexp;
 	Exp* Rexp2 = binaryExp->Rexp;
 	if (Lexp1->isSameUnitType(Lexp2) && Rexp1->isSameUnitType(Rexp2)) {
-		return Lexp1->equals(Lexp2) && Rexp1->equals(Rexp2);
+		return this->expType == binaryExp->expType && Lexp1->equals(Lexp2) && Rexp1->equals(Rexp2);
 	}
 	return false;
 }

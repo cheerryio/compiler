@@ -1,5 +1,5 @@
 
 int main(int f){
-    int a;
-    a=2*3-2*3+5;
+    int x,y,z;
+    z=x+x+(x+x+x+(x+x+x+x));
 }

@@ -284,11 +284,14 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 	* 需要生成新的临时变量
 	*/
 	if (binaryExp->isOpExp() && binaryExp->tac == nullptr) {
+		Lexp->accept(*this);
+		Rexp->accept(*this);
+
+		// 先访问孩子，再生成自己，这样temp序号有序
 		binaryExp->tac = new TAC();
 		SymbolAttr* temp = this->getTemp();
 		binaryExp->tac->place = temp;
-		Lexp->accept(*this);
-		Rexp->accept(*this);
+
 		opn1 = new TACOpn(TACOpn::OpnType::Var, Lexp->tac->place->alias);
 		opn2 = new TACOpn(TACOpn::OpnType::Var, Rexp->tac->place->alias);
 		TACOpn* result = new TACOpn(TACOpn::OpnType::Var, binaryExp->tac->place->alias);
@@ -373,29 +376,29 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 */
 void TACVisitor::visit(PrimaryExp* primaryExp)
 {
+	primaryExp->tac = new TAC();
 	TACOpn* opn1, * opn2, * result, * trueResult, * falseResult;
 	TACCode* code, * code1, * code2;
-	if (primaryExp->tac == nullptr) {
-		primaryExp->tac = new TAC();
-		if (primaryExp->childType == ASTUnit::UnitType::isIdent) {
-			Ident* ident = primaryExp->ident;
-			ident->accept(*this);	// 让ident去寻找自己的symbolAttr
-			SymbolAttr* symbolAttr = ident->tac->place;
-			primaryExp->tac->place = symbolAttr;
-		}
-		else if (primaryExp->childType == ASTUnit::UnitType::isConstantInt) {
-			opn1 = new TACOpn(TACOpn::OpnType::Int, primaryExp->constantInt->value);
-			SymbolAttr* temp = this->getTemp();
-			result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
-			primaryExp->tac->place = temp;
-			code = new TACCode(TACCode::OpCode::Assign, opn1, result);
-			this->mergeCode(code);
-		}
+	if (primaryExp->childType == ASTUnit::UnitType::isIdent) {
+		Ident* ident = primaryExp->ident;
+		ident->accept(*this);	// 让ident去寻找自己的symbolAttr
+		SymbolAttr* symbolAttr = ident->tac->place;
+		primaryExp->tac->place = symbolAttr;
+	}
+	else if (primaryExp->childType == ASTUnit::UnitType::isConstantInt) {
+		opn1 = new TACOpn(TACOpn::OpnType::Int, primaryExp->constantInt->value);
+		SymbolAttr* temp = this->getTemp();
+		result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
+		primaryExp->tac->place = temp;
+		code = new TACCode(TACCode::OpCode::Assign, opn1, result);
+		this->mergeCode(code);
 	}
 
 	// 计算cond
 	if (this->bitFields.calcCond) {
 		this->bitFields.calcCond = 0;
+		primaryExp->tac->truelist.clear();
+		primaryExp->tac->falselist.clear();
 		primaryExp->tac->truelist.push_back(nextinstr);
 		primaryExp->tac->falselist.push_back(nextinstr + 1);
 
@@ -411,6 +414,7 @@ void TACVisitor::visit(PrimaryExp* primaryExp)
 
 void TACVisitor::visit(UnaryExp* unaryExp)
 {
+	unaryExp->tac = new TAC();
 	TACOpn* opn1, * opn2, * result, * trueResult, * falseResult;
 	TACCode* code, * code1, * code2;
 	Exp* exp = unaryExp->exp;
@@ -418,22 +422,18 @@ void TACVisitor::visit(UnaryExp* unaryExp)
 	// 由于采用DAG，仅当该节点没有被处理过才调用处理函数
 	exp->accept(*this);
 	if (unaryExp->expType == Exp::ExpType::Not) {
-		unaryExp->tac = new TAC();
 		this->bitFields.calcCond = 0;
 		unaryExp->tac->truelist = exp->tac->falselist;
 		unaryExp->tac->falselist = exp->tac->truelist;
 	}
 	else {
-		if (unaryExp->tac == nullptr) {
-			unaryExp->tac = new TAC();
-			SymbolAttr* temp = this->getTemp();
-			unaryExp->tac->place = temp;
-			opn1 = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
-			result = new TACOpn(TACOpn::OpnType::Var, unaryExp->tac->place->alias);
+		SymbolAttr* temp = this->getTemp();
+		unaryExp->tac->place = temp;
+		opn1 = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
+		result = new TACOpn(TACOpn::OpnType::Var, unaryExp->tac->place->alias);
 
-			TACCode* code = new TACCode(expTypeMapOpCode.at(unaryExp->expType), opn1, result);
-			this->mergeCode(code);
-		}
+		TACCode* code = new TACCode(expTypeMapOpCode.at(unaryExp->expType), opn1, result);
+		this->mergeCode(code);
 
 		if (this->bitFields.calcCond) {
 			this->bitFields.calcCond = 0;

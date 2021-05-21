@@ -14,7 +14,6 @@ VisitorLauncher::VisitorLauncher(unsigned mode)
 	if (mode & 0x00000001)		this->visitors.push_back(messageVisitor);
 	if (mode & 0x00000010)		this->visitors.push_back(semanticVisitor);
 	if (mode & 0x00000100)		this->visitors.push_back(dagVisitor);
-	this->visitors.push_back(messageVisitor);
 	if (mode & 0x00001000)		this->visitors.push_back(tacVisitor);
 }
 
