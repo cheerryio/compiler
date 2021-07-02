@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+#include <fstream>
 #include <vector>
 #include <map>
 
@@ -64,7 +66,8 @@ namespace saltyfish {
 		vector<int> mergeList(vector<int>& a, vector<int>& b);
 		vector<int> mergeList(vector<int>& a, vector<int>& b, vector<int>& c);
 		void backpatch(vector<int>& list,unsigned instr);
-		void displayCode();
+		void displayCodes();
+		void storeCodes(string filename);
 		string getLable();
     };
 }

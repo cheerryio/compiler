@@ -11,3 +11,6 @@ a.out
 location.hh
 AST/ASTVisitor/x64
 AST/AST/x64
+CodeGen/Debug
+CodeGen/CodeGen/Debug
+CodeGen/.vs

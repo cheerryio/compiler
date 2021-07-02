@@ -36,7 +36,8 @@ void TACVisitor::visit(CompUnit* compUnit)
 		(*it)->accept(*this);
 	}
 
-	this->displayCode();
+	this->displayCodes();
+	this->storeCodes("output.tac");
 }
 
 void TACVisitor::visit(FuncDecl* funcDecl)
@@ -54,7 +55,7 @@ void TACVisitor::visit(ValueDecl* valueDecl)
 	auto& valueDefList = valueDecl->valueDefList;
 	for (auto& valueDef : valueDefList) {
 		auto& ident = valueDef->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr, this->getAlias(), type->type, SymbolAttr::SymbolRole::Value, ident->getArray(), ident->getConst());	//È·ÈÏconst array
+		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr, this->getAlias(), type->type, SymbolAttr::SymbolRole::Value, ident->getArray(), ident->getConst());	//È·ï¿½ï¿½const array
 		this->table->addSymbol(ident->identStr, symbolAttr);
 
 		valueDef->accept(*this);
@@ -78,11 +79,11 @@ void TACVisitor::visit(ValueDef* valueDef)
 }
 
 /**
-* º¯ÊýÃû×Ö½øÈë·ûºÅ±í£¬¶îÍâ¼ÇÂ¼Æä¶ÔÓ¦²ÎÊýÎ»ÖÃ
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö½ï¿½ï¿½ï¿½ï¿½ï¿½Å±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 */
 void TACVisitor::visit(FuncDef* funcDef)
 {
-	// ´¦Àí·ûºÅ±í
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å±ï¿½
 	auto& type = funcDef->type;
 	auto& ident = funcDef->ident;
 	auto& funcParamDeclList = funcDef->funcParamDeclList;
@@ -90,7 +91,7 @@ void TACVisitor::visit(FuncDef* funcDef)
 	SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr,this->getAlias(),type->type, SymbolAttr::SymbolRole::Function);
 	this->table->addSymbol(ident->identStr, symbolAttr);
 
-	// Éú³ÉÖÐ¼ä´úÂë
+	// ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½
 	TACCode* code = nullptr;
 	TACOpn* result = nullptr;
 	result = new TACOpn(TACOpn::OpnType::Var, symbolAttr->name);
@@ -98,13 +99,13 @@ void TACVisitor::visit(FuncDef* funcDef)
 	this->mergeCode(code);
 
 	for (vector<FuncParamDecl*>::iterator it = funcParamDeclList.begin(); it < funcParamDeclList.end(); it++) {
-		// ·ûºÅ±í
+		// ï¿½ï¿½ï¿½Å±ï¿½
 		auto& type = (*it)->type;
 		auto& ident = (*it)->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr, this->getAlias(), type->type, SymbolAttr::SymbolRole::FunctionParam, 0, 0);	// È·ÈÏconst array
+		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr, this->getAlias(), type->type, SymbolAttr::SymbolRole::FunctionParam, 0, 0);	// È·ï¿½ï¿½const array
 		symbolAttr->level = this->table->getLevel() + 1;
 		this->table->addSymbol(ident->identStr, symbolAttr);
-		// ÖÐ¼ä´úÂë
+		// ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½
 		result = new TACOpn(TACOpn::OpnType::Var, symbolAttr->name);
 		code = new TACCode(TACCode::OpCode::Param, nullptr, nullptr, result);
 		this->mergeCode(code);
@@ -117,7 +118,7 @@ void TACVisitor::visit(AssignStmt* assignStmt)
 	auto& ident = assignStmt->ident;
 	auto& exp = assignStmt->exp;
 	assignStmt->tac = new TAC();
-	exp->accept(*this);		//ÏÈ¶ÔexpµÝ¹é¼ÆËã
+	exp->accept(*this);		//ï¿½È¶ï¿½expï¿½Ý¹ï¿½ï¿½ï¿½ï¿½
 	SymbolAttr* symbolAttr = this->table->getSymbol(ident->identStr);
 	TACOpn* opn1 = new TACOpn(TACOpn::OpnType::Var, symbolAttr->alias);
 	TACOpn* result = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
@@ -171,7 +172,7 @@ void TACVisitor::visit(IfStmt* ifStmt)
 	auto& cond = ifStmt->cond;
 	auto& ifBody = ifStmt->ifBody;
 	ifStmt->tac = new TAC();
-	this->bitFields.calcCond = 1;	// ¸ÃÊôÐÔÖ¸Ê¾×î½üµÄBinaryOpExp, PrimaryExp, UnaryExp¼ÆËãÉú³ÉlistÊôÐÔ
+	this->bitFields.calcCond = 1;	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½BinaryOpExp, PrimaryExp, UnaryExpï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½listï¿½ï¿½ï¿½ï¿½
 	if (!ifStmt->bitFields.hasElse) {
 		cond->accept(*this);
 		this->backpatch(cond->tac->truelist, nextinstr);
@@ -184,7 +185,7 @@ void TACVisitor::visit(IfStmt* ifStmt)
 		unsigned M1_instr = this->nextinstr;
 		ifBody->accept(*this);
 		unsigned N_instr = this->nextinstr;
-		// ´Ë´úÂëÐèÒª»ØÌîÕû¸öifÓï¾äÌø³öµ½ÄÄÀï
+		// ï¿½Ë´ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ifï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		TACOpn* result = new TACOpn(TACOpn::OpnType::J);
 		TACCode* code = new TACCode(TACCode::OpCode::GOTO, nullptr, nullptr, result);
 		this->mergeCode(code);
@@ -245,7 +246,7 @@ void TACVisitor::visit(FuncallExp* funcallExp)
 	TACCode* code = nullptr;
 	TACOpn* opn = nullptr;
 	TACOpn* result = nullptr;
-	ident->accept(*this);	// ÈÃidentÈ¥ÕÒ×Ô¼ºµÄsymbolAttrÊôÐÔ£¨¼´ÔÚ·ûºÅ±íÖÐµÄ¶ÔÓ¦£©
+	ident->accept(*this);	// ï¿½ï¿½identÈ¥ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½symbolAttrï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½ï¿½Ú·ï¿½ï¿½Å±ï¿½ï¿½ÐµÄ¶ï¿½Ó¦ï¿½ï¿½
 
 	for (auto& param : params) {
 		param->accept(*this);
@@ -264,30 +265,30 @@ void TACVisitor::visit(FuncallExp* funcallExp)
 }
 
 /**
-* ÏÈµÝ¹é´¦Àí×Ó½Úµã£¬ÔÙ´¦Àí±¾½Úµã
-* ÄÃµ½Á½¸ö×Ó½ÚµãµÄplace£¬×öÏàÓ¦²Ù×÷
+* ï¿½ÈµÝ¹é´¦ï¿½ï¿½ï¿½Ó½Úµã£¬ï¿½Ù´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½
+* ï¿½Ãµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó½Úµï¿½ï¿½placeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
 * 
-* ÔÚbinaryExpÖÐ£¬½ö½ö¸ù¾Ý×óº¢×Ó½á¹ûºÍÓÒº¢×Ó½á¹ûÒÔ¼°opÉú³ÉÒ»Ìõ´úÂë
-* ¸ù¾ÝDAG
+* ï¿½ï¿½binaryExpï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½Òºï¿½ï¿½Ó½ï¿½ï¿½ï¿½Ô¼ï¿½opï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+* ï¿½ï¿½ï¿½ï¿½DAG
 */
 void TACVisitor::visit(BinaryExp* binaryExp)
 {
 	Exp* Lexp = binaryExp->Lexp;
 	Exp* Rexp = binaryExp->Rexp;
-	// ÏÈµÝ¹é´¦Àíº¢×Ó£¬µÃµ½ÐèÒªµÄÊý¾Ý
+	// ï¿½ÈµÝ¹é´¦ï¿½ï¿½ï¿½ï¿½ï¿½Ó£ï¿½ï¿½Ãµï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	TACOpn* opn1, * opn2;
 	TACOpn* trueResult, * falseResult;
 	TACCode* code1, * code2;
 
 	/**
-	* ½ö½öÊÇopµÄ¶þÔªÔËËã½Úµã£¬Ò»ÌõtacÓï¾äÔËËã¼´¿É
-	* ÐèÒªÉú³ÉÐÂµÄÁÙÊ±±äÁ¿
+	* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½opï¿½Ä¶ï¿½Ôªï¿½ï¿½ï¿½ï¿½Úµã£¬Ò»ï¿½ï¿½tacï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã¼´ï¿½ï¿½
+	* ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
 	*/
 	if (binaryExp->isOpExp() && binaryExp->tac == nullptr) {
 		Lexp->accept(*this);
 		Rexp->accept(*this);
 
-		// ÏÈ·ÃÎÊº¢×Ó£¬ÔÙÉú³É×Ô¼º£¬ÕâÑùtempÐòºÅÓÐÐò
+		// ï¿½È·ï¿½ï¿½Êºï¿½ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tempï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		binaryExp->tac = new TAC();
 		SymbolAttr* temp = this->getTemp();
 		binaryExp->tac->place = temp;
@@ -312,8 +313,8 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 		}
 	}
 	/**
-	* ´óÓÚÐ¡ÓÚ µÈ¹ØÏµÔËËã·û£¬ÐèÒªÉú³É²¢ÉèÖÃtruelist,falselistÎªnextistr,nextistr+1
-	* ²»ÐèÒªÉú³ÉÐÂµÄÁÙÊ±±äÁ¿
+	* ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½ ï¿½È¹ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½É²ï¿½ï¿½ï¿½ï¿½ï¿½truelist,falselistÎªnextistr,nextistr+1
+	* ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
 	*/
 	else if (binaryExp->isRelExp()) {
 		if (binaryExp->tac == nullptr) {
@@ -333,8 +334,8 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 		this->mergeCode(code1, code2);
 	}
 	/**
-	* ²¼¶ûÔËËã·û£¬´Ë´¦ÐèÒª»ØÌî
-	* ²»ÐèÒªÐÂµÄÁÙÊ±±äÁ¿
+	* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë´ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½
+	* ï¿½ï¿½ï¿½ï¿½Òªï¿½Âµï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
 	*/
 	else if (binaryExp->isBoolExp()) {
 		if (binaryExp->tac == nullptr) {
@@ -343,8 +344,8 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 		this->bitFields.calcCond = 0;
 		switch (binaryExp->expType) {
 		case(Exp::ExpType::And):
-			// ÐèÒªfalse¶ÌÂ·
-			// B -> B1 && M B2 Éú³ÉB1´úÂëºó£¬nextinstr¾ÍÊÇMµÄ´úÂëÎ»ÖÃ
+			// ï¿½ï¿½Òªfalseï¿½ï¿½Â·
+			// B -> B1 && M B2 ï¿½ï¿½ï¿½ï¿½B1ï¿½ï¿½ï¿½ï¿½ï¿½nextinstrï¿½ï¿½ï¿½ï¿½Mï¿½Ä´ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 			Lexp->accept(*this);
 			this->backpatch(Lexp->tac->truelist, nextinstr);
 			Rexp->accept(*this);
@@ -352,7 +353,7 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 			binaryExp->tac->falselist = this->mergeList(Lexp->tac->falselist, Rexp->tac->falselist);
 			break;
 		case(Exp::ExpType::Or):
-			// ÐèÒªtrue¶ÌÂ·
+			// ï¿½ï¿½Òªtrueï¿½ï¿½Â·
 			Lexp->accept(*this);
 			this->backpatch(Lexp->tac->falselist, nextinstr);
 			Rexp->accept(*this);
@@ -368,11 +369,11 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 }
 
 /**
-* ¶Ô×î»ù±¾µÄPrimaryExp±í´ïÊ½
-* Èç¹ûÊÇ±êÊ¶·û£¬Éú³É±êÊ¶·ûÃû×ÖµÄopn£¬²¢½«¸Ã½ÚµãplaceÖÃÎª±êÊ¶·ûµÄsymbolAttr
-* Èç¹ûÊÇÊý×Ö£¬Éú³ÉÁÙÊ±±äÁ¿£¬½«Êý×Ö×ÖÃæÖµ¸³ÓèÁÙÊ±±äÁ¿£¬½ÚµãplaceÖµÎªÁÙÊ±±äÁ¿µÄsymbolAttr
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½PrimaryExpï¿½ï¿½ï¿½ï¿½Ê½
+* ï¿½ï¿½ï¿½ï¿½Ç±ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É±ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½opnï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½Úµï¿½placeï¿½ï¿½Îªï¿½ï¿½Ê¶ï¿½ï¿½ï¿½ï¿½symbolAttr
+* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½placeÖµÎªï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½symbolAttr
 * 
-* ¹ØÓÚ´Ë½ÚµãµÄDAG£¬¼ÈÈ»»á×ßµ½Õâ¸öÒ¶×Ó½Úµã£¬´ú±íÕâ¸ö½ÚµãÒ»¶¨Ã»ÓÐ±»´¦Àí¹ý
+* ï¿½ï¿½ï¿½Ú´Ë½Úµï¿½ï¿½DAGï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½ßµï¿½ï¿½ï¿½ï¿½Ò¶ï¿½Ó½Úµã£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ò»ï¿½ï¿½Ã»ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 void TACVisitor::visit(PrimaryExp* primaryExp)
 {
@@ -381,7 +382,7 @@ void TACVisitor::visit(PrimaryExp* primaryExp)
 	TACCode* code, * code1, * code2;
 	if (primaryExp->childType == ASTUnit::UnitType::isIdent) {
 		Ident* ident = primaryExp->ident;
-		ident->accept(*this);	// ÈÃidentÈ¥Ñ°ÕÒ×Ô¼ºµÄsymbolAttr
+		ident->accept(*this);	// ï¿½ï¿½identÈ¥Ñ°ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½symbolAttr
 		SymbolAttr* symbolAttr = ident->tac->place;
 		primaryExp->tac->place = symbolAttr;
 	}
@@ -394,7 +395,7 @@ void TACVisitor::visit(PrimaryExp* primaryExp)
 		this->mergeCode(code);
 	}
 
-	// ¼ÆËãcond
+	// ï¿½ï¿½ï¿½ï¿½cond
 	if (this->bitFields.calcCond) {
 		this->bitFields.calcCond = 0;
 		primaryExp->tac->truelist.clear();
@@ -419,7 +420,7 @@ void TACVisitor::visit(UnaryExp* unaryExp)
 	TACCode* code, * code1, * code2;
 	Exp* exp = unaryExp->exp;
 
-	// ÓÉÓÚ²ÉÓÃDAG£¬½öµ±¸Ã½ÚµãÃ»ÓÐ±»´¦Àí¹ý²Åµ÷ÓÃ´¦Àíº¯Êý
+	// ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½DAGï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½Úµï¿½Ã»ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Åµï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	exp->accept(*this);
 	if (unaryExp->expType == Exp::ExpType::Not) {
 		this->bitFields.calcCond = 0;
@@ -481,8 +482,8 @@ SymbolAttr* TACVisitor::getTemp() {
 }
 
 /**
-* ½«code2²åÈëµ½code1Ç°Ãæ
-* ×¢ÒâË³Ðò
+* ï¿½ï¿½code2ï¿½ï¿½ï¿½ëµ½code1Ç°ï¿½ï¿½
+* ×¢ï¿½ï¿½Ë³ï¿½ï¿½
 */
 void TACVisitor::mergeCode(TACCode* code)
 {
@@ -502,7 +503,7 @@ void TACVisitor::mergeCode(TACCode* code1, TACCode* code2)
 
 void TACVisitor::mergeCode(vector<TACCode*> codes)
 {
-	// ÕýÈ·ÉèÖÃÖ¸ÁîÎ»ÖÃ
+	// ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Î»ï¿½ï¿½
 	for (int i = 0; i < codes.size(); i++) {
 		codes[i]->instr = this->nextinstr + i;
 	}
@@ -538,10 +539,19 @@ void TACVisitor::backpatch(vector<int>& list,unsigned instr)
 	}
 }
 
-void TACVisitor::displayCode() {
+void TACVisitor::displayCodes() {
 	for (vector<TACCode*>::iterator it = this->codes.begin(); it != this->codes.end(); it++) {
 		cout << **it << endl;
 	}
+}
+
+void TACVisitor::storeCodes(string filename){
+	ofstream f;
+	f.open(filename);
+	for (vector<TACCode*>::iterator it = this->codes.begin(); it != this->codes.end(); it++) {
+		f << **it << endl;
+	}
+	f.close();
 }
 
 string TACVisitor::getLable() {

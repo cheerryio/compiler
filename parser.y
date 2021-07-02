@@ -162,7 +162,7 @@ CompUnit:
 		{
 			vector<ASTUnit*> compUnitList=$1;
 			CompUnit* compUnit=new CompUnit(compUnitList,@$);
-			VisitorLauncher* visitorLauncher=new VisitorLauncher(0x00001110);
+			VisitorLauncher* visitorLauncher=new VisitorLauncher(0x00001010);
 			visitorLauncher->launch(compUnit);
 			//$$=compUnit;
 		}

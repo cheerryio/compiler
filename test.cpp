@@ -1,5 +1,9 @@
 
 int main(int f){
     int x,y,z;
-    z=x+x+(x+x+x+(x+x+x+x));
+    if(x==2){
+        x=x+z;
+    }else{
+        x=x*2/3;
+    }
 }

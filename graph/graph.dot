@@ -1,0 +1,27 @@
+digraph G{
+bb0[shape="square" label="
+    0  (Function,  NULL,  NULL,  main,)\n
+    1  (   Param,  NULL,  NULL,     f,)\n
+    2  (Assign =,     2,  NULL,   _t0,)\n
+    3  (   JE ==,   _v2,   _t0,     5,)\n
+"]
+bb1[shape="square" label="
+    4  (    GOTO,   _v2,   _t0,     8,)\n
+"]
+bb2[shape="square" label="
+    5  (   Add +,   _v2,   _v4,   _t1,)\n
+    6  (Assign =,   _v2,   _v4,   _t1,)\n
+    7  (    GOTO,   _v2,   _v4,    13,)\n
+"]
+bb3[shape="square" label="
+    8  (Assign =,     2,   _v4,   _t2,)\n
+    9  (   Mul *,   _v2,   _t2,   _t3,)\n
+   10  (Assign =,     3,   _t2,   _t4,)\n
+   11  (   Div *,   _t3,   _t4,   _t5,)\n
+   12  (Assign =,   _v2,   _t4,   _t5,)\n
+"]
+bb0 -> bb2
+bb0 -> bb1
+bb1 -> bb3
+bb2 -> bb4294967295
+}
