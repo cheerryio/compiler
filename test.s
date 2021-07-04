@@ -21,28 +21,58 @@ main:
 	.fnstart
 .LFB0:
 	@ Function supports interworking.
-	@ args = 0, pretend = 0, frame = 16
+	@ args = 0, pretend = 0, frame = 40
 	@ frame_needed = 1, uses_anonymous_args = 0
 	@ link register save eliminated.
 	str	fp, [sp, #-4]!
 	add	fp, sp, #0
-	sub	sp, sp, #20
-	str	r0, [fp, #-16]
+	sub	sp, sp, #44
+	str	r0, [fp, #-40]
 	ldr	r3, [fp, #-8]
 	cmp	r3, #2
 	bne	.L2
-	ldr	r2, [fp, #-8]
+	ldr	r3, [fp, #-8]
+	ldr	r2, [fp, #-12]
+	mul	r2, r3, r2
+	ldr	r3, [fp, #-8]
+	ldr	r1, [fp, #-16]
+	mul	r3, r1, r3
+	add	r2, r2, r3
+	ldr	r3, [fp, #-8]
+	ldr	r1, [fp, #-16]
+	mul	r3, r1, r3
+	add	r2, r2, r3
+	ldr	r3, [fp, #-8]
+	ldr	r1, [fp, #-20]
+	mul	r3, r1, r3
+	add	r2, r2, r3
+	ldr	r3, [fp, #-8]
+	ldr	r1, [fp, #-24]
+	mul	r3, r1, r3
+	add	r2, r2, r3
+	ldr	r3, [fp, #-8]
+	ldr	r1, [fp, #-28]
+	mul	r3, r1, r3
+	add	r2, r2, r3
+	ldr	r3, [fp, #-8]
+	ldr	r1, [fp, #-32]
+	mul	r3, r1, r3
+	add	r2, r2, r3
 	ldr	r3, [fp, #-12]
+	ldr	r1, [fp, #-16]
+	mul	r3, r1, r3
 	add	r3, r2, r3
 	str	r3, [fp, #-8]
 	b	.L3
 .L2:
 	ldr	r3, [fp, #-8]
+	lsr	r2, r3, #31
+	add	r3, r2, r3
+	asr	r3, r3, #1
+	mov	r2, r3
+	mov	r3, r2
 	lsl	r3, r3, #1
-	ldr	r2, .L5
-	smull	r1, r2, r3, r2
-	asr	r3, r3, #31
-	sub	r3, r2, r3
+	add	r3, r3, r2
 	str	r3, [fp, #-8]
 .L3:
 	mov	r3, #0
@@ -51,10 +81,6 @@ main:
 	@ sp needed
 	ldr	fp, [sp], #4
 	bx	lr
-.L6:
-	.align	2
-.L5:
-	.word	1431655766
 	.cantunwind
 	.fnend
 	.size	main, .-main

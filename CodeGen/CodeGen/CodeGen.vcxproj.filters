@@ -18,9 +18,6 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="TAC.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="TACParser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -33,11 +30,11 @@
     <ClCompile Include="A32CodeGen.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\AST\ASTVisitor\TAC.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TAC.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="TACParser.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -48,6 +45,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="A32CodeGen.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\AST\ASTVisitor\TAC.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -72,6 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\22216\source\repos\compiler\AST\AST;C:\Users\22216\source\repos\compiler\AST\ASTVisitor;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -139,18 +140,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\AST\ASTVisitor\TAC.cpp" />
     <ClCompile Include="A32CodeGen.cpp" />
     <ClCompile Include="CFG.cpp" />
     <ClCompile Include="CodeGen.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="TAC.cpp" />
     <ClCompile Include="TACParser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\AST\ASTVisitor\TAC.h" />
     <ClInclude Include="A32CodeGen.h" />
     <ClInclude Include="CFG.h" />
     <ClInclude Include="CodeGen.h" />
-    <ClInclude Include="TAC.h" />
     <ClInclude Include="TACParser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

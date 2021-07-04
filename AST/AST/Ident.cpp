@@ -6,8 +6,8 @@
 using namespace saltyfish;
 using namespace std;
 
-Ident::Ident(string identStr,location loc) 
-	:ASTUnit(loc),identStr(identStr) 
+Ident::Ident(string identName,location loc) 
+	:ASTUnit(loc),name(identName) 
 {
 	this->unitType = ASTUnit::UnitType::isIdent;
 }
@@ -36,7 +36,7 @@ namespace saltyfish {
 	std::ostream& operator<<(std::ostream& o, const Ident& ident)
 	{
 		o << "<";
-		o << "Ident " << "\'" << ident.identStr << "\' ";
+		o << "Ident " << "\'" << ident.name << "\' ";
 		o << "isConst: " << (ident.getConst() ? "Yes" : "No") << "\' ";
 		o << "\'" << ident.loc << "\'";
 		cout << ">";

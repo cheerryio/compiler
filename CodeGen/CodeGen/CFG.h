@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <utility>
+#include <assert.h>
 #include "TAC.h"
 
 namespace saltyfish {
@@ -31,6 +32,8 @@ namespace saltyfish {
 		~CFG();
 		unsigned instrToBasicBlockId(unsigned instr);
 		void buildCFG();
+		void optimize();
+		void updateActive();
 		void CFGDot(string &filename);
 	};
 }

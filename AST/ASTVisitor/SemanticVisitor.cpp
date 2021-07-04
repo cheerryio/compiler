@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include "SemanticVisitor.h"
 
 using namespace std;
@@ -16,11 +15,11 @@ map<SemanticVisitor::ErrorCode, string> SemanticVisitor::errorMessage = {
 };
 
 SemanticVisitor::SemanticVisitor() {
-	this->table = new SymbolTableList();
+	this->nameTab = new MMNameTab();
 }
 
-SemanticVisitor::SemanticVisitor(SymbolTableList* table)
-	:table(table)
+SemanticVisitor::SemanticVisitor(MMNameTab* nameTab)
+	:nameTab(nameTab)
 {
 	
 }
@@ -48,18 +47,17 @@ void SemanticVisitor::visit(ValueDecl* valueDecl)
 	auto& valueDefList = valueDecl->valueDefList;
 	for (ValueDef* valueDef : valueDefList) {
 		Ident* ident = valueDef->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr,ident->identStr,type->type,SymbolAttr::SymbolRole::Value,ident->getArray(),ident->getConst());	//确认const array
-		if (this->table->addSymbol(ident->identStr, symbolAttr) == nullptr) {
-			this->error(SemanticVisitor::ErrorCode::DulicateDeclare, ident->identStr, ident->getLoc());
+		NameAttr* nameAttr = new NameAttr(ident->name, ident->name, NameAttr::NameKind::Variable, this->nameTab->getLevel(), false);
+		if (this->nameTab->addName(ident->name, nameAttr) == nullptr) {
+			this->error(SemanticVisitor::ErrorCode::DulicateDeclare, ident->name, ident->getLoc());
 			//exit(-1);
 		}
 
-		//检验赋值表达式常量变量
 		if (valueDef->bitFields.hasAssign) {
 			Exp* exp = valueDef->exp;
-			exp->accept(*this);		//判断exp中是否有符号未被定义,以及计算exp是否为const，设置expBitFields的isConst位
+			exp->accept(*this);
 			if (ident->getConst()) {
-				//检验表达式是否为常量表达式
+				// check assign exp const exp
 				if (!(exp->bitFields.isConst)) {
 					string message = "";
 					this->error(SemanticVisitor::ErrorCode::ConstNotAssignedByVar, message, ident->getLoc());
@@ -74,16 +72,13 @@ void SemanticVisitor::visit(ValueDef* valueDef)
 {
 }
 
-/**
-* 函数名字进入符号表，额外记录其对应参数位置
-*/
 void SemanticVisitor::visit(FuncDef* funcDef)
 {
 	auto type = funcDef->type;
 	auto ident = funcDef->ident;
-	SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr, ident->identStr, type->type, SymbolAttr::SymbolRole::Function);
-	if (this->table->addSymbol(ident->identStr, symbolAttr) == nullptr) {
-		this->error(SemanticVisitor::ErrorCode::DulicateDeclare, ident->identStr, ident->getLoc());
+	NameAttr* nameAttr = new NameAttr(ident->name, ident->name, NameAttr::NameKind::Function,this->nameTab->getLevel(),false);
+	if (this->nameTab->addName(ident->name, nameAttr) == nullptr) {
+		this->error(SemanticVisitor::ErrorCode::DulicateDeclare, ident->name, ident->getLoc());
 		//exit(-1);
 	}
 	auto& funcParamDeclList = funcDef->funcParamDeclList;
@@ -91,8 +86,8 @@ void SemanticVisitor::visit(FuncDef* funcDef)
 	for (vector<FuncParamDecl*>::iterator it = funcParamDeclList.begin(); it < funcParamDeclList.end(); it++) {
 		auto type = (*it)->type;
 		auto ident = (*it)->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr,ident->identStr,type->type, SymbolAttr::SymbolRole::FunctionParam, 0, 0);	// 确认const array
-		this->table->addSymbol(ident->identStr, symbolAttr);
+		NameAttr* nameAttr = new NameAttr(ident->name,ident->name,NameAttr::NameKind::Variable,this->nameTab->getLevel(),true);
+		this->nameTab->addName(ident->name, nameAttr);
 	}
 
 	block->accept(*this);
@@ -105,20 +100,19 @@ void SemanticVisitor::visit(AssignStmt* assignStmt)
 	ident->accept(*this);
 	exp->accept(*this);
 	if (ident->getConst()) {
-		this->error(SemanticVisitor::ErrorCode::AssignNotLVal, ident->identStr, ident->getLoc());
+		this->error(SemanticVisitor::ErrorCode::AssignNotLVal, ident->name, ident->getLoc());
 		//exit(-1);
 	}
-	//计算exp属性是否和ident匹配
 }
 
 void SemanticVisitor::visit(BlockStmt* blockStmt)
 {
-	this->table->inScope();
+	this->nameTab->inBlock();
 	vector<ASTUnit*>& stmts = blockStmt->stmts;
 	for (vector<ASTUnit*>::iterator it = stmts.begin(); it < stmts.end(); it++) {
 		(*it)->accept(*this);
 	}
-	this->table->outScope();
+	this->nameTab->outBlock();
 }
 
 void SemanticVisitor::visit(BreakStmt* breakStmt)
@@ -191,7 +185,6 @@ void SemanticVisitor::visit(BinaryExp* binaryExp)
 void SemanticVisitor::visit(FuncallExp* funcallExp)
 {
 	auto& ident = funcallExp->ident;
-	//在符号表中查找函数名字定义，并检验参数类型是否正确
 
 }
 
@@ -225,17 +218,17 @@ void SemanticVisitor::visit(ConstantInt* constantInt)
 }
 
 /**
-* 所有非声明语句变量的出现转到此处
-* 需要查符号表判断该符号是否被定义
+* all non declare variable occurrences are directed here
+* in here whether a variable was declared is checked
 */
 void SemanticVisitor::visit(Ident* ident)
 {
-	SymbolAttr* symbolAttr = this->table->getSymbol(ident->identStr);
-	if (symbolAttr == nullptr) {
-		this->error(SemanticVisitor::ErrorCode::VariableNotDeclared, ident->identStr, ident->getLoc());
+	NameAttr* nameAttr = this->nameTab->getName(ident->name);
+	if (nameAttr == nullptr) {
+		this->error(SemanticVisitor::ErrorCode::VariableNotDeclared, ident->name, ident->getLoc());
 		//exit(-1);
 	}
-	ident->symbolAttr = symbolAttr;
+	ident->nameAttr = nameAttr;
 }
 
 void SemanticVisitor::error(ErrorCode code, std::string& message, location loc)

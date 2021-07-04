@@ -31,9 +31,7 @@ std::map<TACCode::OpCode, std::string> TACCode::OpCodeMap = {
 	{TACCode::OpCode::Function,"Function"}
 };
 
-/**
-* 无参构造操作数，类型默认为Var
-*/
+
 TACOpn::TACOpn()
 	:opnType(TACOpn::OpnType::Var)
 {
@@ -50,8 +48,8 @@ TACOpn::TACOpn(OpnType opnType, int intVal)
 {
 }
 
-TACOpn::TACOpn(OpnType opnType, string identName)
-	: opnType(opnType), identName(identName)
+TACOpn::TACOpn(OpnType opnType, string identName, NameAttr* nameAttr)
+	: opnType(opnType), identName(identName), nameAttr(nameAttr)
 {
 }
 
@@ -59,27 +57,21 @@ TACOpn::~TACOpn()
 {
 }
 
-TACCode::TACCode(TACCode::OpCode op, TACOpn* result)
-	:op(op), result(result)
-{
-}
-
-TACCode::TACCode(TACCode::OpCode op, TACOpn* opn1, TACOpn* result)
-	:op(op), opn1(opn1), result(result)
-{
-	//检验操作符类型
-
-}
-
 TACCode::TACCode(TACCode::OpCode op, TACOpn* opn1, TACOpn* opn2, TACOpn* result)
-	: op(op), opn1(opn1), opn2(opn2), result(result)
-{
-	//检验操作符类型
-
-}
+	: op(op), opn1(opn1), opn2(opn2), result(result) {}
 
 TACCode::~TACCode()
 {
+}
+
+bool TACCode::isBinaryOpCode()
+{
+	return this->op >= TACCode::OpCode::Add && this->op <= TACCode::OpCode::JNE;
+}
+
+bool TACCode::isAssignCode()
+{
+	return this->op == TACCode::OpCode::Assign;
 }
 
 namespace saltyfish {
@@ -97,7 +89,6 @@ namespace saltyfish {
 		default:
 			break;
 		}
-
 		return o;
 	}
 
@@ -114,9 +105,11 @@ namespace saltyfish {
 			else o << setw(6) << "NULL";
 			o << ",";
 		}
-
 		o << ")";
-
+		for (TACOpn* opn : opns) {
+			if (opn != nullptr && opn->opnType == TACOpn::OpnType::Var)
+				o << "  " << opn->nameAttr->active.first << "  ";
+		}
 		return o;
 	}
 }

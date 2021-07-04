@@ -1,5 +1,4 @@
 #include "TACVisitor.h"
-#include "SymbolTableList.h"
 
 using namespace std;
 using namespace saltyfish;
@@ -22,7 +21,8 @@ map<Exp::ExpType, TACCode::OpCode> TACVisitor::expTypeMapOpCode = {
 };
 
 TACVisitor::TACVisitor() {
-	this->table = new SymbolTableList();
+	this->nameTab = new MMNameTab();
+	this->funcTab = new MFuncTab();
 }
 
 TACVisitor::~TACVisitor() {
@@ -49,19 +49,34 @@ void TACVisitor::visit(FuncParamDecl* funcParamDecl)
 {
 }
 
+// handle variable registration in nameTab
 void TACVisitor::visit(ValueDecl* valueDecl)
 {
 	auto& type = valueDecl->type;
 	auto& valueDefList = valueDecl->valueDefList;
 	for (auto& valueDef : valueDefList) {
+		NameAttr::NameKind kind;
+		unsigned val;
+		bool isParam=false;
 		auto& ident = valueDef->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr, this->getAlias(), type->type, SymbolAttr::SymbolRole::Value, ident->getArray(), ident->getConst());	//ȷ��const array
-		this->table->addSymbol(ident->identStr, symbolAttr);
-
+		// if constant, set val=some number, else if variable, set val=offset address
+		if (ident->getConst()) {
+			kind = NameAttr::NameKind::Constant;
+			val = 5;
+		}
+		else {
+			kind = NameAttr::NameKind::Variable;
+			val = 5;
+		}
+		NameAttr* nameAttr = new NameAttr(ident->name, this->getAlias(), kind, this->nameTab->getLevel(), isParam);	// must not be a param
+		nameAttr->type = type->type;
+		nameAttr->val = val;	// !--------- should be offset address ------------!	
+		this->nameTab->addName(ident->name, nameAttr);
 		valueDef->accept(*this);
 	}
 }
 
+// handle variable declare initial tac code, be aware to distinguish from the above function **visit(valueDecl)**
 void TACVisitor::visit(ValueDef* valueDef)
 {
 	valueDef->tac = new TAC();
@@ -70,47 +85,47 @@ void TACVisitor::visit(ValueDef* valueDef)
 	if (valueDef->bitFields.hasAssign) {
 		auto& exp = valueDef->exp;
 		exp->accept(*this);
-		SymbolAttr* symbolAttr = this->table->getSymbol(valueDef->ident->identStr);
-		opn = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
-		result = new TACOpn(TACOpn::OpnType::Var, symbolAttr->alias);
-		TACCode* code = new TACCode(TACCode::OpCode::Assign, opn, result);
+		NameAttr* nameAttr = this->nameTab->getName(valueDef->ident->name);
+		opn = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias,exp->tac->place);
+		result = new TACOpn(TACOpn::OpnType::Var, nameAttr->alias,nameAttr);
+		TACCode* code = new TACCode(TACCode::OpCode::Assign, opn, nullptr, result);
 		this->mergeCode(code);
 	}
 }
 
-/**
-* �������ֽ�����ű��������¼���Ӧ����λ��
-*/
 void TACVisitor::visit(FuncDef* funcDef)
 {
-	// �������ű�
+	NameAttr* fnameAttr=nullptr,*nameAttr=nullptr;	// fnameAttr for funcion name while nameAttr for param name
 	auto& type = funcDef->type;
 	auto& ident = funcDef->ident;
 	auto& funcParamDeclList = funcDef->funcParamDeclList;
 	auto& block = funcDef->block;
-	SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr,this->getAlias(),type->type, SymbolAttr::SymbolRole::Function);
-	this->table->addSymbol(ident->identStr, symbolAttr);
+	fnameAttr = new NameAttr(ident->name,this->getAlias(),NameAttr::NameKind::Function,this->nameTab->getLevel(),false);	// insert function name to nameTab
+	fnameAttr->type = type->type;
+	fnameAttr->val=5;	// !!!!!----- should be function entry point -----!!!!!!
+	this->nameTab->addName(ident->name, fnameAttr);
 
-	// �����м����
 	TACCode* code = nullptr;
 	TACOpn* result = nullptr;
-	result = new TACOpn(TACOpn::OpnType::Var, symbolAttr->name);
+	result = new TACOpn(TACOpn::OpnType::Var, fnameAttr->name,fnameAttr);
 	code = new TACCode(TACCode::OpCode::Function, nullptr, nullptr, result);
 	this->mergeCode(code);
 
 	for (vector<FuncParamDecl*>::iterator it = funcParamDeclList.begin(); it < funcParamDeclList.end(); it++) {
-		// ���ű�
+		// loop insert function params to nameTab
 		auto& type = (*it)->type;
 		auto& ident = (*it)->ident;
-		SymbolAttr* symbolAttr = new SymbolAttr(ident->identStr, this->getAlias(), type->type, SymbolAttr::SymbolRole::FunctionParam, 0, 0);	// ȷ��const array
-		symbolAttr->level = this->table->getLevel() + 1;
-		this->table->addSymbol(ident->identStr, symbolAttr);
-		// �м����
-		result = new TACOpn(TACOpn::OpnType::Var, symbolAttr->name);
+		nameAttr = new NameAttr(ident->name, this->getAlias(), NameAttr::NameKind::Variable,this->nameTab->getLevel()+1,true);
+		nameAttr->type=type->type;
+		nameAttr->val=5;	// !--------------- should be offset address -----------!
+		this->nameTab->addName(ident->name, nameAttr);
+		result = new TACOpn(TACOpn::OpnType::Var, nameAttr->name,nameAttr);
 		code = new TACCode(TACCode::OpCode::Param, nullptr, nullptr, result);
 		this->mergeCode(code);
 	}
 	block->accept(*this);
+	FuncAttr* funcAttr=new FuncAttr(ident->name,nameAttr,nullptr,0,0);
+	this->funcTab->addFunc(ident->name,funcAttr);
 }
 
 void TACVisitor::visit(AssignStmt* assignStmt)
@@ -118,17 +133,17 @@ void TACVisitor::visit(AssignStmt* assignStmt)
 	auto& ident = assignStmt->ident;
 	auto& exp = assignStmt->exp;
 	assignStmt->tac = new TAC();
-	exp->accept(*this);		//�ȶ�exp�ݹ����
-	SymbolAttr* symbolAttr = this->table->getSymbol(ident->identStr);
-	TACOpn* opn1 = new TACOpn(TACOpn::OpnType::Var, symbolAttr->alias);
-	TACOpn* result = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
-	TACCode* code = new TACCode(TACCode::OpCode::Assign, opn1, result);
+	exp->accept(*this);
+	NameAttr* nameAttr = this->nameTab->getName(ident->name);
+	TACOpn* opn1 = new TACOpn(TACOpn::OpnType::Var, nameAttr->alias,nameAttr);
+	TACOpn* result = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias,nameAttr);
+	TACCode* code = new TACCode(TACCode::OpCode::Assign, opn1, nullptr,result);
 	this->mergeCode(code);
 }
 
 void TACVisitor::visit(BlockStmt* blockStmt)
 {
-	this->table->inScope();
+	this->nameTab->inBlock();
 	blockStmt->tac = new TAC();
 	auto& stmts = blockStmt->stmts;
 	for (vector<ASTUnit*>::iterator it = stmts.begin(); it < stmts.end(); it++) {
@@ -137,7 +152,7 @@ void TACVisitor::visit(BlockStmt* blockStmt)
 				this->backpatch((*it)->tac->nextlist, nextinstr);
 			}
 	}
-	this->table->outScope();
+	this->nameTab->outBlock();
 }
 
 void TACVisitor::visit(BreakStmt* breakStmt)
@@ -172,7 +187,7 @@ void TACVisitor::visit(IfStmt* ifStmt)
 	auto& cond = ifStmt->cond;
 	auto& ifBody = ifStmt->ifBody;
 	ifStmt->tac = new TAC();
-	this->bitFields.calcCond = 1;	// ������ָʾ�����BinaryOpExp, PrimaryExp, UnaryExp��������list����
+	this->bitFields.calcCond = 1;
 	if (!ifStmt->bitFields.hasElse) {
 		cond->accept(*this);
 		this->backpatch(cond->tac->truelist, nextinstr);
@@ -185,7 +200,7 @@ void TACVisitor::visit(IfStmt* ifStmt)
 		unsigned M1_instr = this->nextinstr;
 		ifBody->accept(*this);
 		unsigned N_instr = this->nextinstr;
-		// �˴�����Ҫ��������if�������������
+		
 		TACOpn* result = new TACOpn(TACOpn::OpnType::J);
 		TACCode* code = new TACCode(TACCode::OpCode::GOTO, nullptr, nullptr, result);
 		this->mergeCode(code);
@@ -206,7 +221,7 @@ void TACVisitor::visit(ReturnStmt* returnStmt)
 	if (returnStmt->bitFields.hasExp) {
 		auto& exp = returnStmt->exp;
 		exp->accept(*this);
-		TACOpn* result = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
+		TACOpn* result = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias,exp->tac->place);
 		code = new TACCode(TACCode::OpCode::Return, nullptr, nullptr, result);
 	}
 	else {
@@ -246,56 +261,46 @@ void TACVisitor::visit(FuncallExp* funcallExp)
 	TACCode* code = nullptr;
 	TACOpn* opn = nullptr;
 	TACOpn* result = nullptr;
-	ident->accept(*this);	// ��identȥ���Լ���symbolAttr���ԣ����ڷ��ű��еĶ�Ӧ��
+	ident->accept(*this);
 
 	for (auto& param : params) {
 		param->accept(*this);
-		result = new TACOpn(TACOpn::OpnType::Var, param->tac->place->alias);
+		result = new TACOpn(TACOpn::OpnType::Var, param->tac->place->alias,param->tac->place);
 		code = new TACCode(TACCode::OpCode::Arg, nullptr, nullptr, result);
 		paramCodes.push_back(code);
 	}
 	this->mergeCode(paramCodes);
-	SymbolAttr* symbolAttr = ident->tac->place;
-	opn = new TACOpn(TACOpn::OpnType::Var, symbolAttr->name);
-	SymbolAttr* temp = this->getTemp();
-	result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
+	NameAttr* nameAttr = ident->tac->place;
+	opn = new TACOpn(TACOpn::OpnType::Var, nameAttr->name,nameAttr);
+	NameAttr* temp = this->getTemp();
+	result = new TACOpn(TACOpn::OpnType::Var, temp->alias,temp);
 	funcallExp->tac->place = temp;
-	code = new TACCode(TACCode::OpCode::Call, opn, result);
+	code = new TACCode(TACCode::OpCode::Call, opn, nullptr, result);
 	this->mergeCode(code);
 }
 
-/**
-* �ȵݹ鴦���ӽڵ㣬�ٴ������ڵ�
-* �õ������ӽڵ��place������Ӧ����
-* 
-* ��binaryExp�У������������ӽ�����Һ��ӽ���Լ�op����һ������
-* ����DAG
-*/
 void TACVisitor::visit(BinaryExp* binaryExp)
 {
 	Exp* Lexp = binaryExp->Lexp;
 	Exp* Rexp = binaryExp->Rexp;
-	// �ȵݹ鴦�����ӣ��õ���Ҫ������
+
 	TACOpn* opn1, * opn2;
 	TACOpn* trueResult, * falseResult;
 	TACCode* code1, * code2;
 
-	/**
-	* ������op�Ķ�Ԫ����ڵ㣬һ��tac������㼴��
-	* ��Ҫ�����µ���ʱ����
-	*/
+
 	if (binaryExp->isOpExp() && binaryExp->tac == nullptr) {
 		Lexp->accept(*this);
 		Rexp->accept(*this);
 
-		// �ȷ��ʺ��ӣ��������Լ�������temp�������
+
 		binaryExp->tac = new TAC();
-		SymbolAttr* temp = this->getTemp();
+		NameAttr* temp = this->getTemp();
 		binaryExp->tac->place = temp;
 
-		opn1 = new TACOpn(TACOpn::OpnType::Var, Lexp->tac->place->alias);
-		opn2 = new TACOpn(TACOpn::OpnType::Var, Rexp->tac->place->alias);
-		TACOpn* result = new TACOpn(TACOpn::OpnType::Var, binaryExp->tac->place->alias);
+		opn1 = new TACOpn(TACOpn::OpnType::Var, Lexp->tac->place->alias,Lexp->tac->place);
+		opn2 = new TACOpn(TACOpn::OpnType::Var, Rexp->tac->place->alias,Rexp->tac->place);
+		TACOpn* result = new TACOpn(TACOpn::OpnType::Var, binaryExp->tac->place->alias,binaryExp->tac->place);
 		TACCode* code = new TACCode(expTypeMapOpCode.at(binaryExp->expType), opn1, opn2, result);
 		this->mergeCode(code);
 
@@ -303,7 +308,7 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 			this->bitFields.calcCond = 0;
 			binaryExp->tac->truelist.push_back(nextinstr);
 			binaryExp->tac->falselist.push_back(nextinstr + 1);
-			opn1 = new TACOpn(TACOpn::OpnType::Var, binaryExp->tac->place->alias);
+			opn1 = new TACOpn(TACOpn::OpnType::Var, binaryExp->tac->place->alias,binaryExp->tac->place);
 			opn2 = new TACOpn(TACOpn::OpnType::Int, 0);
 			trueResult = new TACOpn(TACOpn::OpnType::J);
 			falseResult = new TACOpn(TACOpn::OpnType::J);
@@ -312,10 +317,6 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 			this->mergeCode(code1, code2);
 		}
 	}
-	/**
-	* ����С�� �ȹ�ϵ���������Ҫ���ɲ�����truelist,falselistΪnextistr,nextistr+1
-	* ����Ҫ�����µ���ʱ����
-	*/
 	else if (binaryExp->isRelExp()) {
 		if (binaryExp->tac == nullptr) {
 			binaryExp->tac = new TAC();
@@ -323,8 +324,8 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 		this->bitFields.calcCond = 0;
 		Lexp->accept(*this);
 		Rexp->accept(*this);
-		opn1 = new TACOpn(TACOpn::OpnType::Var, Lexp->tac->place->alias);
-		opn2 = new TACOpn(TACOpn::OpnType::Var, Rexp->tac->place->alias);
+		opn1 = new TACOpn(TACOpn::OpnType::Var, Lexp->tac->place->alias,Lexp->tac->place);
+		opn2 = new TACOpn(TACOpn::OpnType::Var, Rexp->tac->place->alias,Rexp->tac->place);
 		binaryExp->tac->truelist.push_back(nextinstr);
 		binaryExp->tac->falselist.push_back(nextinstr + 1);
 		trueResult = new TACOpn(TACOpn::OpnType::J);
@@ -333,10 +334,6 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 		code2 = new TACCode(TACCode::OpCode::GOTO, NULL, NULL, falseResult);
 		this->mergeCode(code1, code2);
 	}
-	/**
-	* ������������˴���Ҫ����
-	* ����Ҫ�µ���ʱ����
-	*/
 	else if (binaryExp->isBoolExp()) {
 		if (binaryExp->tac == nullptr) {
 			binaryExp->tac = new TAC();
@@ -344,8 +341,7 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 		this->bitFields.calcCond = 0;
 		switch (binaryExp->expType) {
 		case(Exp::ExpType::And):
-			// ��Ҫfalse��·
-			// B -> B1 && M B2 ����B1�����nextinstr����M�Ĵ���λ��
+
 			Lexp->accept(*this);
 			this->backpatch(Lexp->tac->truelist, nextinstr);
 			Rexp->accept(*this);
@@ -353,7 +349,6 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 			binaryExp->tac->falselist = this->mergeList(Lexp->tac->falselist, Rexp->tac->falselist);
 			break;
 		case(Exp::ExpType::Or):
-			// ��Ҫtrue��·
 			Lexp->accept(*this);
 			this->backpatch(Lexp->tac->falselist, nextinstr);
 			Rexp->accept(*this);
@@ -368,13 +363,6 @@ void TACVisitor::visit(BinaryExp* binaryExp)
 	}
 }
 
-/**
-* ���������PrimaryExp����ʽ
-* ����Ǳ�ʶ�������ɱ�ʶ�����ֵ�opn�������ýڵ�place��Ϊ��ʶ����symbolAttr
-* ��������֣�������ʱ����������������ֵ������ʱ�������ڵ�placeֵΪ��ʱ������symbolAttr
-* 
-* ���ڴ˽ڵ��DAG����Ȼ���ߵ����Ҷ�ӽڵ㣬��������ڵ�һ��û�б�������
-*/
 void TACVisitor::visit(PrimaryExp* primaryExp)
 {
 	primaryExp->tac = new TAC();
@@ -382,20 +370,20 @@ void TACVisitor::visit(PrimaryExp* primaryExp)
 	TACCode* code, * code1, * code2;
 	if (primaryExp->childType == ASTUnit::UnitType::isIdent) {
 		Ident* ident = primaryExp->ident;
-		ident->accept(*this);	// ��identȥѰ���Լ���symbolAttr
-		SymbolAttr* symbolAttr = ident->tac->place;
-		primaryExp->tac->place = symbolAttr;
+		ident->accept(*this);
+		NameAttr* nameAttr = ident->tac->place;
+		primaryExp->tac->place = nameAttr;
 	}
 	else if (primaryExp->childType == ASTUnit::UnitType::isConstantInt) {
 		opn1 = new TACOpn(TACOpn::OpnType::Int, primaryExp->constantInt->value);
-		SymbolAttr* temp = this->getTemp();
-		result = new TACOpn(TACOpn::OpnType::Var, temp->alias);
+		NameAttr* temp = this->getTemp();
+		result = new TACOpn(TACOpn::OpnType::Var, temp->alias,temp);
 		primaryExp->tac->place = temp;
-		code = new TACCode(TACCode::OpCode::Assign, opn1, result);
+		code = new TACCode(TACCode::OpCode::Assign, opn1, nullptr,result);
 		this->mergeCode(code);
 	}
 
-	// ����cond
+	// calculating cond
 	if (this->bitFields.calcCond) {
 		this->bitFields.calcCond = 0;
 		primaryExp->tac->truelist.clear();
@@ -403,7 +391,7 @@ void TACVisitor::visit(PrimaryExp* primaryExp)
 		primaryExp->tac->truelist.push_back(nextinstr);
 		primaryExp->tac->falselist.push_back(nextinstr + 1);
 
-		opn1 = new TACOpn(TACOpn::OpnType::Var, primaryExp->tac->place->alias);
+		opn1 = new TACOpn(TACOpn::OpnType::Var, primaryExp->tac->place->alias,primaryExp->tac->place);
 		opn2 = new TACOpn(TACOpn::OpnType::Int, 0);
 		trueResult = new TACOpn(TACOpn::OpnType::J);
 		falseResult = new TACOpn(TACOpn::OpnType::J);
@@ -420,7 +408,6 @@ void TACVisitor::visit(UnaryExp* unaryExp)
 	TACCode* code, * code1, * code2;
 	Exp* exp = unaryExp->exp;
 
-	// ���ڲ���DAG�������ýڵ�û�б��������ŵ��ô�������
 	exp->accept(*this);
 	if (unaryExp->expType == Exp::ExpType::Not) {
 		this->bitFields.calcCond = 0;
@@ -428,19 +415,19 @@ void TACVisitor::visit(UnaryExp* unaryExp)
 		unaryExp->tac->falselist = exp->tac->truelist;
 	}
 	else {
-		SymbolAttr* temp = this->getTemp();
+		NameAttr* temp = this->getTemp();
 		unaryExp->tac->place = temp;
-		opn1 = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias);
-		result = new TACOpn(TACOpn::OpnType::Var, unaryExp->tac->place->alias);
+		opn1 = new TACOpn(TACOpn::OpnType::Var, exp->tac->place->alias,exp->tac->place);
+		result = new TACOpn(TACOpn::OpnType::Var, unaryExp->tac->place->alias,unaryExp->tac->place);
 
-		TACCode* code = new TACCode(expTypeMapOpCode.at(unaryExp->expType), opn1, result);
+		TACCode* code = new TACCode(expTypeMapOpCode.at(unaryExp->expType), opn1, nullptr, result);
 		this->mergeCode(code);
 
 		if (this->bitFields.calcCond) {
 			this->bitFields.calcCond = 0;
 			unaryExp->tac->truelist.push_back(nextinstr);
 			unaryExp->tac->falselist.push_back(nextinstr + 1);
-			opn1 = new TACOpn(TACOpn::OpnType::Var, unaryExp->tac->place->alias);
+			opn1 = new TACOpn(TACOpn::OpnType::Var, unaryExp->tac->place->alias,unaryExp->tac->place);
 			opn2 = new TACOpn(TACOpn::OpnType::Int, 0);
 			trueResult = new TACOpn(TACOpn::OpnType::J);
 			falseResult = new TACOpn(TACOpn::OpnType::J);
@@ -462,7 +449,7 @@ void TACVisitor::visit(ConstantInt* constantInt)
 void TACVisitor::visit(Ident* ident)
 {
 	ident->tac = new TAC();
-	ident->tac->place = this->table->getSymbol(ident->identStr);
+	ident->tac->place = this->nameTab->getName(ident->name);
 }
 
 string TACVisitor::getAlias() {
@@ -472,18 +459,17 @@ string TACVisitor::getAlias() {
 	return alias;
 }
 
-SymbolAttr* TACVisitor::getTemp() {
+NameAttr* TACVisitor::getTemp() {
 	static unsigned index = 0;
 	string name = "_t" + to_string(index);
 	index++;
-	SymbolAttr* symbolAttr = new SymbolAttr(name, name, Type::TypeCode::Int, SymbolAttr::SymbolRole::TempValue);
-	this->table->addSymbol(name, symbolAttr);
-	return symbolAttr;
+	NameAttr* nameAttr = new NameAttr(name, name,NameAttr::NameKind::Variable,this->nameTab->getLevel(),false);
+	this->nameTab->addName(name, nameAttr);
+	return nameAttr;
 }
 
 /**
-* ��code2���뵽code1ǰ��
-* ע��˳��
+* the following functions add codes to codes vector and maintain coresponding instr
 */
 void TACVisitor::mergeCode(TACCode* code)
 {
@@ -503,7 +489,6 @@ void TACVisitor::mergeCode(TACCode* code1, TACCode* code2)
 
 void TACVisitor::mergeCode(vector<TACCode*> codes)
 {
-	// ��ȷ����ָ��λ��
 	for (int i = 0; i < codes.size(); i++) {
 		codes[i]->instr = this->nextinstr + i;
 	}

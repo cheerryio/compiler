@@ -5,7 +5,8 @@
 #include <map>
 
 #include "ASTVisitor.h"
-#include "SymbolTableList.h"
+#include "MMNameTab.h"
+#include "MFuncTab.h"
 #include "TAC.h"
 
 namespace saltyfish {
@@ -20,7 +21,8 @@ namespace saltyfish {
 		} bitFields;
 
 	public:
-		SymbolTableList* table = nullptr;
+		MMNameTab* nameTab = nullptr;
+		MFuncTab* funcTab = nullptr;
 		std::vector<TACCode*> codes;
 		unsigned nextinstr = 0;
 		vector<int> breaklist;
@@ -59,7 +61,7 @@ namespace saltyfish {
 		virtual void visit(Ident* ident);
 
 		std::string getAlias();
-		SymbolAttr* getTemp();
+		NameAttr* getTemp();
 		void mergeCode(TACCode* code);
 		void mergeCode(TACCode* code1, TACCode* code2);
 		void mergeCode(vector<TACCode*> codes);

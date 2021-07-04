@@ -123,7 +123,7 @@
 %left T_MUL T_DIV T_MOD
 %right T_NOT
 
-%token <string> IdentStr "标识符"
+%token <string> IdentName "标识符"
 %token <int> DECIMAL "十进制常数"
 %token <int> OCTAL "八进制常数"
 %token <int> HEXADECIMAL "十六进制常数"
@@ -443,10 +443,10 @@ Stmt:
 		}
 
 Ident:
-	IdentStr
+	IdentName
 		{
-			string identStr=$1;
-			auto ident=new Ident(identStr,@$);
+			string identName=$1;
+			auto ident=new Ident(identName,@$);
 			$$=ident;
 		}
 

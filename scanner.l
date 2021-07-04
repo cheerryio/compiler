@@ -30,7 +30,7 @@
 "continue"                              {return saltyfish::Parser::make_T_CONTINUE(yytext,driver.getLoc());}
 "return"                                {return saltyfish::Parser::make_T_RETURN(yytext,driver.getLoc());}
 
-[_[:alpha:]]([_[:alpha:]]|[[:digit:]])* {return saltyfish::Parser::make_IdentStr(yytext,driver.getLoc());}
+[_[:alpha:]]([_[:alpha:]]|[[:digit:]])* {return saltyfish::Parser::make_IdentName(yytext,driver.getLoc());}
 
 ([[:digit:]]{-}[0])[[:digit:]]*         {return saltyfish::Parser::make_DECIMAL(atoi(yytext),driver.getLoc());}
 0[01234567]*                            {return saltyfish::Parser::make_OCTAL(atoi(yytext),driver.getLoc());}

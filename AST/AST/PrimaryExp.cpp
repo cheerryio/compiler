@@ -50,7 +50,7 @@ bool PrimaryExp::equals(PrimaryExp* primaryExp)
 	if (this->childType == primaryExp->childType) {
 		switch (this->childType) {
 		case(ASTUnit::UnitType::isIdent):
-			r=this->ident->identStr == primaryExp->ident->identStr;
+			r=this->ident->name == primaryExp->ident->name;
 			break;
 		case(ASTUnit::UnitType::isConstantInt):
 			r=this->constantInt->value == primaryExp->constantInt->value;

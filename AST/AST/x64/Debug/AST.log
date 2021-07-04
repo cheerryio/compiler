@@ -1,14 +1,11 @@
 ﻿  AssignStmt.cpp
-  ASTUnit.cpp
   BinaryExp.cpp
   BlockStmt.cpp
   BreakStmt.cpp
   CompUnit.cpp
   ConstantInt.cpp
   ContinueStmt.cpp
-  Decl.cpp
   EmptyStmt.cpp
-  Exp.cpp
   ExpStmt.cpp
   FuncallExp.cpp
   FuncDecl.cpp
@@ -18,14 +15,15 @@
   IfStmt.cpp
   PrimaryExp.cpp
   ReturnStmt.cpp
-  正在生成代码...
-  正在编译...
-  Stmt.cpp
   Type.cpp
   UnaryExp.cpp
   ValueDecl.cpp
+  正在生成代码...
+  正在编译...
   ValueDef.cpp
   WhileStmt.cpp
   正在生成代码...
+BinaryExp.obj : error LNK2001: 无法解析的外部符号 "public: static class std::map<enum saltyfish::Exp::ExpType,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,struct std::less<enum saltyfish::Exp::ExpType>,class std::allocator<struct std::pair<enum saltyfish::Exp::ExpType const ,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > > saltyfish::Exp::ExpTypeMap" (?ExpTypeMap@Exp@saltyfish@@2V?$map@W4ExpType@Exp@saltyfish@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@W4ExpType@Exp@saltyfish@@@5@V?$allocator@U?$pair@$$CBW4ExpType@Exp@saltyfish@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@@5@@std@@A)
+UnaryExp.obj : error LNK2001: 无法解析的外部符号 "public: static class std::map<enum saltyfish::Exp::ExpType,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,struct std::less<enum saltyfish::Exp::ExpType>,class std::allocator<struct std::pair<enum saltyfish::Exp::ExpType const ,class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > > > > saltyfish::Exp::ExpTypeMap" (?ExpTypeMap@Exp@saltyfish@@2V?$map@W4ExpType@Exp@saltyfish@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$less@W4ExpType@Exp@saltyfish@@@5@V?$allocator@U?$pair@$$CBW4ExpType@Exp@saltyfish@@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@@5@@std@@A)
 MSVCRTD.lib(exe_main.obj) : error LNK2019: 无法解析的外部符号 main，函数 "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ) 中引用了该符号
-C:\Users\22216\source\repos\compiler\AST\x64\Debug\AST.exe : fatal error LNK1120: 1 个无法解析的外部命令
+C:\Users\22216\source\repos\compiler\AST\x64\Debug\AST.exe : fatal error LNK1120: 2 个无法解析的外部命令

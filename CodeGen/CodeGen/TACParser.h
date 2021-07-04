@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include "TAC.h"
+#include "Table.h"
 
 namespace saltyfish {
 	class TACParser

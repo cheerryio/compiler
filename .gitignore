@@ -3,6 +3,7 @@ AST/.vs
 AST/Debug
 AST/UpgradeLog.htm
 AST/AST/Debug
+AST/x64
 AST/ASTVisitor/Debug
 parser.hpp
 parser.cpp

@@ -147,8 +147,10 @@
     <ClCompile Include="DemoVisitor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MessageVisitor.cpp" />
+    <ClCompile Include="MFuncTab.cpp" />
+    <ClCompile Include="MMNameTab.cpp" />
     <ClCompile Include="SemanticVisitor.cpp" />
-    <ClCompile Include="SymbolTableList.cpp" />
+    <ClCompile Include="Table.cpp" />
     <ClCompile Include="TAC.cpp" />
     <ClCompile Include="TACVisitor.cpp" />
     <ClCompile Include="VisitorLauncher.cpp" />
@@ -158,9 +160,10 @@
     <ClInclude Include="DAGVisitor.h" />
     <ClInclude Include="DemoVisitor.h" />
     <ClInclude Include="MessageVisitor.h" />
+    <ClInclude Include="MFuncTab.h" />
+    <ClInclude Include="MMNameTab.h" />
     <ClInclude Include="SemanticVisitor.h" />
-    <ClInclude Include="SymbolTable.h" />
-    <ClInclude Include="SymbolTableList.h" />
+    <ClInclude Include="Table.h" />
     <ClInclude Include="TAC.h" />
     <ClInclude Include="TACVisitor.h" />
     <ClInclude Include="VisitorLauncher.h" />

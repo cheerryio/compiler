@@ -6,7 +6,7 @@
 
 namespace saltyfish {
 	class ASTVisitor;
-	class SymbolAttr;
+	class NameAttr;
 
 	class Ident
 		:virtual public ASTUnit
@@ -18,11 +18,11 @@ namespace saltyfish {
 			unsigned isArray : 1;
 		} bitFields;
 	public:
-		std::string identStr;
-		SymbolAttr* symbolAttr = nullptr;
+		std::string name;
+		NameAttr* nameAttr = nullptr;
 		Exp* exp;
 	public:
-		Ident(std::string identStr, location loc);
+		Ident(std::string identName, location loc);
 		void setConst();
 		void setArray();
 		bool getConst() const;

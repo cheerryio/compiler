@@ -12,6 +12,8 @@ int main() {
 	vector<TACCode*> codes = TACParser::loadTAC(filename);
 	CFG cfg(codes);
 	cfg.buildCFG();
+	cfg.optimize();
+	cfg.updateActive();
 	filename = "../../graph/graph.dot";
 	cfg.CFGDot(filename);
 	A32CodeGen a32CodeGen(cfg);

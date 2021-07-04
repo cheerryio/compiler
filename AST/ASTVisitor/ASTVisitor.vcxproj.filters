@@ -24,9 +24,6 @@
     <ClCompile Include="SemanticVisitor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="SymbolTableList.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="TACVisitor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -42,6 +39,15 @@
     <ClCompile Include="DemoVisitor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="MMNameTab.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Table.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MFuncTab.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ASTVisitor.h">
@@ -51,12 +57,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="SemanticVisitor.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SymbolTable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SymbolTableList.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="TACVisitor.h">
@@ -72,6 +72,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="DemoVisitor.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Table.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MMNameTab.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MFuncTab.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

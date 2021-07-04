@@ -1,24 +1,38 @@
 digraph G{
 bb0[shape="square" label="
-    0  (Function,  NULL,  NULL,  main,)\n
-    1  (   Param,  NULL,  NULL,     f,)\n
-    2  (Assign =,     2,  NULL,   _t0,)\n
-    3  (   JE ==,   _v2,   _t0,     5,)\n
+    0  (Function,  NULL,  NULL,  main,)  0  \n
+    1  (   Param,  NULL,  NULL,     f,)  0  \n
+    2  (Assign =,     2,  NULL,   _t0,)  3  \n
+    3  (   JE ==,   _v2,   _t0,     5,)  0    0  \n
 "]
 bb1[shape="square" label="
-    4  (    GOTO,   _v2,   _t0,     8,)\n
+    4  (    GOTO,  NULL,  NULL,    22,)\n
 "]
 bb2[shape="square" label="
-    5  (   Add +,   _v2,   _v4,   _t1,)\n
-    6  (Assign =,   _v2,   _v4,   _t1,)\n
-    7  (    GOTO,   _v2,   _v4,    13,)\n
+    5  (   Mul *,   _v2,   _v3,   _t1,)  6    18    7  \n
+    6  (   Mul *,   _v2,   _v4,   _t2,)  8    8    7  \n
+    7  (   Add +,   _t1,   _t2,   _t3,)  0    0    9  \n
+    8  (   Mul *,   _v2,   _v4,   _t4,)  10    18    9  \n
+    9  (   Add +,   _t3,   _t4,   _t5,)  0    0    11  \n
+   10  (   Mul *,   _v2,   _v6,   _t6,)  12    0    11  \n
+   11  (   Add +,   _t5,   _t6,   _t7,)  0    0    13  \n
+   12  (   Mul *,   _v2,   _v7,   _t8,)  14    0    13  \n
+   13  (   Add +,   _t7,   _t8,   _t9,)  0    0    15  \n
+   14  (   Mul *,   _v2,   _v8,  _t10,)  16    0    15  \n
+   15  (   Add +,   _t9,  _t10,  _t11,)  0    0    17  \n
+   16  (   Mul *,   _v2,   _v9,  _t12,)  20    0    17  \n
+   17  (   Add +,  _t11,  _t12,  _t13,)  0    0    19  \n
+   18  (   Mul *,   _v3,   _v4,  _t14,)  0    0    19  \n
+   19  (   Add +,  _t13,  _t14,  _t15,)  0    0    0  \n
+   20  (Assign =,   _v2,  NULL,  _t15,)  0    0  \n
+   21  (    GOTO,  NULL,  NULL,    27,)\n
 "]
 bb3[shape="square" label="
-    8  (Assign =,     2,   _v4,   _t2,)\n
-    9  (   Mul *,   _v2,   _t2,   _t3,)\n
-   10  (Assign =,     3,   _t2,   _t4,)\n
-   11  (   Div *,   _t3,   _t4,   _t5,)\n
-   12  (Assign =,   _v2,   _t4,   _t5,)\n
+   22  (Assign =,     2,  NULL,  _t16,)  23  \n
+   23  (   Div *,   _v2,  _t16,  _t17,)  26    0    25  \n
+   24  (Assign =,     3,  NULL,  _t18,)  25  \n
+   25  (   Mul *,  _t17,  _t18,  _t19,)  0    0    0  \n
+   26  (Assign =,   _v2,  NULL,  _t19,)  0    0  \n
 "]
 bb0 -> bb2
 bb0 -> bb1

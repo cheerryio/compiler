@@ -70,7 +70,10 @@ vector<TACCode*> TACParser::loadTAC(string &filename)
 		if (TACParser::isNumber(token))	\
 			opn = new TACOpn(opnType, stoi(token));	\
 		else \
-			opn = new TACOpn(opnType, token);	\
+			opn = new TACOpn(opnType, token,new NameAttr());	\
+	}	\
+	else{	\
+		opn = nullptr;	\
 	}
 
 	if (f.is_open()) {
@@ -96,9 +99,12 @@ vector<TACCode*> TACParser::loadTAC(string &filename)
 					result->labelInstr = stoi(token);
 				}
 				else
-					result = new TACOpn(opnType, token);
+					result = new TACOpn(opnType, token,new NameAttr());
+			}else{
+				result=nullptr;
 			}
-			code = new TACCode(instr, op, opn1, opn2, result);
+			code = new TACCode(op, opn1, opn2, result);
+			code->instr = instr;
 			codes.push_back(code);
 		}
 	}

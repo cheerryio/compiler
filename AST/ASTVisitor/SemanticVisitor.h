@@ -2,7 +2,7 @@
 #include <vector>
 #include <map>
 #include "ASTVisitor.h"
-#include "SymbolTableList.h"
+#include "MMNameTab.h"
 
 namespace saltyfish {
 	class SemanticVisitor :
@@ -20,14 +20,14 @@ namespace saltyfish {
 			BreakNotInLoop,ContinueNotInLoop,ReturnNotInFunction,
 			ConstNotAssignedByVar
 		};
-		SymbolTableList* table = nullptr;
+		MMNameTab* nameTab = nullptr;
 
 	public:
 		static std::map<ErrorCode, std::string> errorMessage;
 
 	public:
 		SemanticVisitor();
-		SemanticVisitor(SymbolTableList* table);
+		SemanticVisitor(MMNameTab* table);
 
 		virtual void visit(CompUnit* compUnit);
 
