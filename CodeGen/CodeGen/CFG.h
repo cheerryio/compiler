@@ -28,6 +28,7 @@ namespace saltyfish {
 		std::vector<CFGBasicBlock*> basicBlocks;
 		std::vector<std::pair<unsigned, unsigned>> flows;
 	public:
+		CFG();
 		CFG(std::vector<TACCode*> codes);
 		~CFG();
 		unsigned instrToBasicBlockId(unsigned instr);

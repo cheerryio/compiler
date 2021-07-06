@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\AST\ASTVisitor\TAC.cpp" />
+    <ClCompile Include="A32.cpp" />
     <ClCompile Include="A32CodeGen.cpp" />
     <ClCompile Include="CFG.cpp" />
     <ClCompile Include="CodeGen.cpp" />
@@ -149,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\AST\ASTVisitor\TAC.h" />
+    <ClInclude Include="A32.h" />
     <ClInclude Include="A32CodeGen.h" />
     <ClInclude Include="CFG.h" />
     <ClInclude Include="CodeGen.h" />

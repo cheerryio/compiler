@@ -8,6 +8,7 @@ namespace saltyfish {
 	public:
 		CFG cfg;
 	public:
+		CodeGen() {}
 		CodeGen(CFG cfg) :cfg(cfg) {}
 	};
 }

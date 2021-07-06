@@ -8,6 +8,10 @@ CFGBasicBlock::CFGBasicBlock(unsigned id, unsigned start)
 {
 }
 
+CFG::CFG()
+{
+}
+
 CFG::CFG(std::vector<TACCode*> codes)
     :codes(codes)
 {
